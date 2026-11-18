@@ -103,11 +103,8 @@ export function SettingsView() {
     <div className="max-w-5xl mx-auto space-y-6 select-none custom-scrollbar pb-12 transition-colors">
       {/* En-tête Paramètres Stitch */}
       <div className="border-b border-zinc-200 dark:border-[#27272A] pb-5 transition-colors">
-        <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2.5">
-          <span>Préférences & Sécurité</span>
-          <span className="text-[10px] font-mono text-[#0891B2] dark:text-[#06B6D4] px-2 py-0.5 rounded bg-[#06B6D4]/10 border border-[#06B6D4]/30">
-            PRO
-          </span>
+        <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          Préférences & Sécurité
         </h1>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
           Gérez votre mot de passe maître, vos délais d'auto-verrouillage et sauvegardez votre coffre-fort.

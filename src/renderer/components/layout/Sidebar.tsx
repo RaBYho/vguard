@@ -76,13 +76,8 @@ export function Sidebar() {
       {/* Partie haute */}
       <div className="p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
         {/* Brand Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <VGuardLogo size={36} variant="full" />
-          </div>
-          <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 px-2 py-0.5 rounded bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A]">
-            PRO
-          </span>
+        <div className="flex items-center gap-3">
+          <VGuardLogo size={36} variant="full" />
         </div>
 
         {/* User Profile Badge */}
