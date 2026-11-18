@@ -7,6 +7,7 @@ import type {
   VaultData,
   TOTPCodeResult,
 } from '../../shared/types';
+import { useThemeStore } from '../hooks/useTheme';
 
 export type ActiveTab = 'all' | 'passwords' | 'totp' | 'favorites' | 'generator' | 'settings';
 
@@ -93,6 +94,12 @@ export const useVaultStore = create<VaultState>((set, get) => ({
         theme: 'dark',
       },
     });
+    if (data.settings?.theme) {
+      useThemeStore.getState().syncFromVault(data.settings.theme);
+    }
+    if (data.settings?.userName && typeof localStorage !== 'undefined') {
+      localStorage.setItem('vguard-user-name', data.settings.userName);
+    }
     get().refreshTOTPCodes();
   },
 
@@ -230,5 +237,11 @@ export const useVaultStore = create<VaultState>((set, get) => ({
   updateSettings: async (newSettings) => {
     const updated = await window.vaultAPI.updateSettings(newSettings);
     set({ settings: updated });
+    if (newSettings.theme) {
+      useThemeStore.getState().setTheme(newSettings.theme);
+    }
+    if (newSettings.userName && typeof localStorage !== 'undefined') {
+      localStorage.setItem('vguard-user-name', newSettings.userName);
+    }
   },
 }));

@@ -1,5 +1,6 @@
 import { Key, Plus, Search } from 'lucide-react';
 import { PasswordCard } from './PasswordCard';
+import { EmptyState } from '../common/EmptyState';
 import { useVaultStore } from '../../stores/vault-store';
 import type { PasswordEntry } from '../../../shared/types';
 
@@ -31,33 +32,31 @@ export function PasswordList() {
 
   if (filtered.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center select-none">
-        <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 mb-4">
-          <Key className="w-8 h-8" />
-        </div>
-        <h3 className="text-base font-semibold text-slate-300">
-          {searchQuery ? 'Aucun mot de passe correspondant' : 'Aucun mot de passe enregistré'}
-        </h3>
-        <p className="text-xs text-slate-500 mt-1 max-w-sm">
-          {searchQuery
+      <EmptyState
+        icon={<Key className="w-8 h-8 text-[#06B6D4]" />}
+        title={searchQuery ? 'Aucun mot de passe correspondant' : 'Aucun mot de passe enregistré'}
+        description={
+          searchQuery
             ? 'Essayez une autre recherche ou réinitialisez le filtre.'
-            : 'Commencez à sécuriser vos identifiants en créant votre première entrée.'}
-        </p>
-        {!searchQuery && (
-          <button
-            onClick={() => openNewEntryModal('password')}
-            className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium transition shadow-md shadow-blue-600/20"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Ajouter un mot de passe</span>
-          </button>
-        )}
-      </div>
+            : 'Commencez à sécuriser vos identifiants en créant votre première entrée chiffrée.'
+        }
+        actions={
+          !searchQuery ? (
+            <button
+              onClick={() => openNewEntryModal('password')}
+              className="flex items-center gap-2 px-4 py-2 brand-gradient hover:opacity-90 text-[#09090B] rounded-xl text-xs font-semibold transition cursor-pointer shadow-md shadow-[#06B6D4]/10"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>Nouveau mot de passe</span>
+            </button>
+          ) : undefined
+        }
+      />
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {filtered.map((item) => (
         <PasswordCard key={item.id} entry={item} />
       ))}

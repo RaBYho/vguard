@@ -1,5 +1,6 @@
 import { Clock, Plus, QrCode } from 'lucide-react';
 import { TOTPCard } from './TOTPCard';
+import { EmptyState } from '../common/EmptyState';
 import { useVaultStore } from '../../stores/vault-store';
 import type { TOTPEntry } from '../../../shared/types';
 
@@ -30,42 +31,40 @@ export function TOTPList() {
 
   if (filtered.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center select-none">
-        <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 mb-4">
-          <Clock className="w-8 h-8" />
-        </div>
-        <h3 className="text-base font-semibold text-slate-300">
-          {searchQuery ? 'Aucun code 2FA correspondant' : 'Aucun compte 2FA enregistré'}
-        </h3>
-        <p className="text-xs text-slate-500 mt-1 max-w-sm">
-          {searchQuery
+      <EmptyState
+        icon={<Clock className="w-8 h-8 text-[#10B981]" />}
+        title={searchQuery ? 'Aucun code 2FA correspondant' : 'Aucun compte 2FA enregistré'}
+        description={
+          searchQuery
             ? 'Essayez une autre recherche.'
-            : 'Ajoutez vos clés de sécurité TOTP (Google Authenticator, GitHub, Discord...) pour générer vos codes temporaires à 6 chiffres.'}
-        </p>
-        {!searchQuery && (
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={() => setQRScannerOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-medium border border-slate-700 transition"
-            >
-              <QrCode className="w-4 h-4 text-emerald-400" />
-              <span>Scanner QR</span>
-            </button>
-            <button
-              onClick={() => openNewEntryModal('totp')}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-medium transition shadow-md shadow-indigo-600/20"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Ajouter manuellement</span>
-            </button>
-          </div>
-        )}
-      </div>
+            : 'Ajoutez vos clés de sécurité TOTP (Google Authenticator, GitHub...) pour générer vos codes temporaires à 6 chiffres.'
+        }
+        actions={
+          !searchQuery ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setQRScannerOpen(true)}
+                className="flex items-center gap-2 px-3.5 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#18181B] dark:hover:bg-[#27272A] text-zinc-900 dark:text-white rounded-xl text-xs font-medium border border-zinc-200 dark:border-[#27272A] transition cursor-pointer shadow-sm"
+              >
+                <QrCode className="w-4 h-4 text-[#0891B2] dark:text-[#06B6D4]" />
+                <span>Scanner QR</span>
+              </button>
+              <button
+                onClick={() => openNewEntryModal('totp')}
+                className="flex items-center gap-2 px-3.5 py-2 bg-[#10B981]/15 hover:bg-[#10B981]/25 text-[#059669] dark:text-[#10B981] border border-[#10B981]/30 rounded-xl text-xs font-semibold transition cursor-pointer shadow-sm"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Ajouter clé TOTP</span>
+              </button>
+            </div>
+          ) : undefined
+        }
+      />
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {filtered.map((item) => (
         <TOTPCard key={item.id} entry={item} />
       ))}

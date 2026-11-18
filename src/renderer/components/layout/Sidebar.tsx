@@ -1,17 +1,15 @@
 import {
-  Shield,
+  FolderOpen,
   Key,
   Clock,
   Star,
-  Sparkles,
   Settings,
   Lock,
-  Layers,
-  Folder,
-  Plus,
-  Trash2,
+  Sparkles,
 } from 'lucide-react';
 import { useVaultStore, ActiveTab } from '../../stores/vault-store';
+import { VGuardLogo } from '../common/VGuardLogo';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 export function Sidebar() {
   const activeTab = useVaultStore((state) => state.activeTab);
@@ -22,41 +20,92 @@ export function Sidebar() {
   const categories = useVaultStore((state) => state.categories);
   const lock = useVaultStore((state) => state.lock);
   const setGeneratorModalOpen = useVaultStore((state) => state.setGeneratorModalOpen);
+  const settings = useVaultStore((state) => state.settings);
 
   const passwordCount = entries.filter((e) => e.type === 'password').length;
   const totpCount = entries.filter((e) => e.type === 'totp').length;
   const favoriteCount = entries.filter((e) => e.favorite).length;
 
+  const savedUserName =
+    settings?.userName ||
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('vguard-user-name') : '') ||
+    'Alexandre L.';
+
+  const savedEmail =
+    settings?.recoveryEmail ||
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('vguard-user-email') : '') ||
+    'alex@domaine.com';
+
+  const userInitials = savedUserName ? savedUserName.slice(0, 2).toUpperCase() : 'AL';
+
   const navItems = [
-    { id: 'all' as ActiveTab, label: 'Tout le coffre', icon: Layers, count: entries.length },
-    { id: 'passwords' as ActiveTab, label: 'Mots de passe', icon: Key, count: passwordCount },
-    { id: 'totp' as ActiveTab, label: 'Codes 2FA (TOTP)', icon: Clock, count: totpCount },
-    { id: 'favorites' as ActiveTab, label: 'Favoris', icon: Star, count: favoriteCount },
+    {
+      id: 'all' as ActiveTab,
+      label: 'Tout le coffre',
+      icon: FolderOpen,
+      count: entries.length,
+      badgeColor: 'bg-[#06B6D4]/15 text-[#0891B2] dark:text-[#06B6D4]',
+    },
+    {
+      id: 'passwords' as ActiveTab,
+      label: 'Mots de passe',
+      icon: Key,
+      count: passwordCount,
+      badgeColor: 'bg-zinc-100 dark:bg-[#18181B] text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-[#27272A]/50',
+    },
+    {
+      id: 'totp' as ActiveTab,
+      label: 'Codes 2FA',
+      icon: Clock,
+      count: totpCount,
+      iconColor: 'text-[#059669] dark:text-[#10B981]',
+      badgeColor: 'bg-[#10B981]/15 text-[#059669] dark:text-[#10B981]',
+    },
+    {
+      id: 'favorites' as ActiveTab,
+      label: 'Favoris',
+      icon: Star,
+      count: favoriteCount,
+      iconColor: 'text-[#F59E0B]',
+      badgeColor: 'bg-[#F59E0B]/15 text-[#D97706] dark:text-[#F59E0B]',
+    },
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between select-none shrink-0 h-screen">
-      {/* Top section */}
-      <div className="flex flex-col overflow-y-auto p-4 space-y-6">
-        {/* Brand */}
-        <div className="flex items-center gap-3 px-2 py-1">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <Shield className="w-5 h-5 text-white" />
+    <aside className="w-[260px] h-screen bg-white dark:bg-[#121215] border-r border-zinc-200 dark:border-[#27272A] flex flex-col justify-between flex-shrink-0 select-none transition-colors">
+      {/* Partie haute */}
+      <div className="p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+        {/* Brand Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <VGuardLogo size={36} variant="full" />
           </div>
-          <div>
-            <span className="font-bold text-white tracking-wide text-lg">VGuard</span>
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span>Chiffré AES-256</span>
+          <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 px-2 py-0.5 rounded bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A]">
+            PRO
+          </span>
+        </div>
+
+        {/* User Profile Badge */}
+        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-zinc-100/80 dark:bg-[#18181B]/70 border border-zinc-200 dark:border-[#27272A]/70 hover:border-zinc-300 dark:hover:border-[#27272A] transition cursor-pointer">
+          <div className="w-9 h-9 rounded-lg brand-gradient flex items-center justify-center font-bold text-xs text-[#09090B] font-mono shadow">
+            {userInitials}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold text-zinc-900 dark:text-[#F8FAFC] truncate">
+              {savedUserName}
+            </div>
+            <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 truncate">
+              {savedEmail}
             </div>
           </div>
         </div>
 
-        {/* Main Navigation */}
-        <div className="space-y-1">
-          <span className="px-2 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-            Coffre-fort
-          </span>
+        {/* Menu Navigation */}
+        <nav className="flex flex-col gap-1.5">
+          <div className="text-[10px] font-mono uppercase text-zinc-400 dark:text-zinc-500 px-2 py-1 font-semibold tracking-wider">
+            Navigation
+          </div>
+
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id && selectedCategoryId === null;
@@ -67,42 +116,44 @@ export function Sidebar() {
                   setActiveTab(item.id);
                   setSelectedCategory(null);
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                className={`flex items-center justify-between px-3 h-10 rounded-xl text-xs font-medium transition cursor-pointer ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-[#06B6D4]/10 border border-[#06B6D4]/30 text-[#0891B2] dark:text-[#06B6D4]'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-[#18181B]'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <Icon className="w-4 h-4" />
+                <div className="flex items-center gap-2.5">
+                  <Icon className={`w-4 h-4 ${item.iconColor || ''}`} />
                   <span>{item.label}</span>
                 </div>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full ${
-                    isActive ? 'bg-blue-500/50 text-white' : 'bg-slate-800 text-slate-400'
-                  }`}
-                >
+                <span className={`text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md ${item.badgeColor}`}>
                   {item.count}
                 </span>
               </button>
             );
           })}
+        </nav>
 
+        {/* Action rapide : Générateur */}
+        <div className="pt-1">
           <button
             onClick={() => setGeneratorModalOpen(true)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs text-zinc-900 dark:text-white transition group cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Générateur de mot de passe</span>
+            <div className="flex items-center gap-2.5">
+              <Sparkles className="w-4 h-4 text-[#06B6D4] group-hover:rotate-12 transition-transform" />
+              <span className="font-medium">Générateur</span>
+            </div>
+            <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 bg-white dark:bg-[#121215] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-[#27272A]">
+              ⌥G
+            </span>
           </button>
         </div>
 
-        {/* Categories Section */}
-        <div className="space-y-1">
-          <div className="flex items-center justify-between px-2 mb-1">
-            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-              Catégories
-            </span>
+        {/* Catégories */}
+        <div className="flex flex-col gap-1.5 pt-1">
+          <div className="text-[10px] font-mono uppercase text-zinc-400 dark:text-zinc-500 px-2 py-1 font-semibold tracking-wider">
+            Catégories
           </div>
 
           {categories.map((cat) => {
@@ -112,46 +163,57 @@ export function Sidebar() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition ${
+                className={`flex items-center justify-between px-3 py-1.5 text-xs transition cursor-pointer rounded-lg ${
                   isCatActive
-                    ? 'bg-slate-800 text-white border border-slate-700'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                    ? 'bg-zinc-100 dark:bg-[#18181B] text-zinc-900 dark:text-white border border-zinc-200 dark:border-[#27272A]'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100/60 dark:hover:bg-[#18181B]/50'
                 }`}
               >
-                <div className="flex items-center gap-2.5 truncate">
+                <span className="flex items-center gap-2.5 truncate">
                   <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: cat.color || '#3b82f6' }}
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: cat.color || '#06B6D4' }}
                   />
                   <span className="truncate">{cat.name}</span>
-                </div>
-                <span className="text-[11px] text-slate-500">{count}</span>
+                </span>
+                <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">{count}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Bottom Actions */}
-      <div className="p-4 border-t border-slate-800 space-y-1">
-        <button
-          onClick={() => setActiveTab('settings')}
-          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-            activeTab === 'settings'
-              ? 'bg-slate-800 text-white'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-          }`}
-        >
-          <Settings className="w-4 h-4" />
-          <span>Paramètres</span>
-        </button>
+      {/* Bas de page : Paramètres, Verrouiller, Thème */}
+      <div className="p-4 border-t border-zinc-200 dark:border-[#27272A] flex flex-col gap-2 bg-zinc-50 dark:bg-[#121215] transition-colors">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`flex-1 flex items-center justify-between px-3 h-10 rounded-xl text-xs transition cursor-pointer ${
+              activeTab === 'settings'
+                ? 'bg-zinc-200 dark:bg-[#18181B] text-zinc-900 dark:text-white border border-zinc-300 dark:border-[#27272A]'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-[#18181B]'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Settings className="w-4 h-4" />
+              <span>Paramètres</span>
+            </div>
+            <span className="text-[10px] font-mono text-zinc-400">⌘,</span>
+          </button>
+          <ThemeToggle />
+        </div>
 
         <button
           onClick={() => lock()}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition"
+          className="w-full flex items-center justify-between px-3 h-10 rounded-xl text-xs bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-[#EF4444] border border-red-500/20 transition font-medium cursor-pointer"
         >
-          <Lock className="w-4 h-4" />
-          <span>Verrouiller</span>
+          <div className="flex items-center gap-2.5">
+            <Lock className="w-4 h-4" />
+            <span>Verrouiller</span>
+          </div>
+          <span className="text-[10px] font-mono bg-red-500/20 px-1.5 py-0.5 rounded text-red-600 dark:text-[#EF4444]">
+            Ctrl+L
+          </span>
         </button>
       </div>
     </aside>

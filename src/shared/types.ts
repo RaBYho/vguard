@@ -45,7 +45,9 @@ export interface VaultData {
   settings: {
     autoLockMinutes: number;
     clipboardClearSeconds: number;
-    theme: 'dark' | 'light' | 'system';
+    theme: 'dark' | 'light';
+    userName?: string;
+    recoveryEmail?: string;
   };
 }
 

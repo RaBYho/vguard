@@ -1,36 +1,44 @@
 import { useState, useEffect } from 'react';
-import { X, Sparkles, RefreshCw, Copy, Check, ShieldCheck } from 'lucide-react';
+import {
+  X,
+  Sparkles,
+  Copy,
+  Check,
+  RefreshCw,
+} from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
 
 export function PasswordGeneratorModal() {
   const isGeneratorModalOpen = useVaultStore((state) => state.isGeneratorModalOpen);
   const setGeneratorModalOpen = useVaultStore((state) => state.setGeneratorModalOpen);
 
+  const [password, setPassword] = useState('');
   const [length, setLength] = useState(20);
   const [uppercase, setUppercase] = useState(true);
   const [lowercase, setLowercase] = useState(true);
   const [numbers, setNumbers] = useState(true);
   const [symbols, setSymbols] = useState(true);
   const [excludeAmbiguous, setExcludeAmbiguous] = useState(true);
-
-  const [password, setPassword] = useState('');
   const [copied, setCopied] = useState(false);
-  const [history, setHistory] = useState<string[]>([]);
-  const [strength, setStrength] = useState({ score: 4, entropy: 120, label: 'Très robuste' });
+  const [strengthLabel, setStrengthLabel] = useState('Très fort');
 
   const generate = async () => {
-    const pwd = await window.vaultAPI.generatePassword({
-      length,
-      uppercase,
-      lowercase,
-      numbers,
-      symbols,
-      excludeAmbiguous,
-    });
-    setPassword(pwd);
-    setHistory((prev) => [pwd, ...prev.slice(0, 4)]);
-    const evalResult = await window.vaultAPI.evaluateStrength(pwd);
-    setStrength(evalResult);
+    try {
+      const pwd = await window.vaultAPI.generatePassword({
+        length,
+        uppercase,
+        lowercase,
+        numbers,
+        symbols,
+        excludeAmbiguous,
+      });
+      setPassword(pwd);
+
+      const evalResult = await window.vaultAPI.evaluateStrength(pwd);
+      setStrengthLabel(evalResult.label);
+    } catch (e) {
+      console.error('Password generation error:', e);
+    }
   };
 
   useEffect(() => {
@@ -39,7 +47,7 @@ export function PasswordGeneratorModal() {
     }
   }, [isGeneratorModalOpen, length, uppercase, lowercase, numbers, symbols, excludeAmbiguous]);
 
-  const handleCopy = async () => {
+  const copyPassword = async () => {
     if (!password) return;
     await window.vaultAPI.copyToClipboard(password);
     setCopied(true);
@@ -49,153 +57,160 @@ export function PasswordGeneratorModal() {
   if (!isGeneratorModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <h2 className="text-base font-semibold text-white">Générateur de Mots de Passe</h2>
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors">
+        {/* En-tête Modal Stitch */}
+        <div className="px-6 py-4 border-b border-zinc-200 dark:border-[#27272A] flex items-center justify-between bg-zinc-50 dark:bg-[#121215] transition-colors">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#06B6D4]" />
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-white tracking-tight">
+              Générateur Cryptographique
+            </h3>
           </div>
           <button
             onClick={() => setGeneratorModalOpen(false)}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white p-1 rounded-lg transition cursor-pointer"
+            title="Fermer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Password Display Box */}
-          <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-4 space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-lg font-bold text-white tracking-wider break-all select-all">
-                {password}
+        {/* Corps */}
+        <div className="p-6 space-y-5">
+          {/* Bloc d'affichage mot de passe généré */}
+          <div className="space-y-2">
+            <div className="relative bg-zinc-50 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] rounded-xl p-4 flex items-center justify-between gap-3 transition-colors">
+              <span className="font-mono text-sm sm:text-base text-zinc-900 dark:text-white tracking-wider break-all select-all font-semibold">
+                {password || '...'}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
                   onClick={generate}
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-xl transition"
-                  title="Régénérer"
+                  className="p-2 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-lg transition cursor-pointer shadow-sm"
+                  title="Générer un autre"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
-                  onClick={handleCopy}
-                  className={`p-2 rounded-xl transition flex items-center gap-1 text-xs font-medium ${
-                    copied
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-blue-600 text-white hover:bg-blue-500'
-                  }`}
-                  title="Copier"
+                  onClick={copyPassword}
+                  className="p-2 text-[#0891B2] dark:text-[#06B6D4] hover:opacity-80 bg-[#06B6D4]/10 border border-[#06B6D4]/30 rounded-lg transition cursor-pointer"
+                  title="Copier le mot de passe"
                 >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copied ? <Check className="w-4 h-4 text-[#059669] dark:text-[#10B981]" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Strength Meter */}
-            <div className="space-y-1.5 pt-1">
-              <div className="flex gap-1 h-1.5">
-                {[1, 2, 3, 4].map((step) => (
-                  <div
-                    key={step}
-                    className={`h-full flex-1 rounded-full ${
-                      strength.score >= step
-                        ? strength.score <= 1
-                          ? 'bg-red-500'
-                          : strength.score === 2
-                          ? 'bg-amber-500'
-                          : strength.score === 3
-                          ? 'bg-blue-500'
-                          : 'bg-emerald-500'
-                        : 'bg-slate-700'
-                    }`}
-                  />
-                ))}
-              </div>
-              <div className="flex justify-between text-[11px] text-slate-400 font-medium">
-                <span>Entropie : {strength.entropy} bits</span>
-                <span className="text-emerald-400">{strength.label}</span>
-              </div>
+            {/* Jauge de force */}
+            <div className="flex items-center justify-between text-xs px-1">
+              <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">Robustesse estimée :</span>
+              <span className="text-[11px] font-mono text-[#059669] dark:text-[#10B981] font-semibold">
+                {strengthLabel}
+              </span>
+            </div>
+            <div className="w-full h-1 bg-zinc-200 dark:bg-[#27272A] rounded-full overflow-hidden">
+              <div className="h-full bg-[#10B981] w-full rounded-full" />
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="space-y-4">
-            {/* Length slider */}
-            <div>
-              <div className="flex justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                <span>Longueur du mot de passe</span>
-                <span className="text-white font-mono text-sm">{length}</span>
-              </div>
-              <input
-                type="range"
-                min={8}
-                max={48}
-                value={length}
-                onChange={(e) => setLength(Number(e.target.value))}
-                className="w-full accent-blue-500 cursor-pointer"
-              />
+          {/* Curseur de Longueur */}
+          <div className="space-y-2 pt-2">
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-medium text-zinc-700 dark:text-zinc-300">Longueur :</span>
+              <span className="font-mono text-[#0891B2] dark:text-[#06B6D4] font-bold text-sm bg-zinc-100 dark:bg-[#18181B] px-2 py-0.5 rounded border border-zinc-200 dark:border-[#27272A]">
+                {length} caractères
+              </span>
             </div>
+            <input
+              type="range"
+              min={8}
+              max={64}
+              value={length}
+              onChange={(e) => setLength(Number(e.target.value))}
+              className="w-full h-1.5 bg-zinc-200 dark:bg-[#27272A] rounded-lg appearance-none cursor-pointer accent-[#06B6D4]"
+            />
+          </div>
 
-            {/* Options grid */}
-            <div className="grid grid-cols-2 gap-3 text-xs font-medium text-slate-300">
-              <label className="flex items-center gap-2 p-2.5 bg-slate-800/60 rounded-xl cursor-pointer hover:bg-slate-800">
+          {/* Options de caractères (Pills Stitch) */}
+          <div className="space-y-2 pt-1">
+            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5">Composition</label>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <label className="flex items-center gap-2.5 p-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] rounded-xl cursor-pointer hover:bg-zinc-100 dark:hover:bg-[#27272A]/50 transition">
                 <input
                   type="checkbox"
                   checked={uppercase}
                   onChange={(e) => setUppercase(e.target.checked)}
-                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-zinc-300 dark:border-[#27272A] text-[#06B6D4] focus:ring-0"
                 />
-                <span>Majuscules (A-Z)</span>
+                <span className="text-zinc-700 dark:text-zinc-300 font-mono text-[11px]">Majuscules (A-Z)</span>
               </label>
 
-              <label className="flex items-center gap-2 p-2.5 bg-slate-800/60 rounded-xl cursor-pointer hover:bg-slate-800">
+              <label className="flex items-center gap-2.5 p-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] rounded-xl cursor-pointer hover:bg-zinc-100 dark:hover:bg-[#27272A]/50 transition">
                 <input
                   type="checkbox"
                   checked={lowercase}
                   onChange={(e) => setLowercase(e.target.checked)}
-                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-zinc-300 dark:border-[#27272A] text-[#06B6D4] focus:ring-0"
                 />
-                <span>Minuscules (a-z)</span>
+                <span className="text-zinc-700 dark:text-zinc-300 font-mono text-[11px]">Minuscules (a-z)</span>
               </label>
 
-              <label className="flex items-center gap-2 p-2.5 bg-slate-800/60 rounded-xl cursor-pointer hover:bg-slate-800">
+              <label className="flex items-center gap-2.5 p-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] rounded-xl cursor-pointer hover:bg-zinc-100 dark:hover:bg-[#27272A]/50 transition">
                 <input
                   type="checkbox"
                   checked={numbers}
                   onChange={(e) => setNumbers(e.target.checked)}
-                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-zinc-300 dark:border-[#27272A] text-[#06B6D4] focus:ring-0"
                 />
-                <span>Chiffres (0-9)</span>
+                <span className="text-zinc-700 dark:text-zinc-300 font-mono text-[11px]">Chiffres (0-9)</span>
               </label>
 
-              <label className="flex items-center gap-2 p-2.5 bg-slate-800/60 rounded-xl cursor-pointer hover:bg-slate-800">
+              <label className="flex items-center gap-2.5 p-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] rounded-xl cursor-pointer hover:bg-zinc-100 dark:hover:bg-[#27272A]/50 transition">
                 <input
                   type="checkbox"
                   checked={symbols}
                   onChange={(e) => setSymbols(e.target.checked)}
-                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-zinc-300 dark:border-[#27272A] text-[#06B6D4] focus:ring-0"
                 />
-                <span>Symboles (!@#$)</span>
-              </label>
-
-              <label className="col-span-2 flex items-center gap-2 p-2.5 bg-slate-800/60 rounded-xl cursor-pointer hover:bg-slate-800">
-                <input
-                  type="checkbox"
-                  checked={excludeAmbiguous}
-                  onChange={(e) => setExcludeAmbiguous(e.target.checked)}
-                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500"
-                />
-                <span>Exclure caractères ambigus (0, O, l, 1, I)</span>
+                <span className="text-zinc-700 dark:text-zinc-300 font-mono text-[11px]">Symboles (!@#$)</span>
               </label>
             </div>
+
+            <label className="flex items-center gap-2.5 p-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] rounded-xl cursor-pointer hover:bg-zinc-100 dark:hover:bg-[#27272A]/50 transition text-xs mt-2">
+              <input
+                type="checkbox"
+                checked={excludeAmbiguous}
+                onChange={(e) => setExcludeAmbiguous(e.target.checked)}
+                className="rounded border-zinc-300 dark:border-[#27272A] text-[#06B6D4] focus:ring-0"
+              />
+              <span className="text-zinc-600 dark:text-zinc-400 font-mono text-[11px]">
+                Exclure caractères ambigus (0, O, l, 1, I)
+              </span>
+            </label>
+          </div>
+
+          {/* Footer Bouton */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={copyPassword}
+              className="w-full h-11 rounded-xl brand-gradient hover:opacity-90 text-[#09090B] font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-[#06B6D4]/15"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                  <span>Copié dans le presse-papier !</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 stroke-[2.5]" />
+                  <span>Copier et utiliser</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>

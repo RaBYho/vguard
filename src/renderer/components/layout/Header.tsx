@@ -1,83 +1,110 @@
-import { Search, Plus, Key, Clock, QrCode, X } from 'lucide-react';
+import {
+  Search,
+  Plus,
+  QrCode,
+  Lock,
+  Clock,
+  X,
+} from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
+import { VGuardLogo } from '../common/VGuardLogo';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 export function Header() {
   const searchQuery = useVaultStore((state) => state.searchQuery);
   const setSearchQuery = useVaultStore((state) => state.setSearchQuery);
+  const openNewEntryModal = useVaultStore((state) => state.openNewEntryModal);
+  const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
+  const lock = useVaultStore((state) => state.lock);
   const selectedCategoryId = useVaultStore((state) => state.selectedCategoryId);
   const setSelectedCategory = useVaultStore((state) => state.setSelectedCategory);
   const categories = useVaultStore((state) => state.categories);
-  const openNewEntryModal = useVaultStore((state) => state.openNewEntryModal);
-  const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
 
-  const activeCategory = categories.find((c) => c.id === selectedCategoryId);
+  const selectedCategory = categories.find((c) => c.id === selectedCategoryId);
 
   return (
-    <header className="h-16 px-6 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between gap-4 select-none shrink-0">
-      {/* Search Bar */}
-      <div className="flex-1 max-w-md relative">
-        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-          <Search className="w-4 h-4" />
-        </div>
+    <header className="h-16 px-4 sm:px-8 bg-white dark:bg-[#121215] border-b border-zinc-200 dark:border-[#27272A] flex items-center justify-between gap-4 flex-shrink-0 z-20 select-none transition-colors">
+      {/* Logo mobile */}
+      <div className="md:hidden flex items-center">
+        <VGuardLogo size={28} variant="icon" />
+      </div>
+
+      {/* Omnibox de recherche Stitch */}
+      <div className="flex items-center gap-3 flex-1 max-w-lg bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] px-3.5 h-10 rounded-xl focus-within:border-[#06B6D4] focus-within:ring-1 focus-within:ring-[#06B6D4] transition">
+        <Search className="w-4 h-4 text-zinc-400 dark:text-zinc-500 shrink-0" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Rechercher par titre, identifiant ou URL..."
-          className="w-full pl-10 pr-9 py-2 bg-slate-800/80 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          placeholder="Rechercher un identifiant ou code TOTP..."
+          className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
         />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery('')}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-white"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
+        <kbd className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-200 dark:bg-[#27272A] text-zinc-600 dark:text-zinc-400 flex-shrink-0 hidden sm:inline">
+          Ctrl+F
+        </kbd>
       </div>
 
-      {/* Active Category Tag if any */}
-      {activeCategory && (
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300">
-          <span
-            className="w-2 h-2 rounded-full"
-            style={{ backgroundColor: activeCategory.color }}
-          />
-          <span>{activeCategory.name}</span>
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className="text-slate-400 hover:text-white ml-1"
-          >
-            <X className="w-3 h-3" />
-          </button>
+      {/* Badge filtre catégorie active */}
+      {selectedCategory && (
+        <div className="hidden lg:flex items-center gap-2">
+          <div className="inline-flex items-center gap-1.5 bg-[#06B6D4]/15 border border-[#06B6D4]/30 text-[#0891B2] dark:text-[#06B6D4] px-3 h-10 rounded-xl text-xs font-medium">
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: selectedCategory.color || '#06B6D4' }}
+            />
+            <span>{selectedCategory.name}</span>
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="hover:text-zinc-900 dark:hover:text-white ml-1 text-sm font-bold leading-none cursor-pointer text-zinc-400 transition"
+              title="Retirer le filtre"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Action Buttons */}
-      <div className="flex items-center gap-2">
+      {/* Boutons d'actions droits (Stitch) */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Scanner QR */}
         <button
           onClick={() => setQRScannerOpen(true)}
-          className="flex items-center gap-2 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-medium transition shadow-sm"
-          title="Scanner un QR code 2FA"
+          className="hidden sm:flex items-center gap-2 px-3.5 h-10 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition cursor-pointer shadow-sm"
         >
-          <QrCode className="w-4 h-4 text-emerald-400" />
-          <span className="hidden md:inline">Scanner QR</span>
+          <QrCode className="w-4 h-4 text-[#06B6D4]" />
+          <span>Scanner QR</span>
         </button>
 
+        {/* Bouton rapide TOTP */}
         <button
           onClick={() => openNewEntryModal('totp')}
-          className="flex items-center gap-2 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-medium transition shadow-sm"
+          className="hidden sm:flex items-center gap-2 px-3.5 h-10 rounded-xl bg-[#10B981]/15 hover:bg-[#10B981]/25 border border-[#10B981]/30 text-xs font-semibold text-[#059669] dark:text-[#10B981] transition cursor-pointer shadow-sm"
         >
-          <Clock className="w-4 h-4 text-indigo-400" />
-          <span className="hidden md:inline">+ 2FA</span>
+          <Clock className="w-4 h-4" />
+          <span>+ 2FA</span>
         </button>
 
+        {/* Bouton Nouveau Mot de passe principal (Dégradé cyan -> émeraude) */}
         <button
           onClick={() => openNewEntryModal('password')}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium transition shadow-lg shadow-blue-600/20"
+          className="flex items-center gap-2 px-4 h-10 rounded-xl brand-gradient hover:opacity-90 text-xs font-semibold text-[#09090B] transition cursor-pointer shadow-md shadow-[#06B6D4]/10"
         >
-          <Plus className="w-4 h-4" />
-          <span>+ Mot de passe</span>
+          <Plus className="w-4 h-4 stroke-[3]" />
+          <span className="hidden xs:inline">Nouveau mot de passe</span>
+        </button>
+
+        {/* ThemeToggle sur mobile */}
+        <div className="md:hidden">
+          <ThemeToggle />
+        </div>
+
+        {/* Verrouillage rapide mobile */}
+        <button
+          onClick={() => lock()}
+          title="Verrouiller"
+          className="md:hidden p-2 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-500/10 transition"
+        >
+          <Lock className="w-4 h-4" />
         </button>
       </div>
     </header>

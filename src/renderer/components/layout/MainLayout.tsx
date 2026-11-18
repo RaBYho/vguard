@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { BottomNavBar } from './BottomNavBar';
 import { PasswordList } from '../passwords/PasswordList';
 import { TOTPList } from '../totp/TOTPList';
 import { PasswordForm } from '../passwords/PasswordForm';
@@ -9,6 +10,7 @@ import { QRScanner } from '../totp/QRScanner';
 import { PasswordGeneratorModal } from '../passwords/PasswordGeneratorModal';
 import { SettingsView } from '../settings/SettingsView';
 import { useVaultStore } from '../../stores/vault-store';
+import { ShieldCheck, Clock } from 'lucide-react';
 
 export function MainLayout() {
   const activeTab = useVaultStore((state) => state.activeTab);
@@ -16,121 +18,122 @@ export function MainLayout() {
   const isEntryModalOpen = useVaultStore((state) => state.isEntryModalOpen);
   const closeEntryModal = useVaultStore((state) => state.closeEntryModal);
   const isQRScannerOpen = useVaultStore((state) => state.isQRScannerOpen);
-  const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
+  const isGeneratorModalOpen = useVaultStore((state) => state.isGeneratorModalOpen);
   const refreshTOTPCodes = useVaultStore((state) => state.refreshTOTPCodes);
-  const openNewEntryModal = useVaultStore((state) => state.openNewEntryModal);
+  const entries = useVaultStore((state) => state.entries);
+  const settings = useVaultStore((state) => state.settings);
 
   // Intervalle de rafraîchissement des codes TOTP chaque seconde
   useEffect(() => {
     refreshTOTPCodes();
-    const interval = setInterval(refreshTOTPCodes, 1000);
+    const interval = setInterval(() => {
+      refreshTOTPCodes();
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const handleQRScanned = async (uri: string) => {
-    setQRScannerOpen(false);
-    try {
-      const parsed = await window.vaultAPI.parseTOTPUri(uri);
-      // Ouvrir le formulaire pré-rempli
-      useVaultStore.setState({
-        editingEntry: {
-          type: 'totp',
-          title: parsed.title,
-          issuer: parsed.issuer,
-          account: parsed.account,
-          secret: parsed.secret,
-          algorithm: parsed.algorithm,
-          digits: parsed.digits,
-          period: parsed.period,
-          categoryId: useVaultStore.getState().categories[0]?.id || '',
-          favorite: false,
-        } as any,
-        isEntryModalOpen: true,
-      });
-    } catch (e: any) {
-      alert(`Erreur lecture QR code : ${e.message}`);
-    }
-  };
-
   return (
-    <div className="flex h-screen w-screen bg-slate-950 overflow-hidden text-slate-100">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="flex h-screen w-screen overflow-hidden bg-[#F4F4F6] dark:bg-[#09090B] text-zinc-900 dark:text-[#F8FAFC] transition-colors">
+      {/* Sidebar latérale : cachée sur compact (< 800px / md) */}
+      <div className="hidden md:flex">
+        <Sidebar />
+      </div>
 
-      {/* Main Content Area */}
+      {/* Contenu principal */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Header />
 
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar space-y-6">
           {activeTab === 'settings' ? (
             <SettingsView />
-          ) : activeTab === 'passwords' ? (
-            <PasswordList />
-          ) : activeTab === 'totp' ? (
-            <TOTPList />
-          ) : activeTab === 'favorites' ? (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
-                  Mots de passe favoris
-                </h2>
-                <PasswordList />
-              </div>
-              <div>
-                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
-                  Codes 2FA favoris
-                </h2>
-                <TOTPList />
-              </div>
-            </div>
           ) : (
-            /* 'all' */
-            <div className="space-y-8">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
-                    Codes 2FA (TOTP)
-                  </h2>
+            <div className="space-y-6 max-w-7xl mx-auto">
+              {/* Bannière de résumé Stitch */}
+              <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm dark:shadow-lg transition-colors">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-[#0891B2] dark:text-[#06B6D4] flex-shrink-0">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">
+                      Vue d'ensemble du Coffre
+                    </h1>
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-[#10B981]/15 text-[#059669] dark:text-[#10B981] border border-[#10B981]/30 font-medium">
+                      {entries.length} élément{entries.length > 1 ? 's' : ''} sécurisé{entries.length > 1 ? 's' : ''}
+                    </span>
+                  </div>
                 </div>
-                <TOTPList />
+
+                <div className="flex items-center gap-2.5 text-xs font-mono">
+                  <div className="flex items-center gap-2 bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] px-3 py-1.5 rounded-lg text-zinc-700 dark:text-zinc-300">
+                    <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+                    <span>Chiffré AES-256</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] px-3 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-400">
+                    <Clock className="w-3.5 h-3.5 text-[#0891B2] dark:text-[#06B6D4]" />
+                    <span>Auto-lock: {settings?.autoLockMinutes ?? 5}m</span>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
-                    Mots de passe
-                  </h2>
-                </div>
-                <PasswordList />
-              </div>
+              {activeTab === 'totp' ? (
+                <section>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                      Codes 2FA (TOTP)
+                    </h2>
+                  </div>
+                  <TOTPList />
+                </section>
+              ) : activeTab === 'passwords' ? (
+                <section>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                      Mots de passe
+                    </h2>
+                  </div>
+                  <PasswordList />
+                </section>
+              ) : (
+                <>
+                  <section>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                        Mots de passe
+                      </h2>
+                    </div>
+                    <PasswordList />
+                  </section>
+
+                  <section>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                        Codes 2FA (TOTP)
+                      </h2>
+                    </div>
+                    <TOTPList />
+                  </section>
+                </>
+              )}
             </div>
           )}
         </main>
+
+        {/* Bottom Nav Bar pour mobile (< 800px / md) */}
+        <BottomNavBar />
       </div>
 
-      {/* Entry Modal (Password or TOTP) */}
-      {isEntryModalOpen && editingEntry?.type === 'password' && (
-        <PasswordForm initialData={editingEntry} onClose={closeEntryModal} />
+      {/* Modales globales (Formulaires, Scanner QR, Générateur) */}
+      {isEntryModalOpen && editingEntry && (
+        editingEntry.type === 'password' ? (
+          <PasswordForm entry={editingEntry} onClose={closeEntryModal} />
+        ) : (
+          <TOTPForm entry={editingEntry} onClose={closeEntryModal} />
+        )
       )}
 
-      {isEntryModalOpen && editingEntry?.type === 'totp' && (
-        <TOTPForm
-          initialData={editingEntry}
-          onClose={closeEntryModal}
-          onOpenScanner={() => {
-            closeEntryModal();
-            setQRScannerOpen(true);
-          }}
-        />
-      )}
-
-      {/* QR Scanner Modal */}
-      {isQRScannerOpen && (
-        <QRScanner onScan={handleQRScanned} onClose={() => setQRScannerOpen(false)} />
-      )}
-
-      {/* Standalone Password Generator Modal */}
-      <PasswordGeneratorModal />
+      {isQRScannerOpen && <QRScanner />}
+      {isGeneratorModalOpen && <PasswordGeneratorModal />}
     </div>
   );
 }

@@ -1,27 +1,197 @@
 @import "tailwindcss";
 
+/* ═══ Tailwind v4 : variante dark basée sur la classe .dark ═══ */
+@variant dark (&:where(.dark, .dark *));
+
+/* ═══ Polices locales offline ═══ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/inter-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-600.woff2') format('woff2');
+}
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Couleurs Stitch VGuard fidèles */
+  --color-brand-cyan: #06B6D4;
+  --color-brand-emerald: #10B981;
+  --color-brand-obsidian: #09090B;
+  --color-brand-surface: #121215;
+  --color-brand-card: #121215;
+  --color-brand-input: #18181B;
+  --color-brand-border: #27272A;
+  --color-brand-border-hover: #3F3F46;
+}
+
 @layer base {
+  /* Mode Clair */
+  :root {
+    --color-bg-root: #F4F4F6;
+    --color-bg-surface: #FFFFFF;
+    --color-bg-card: #FFFFFF;
+    --color-bg-input: #F8FAFC;
+    --color-bg-elevated: #F1F5F9;
+
+    --color-border: #E4E4E7;
+    --color-border-hover: #D4D4D8;
+
+    --color-text-primary: #09090B;
+    --color-text-secondary: #52525B;
+    --color-text-muted: #71717A;
+
+    --color-accent-cyan: #0891B2;
+    --color-accent-emerald: #059669;
+
+    --color-scrollbar: rgba(0, 0, 0, 0.15);
+    --color-scrollbar-hover: rgba(0, 0, 0, 0.3);
+
+    --shadow-modal: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Mode Sombre (Exact Stitch Designs) */
+  .dark {
+    --color-bg-root: #09090B;
+    --color-bg-surface: #121215;
+    --color-bg-card: #121215;
+    --color-bg-input: #18181B;
+    --color-bg-elevated: #18181B;
+
+    --color-border: #27272A;
+    --color-border-hover: #3F3F46;
+
+    --color-text-primary: #F8FAFC;
+    --color-text-secondary: #A1A1AA;
+    --color-text-muted: #71717A;
+
+    --color-accent-cyan: #06B6D4;
+    --color-accent-emerald: #10B981;
+
+    --color-scrollbar: #27272A;
+    --color-scrollbar-hover: #3F3F46;
+
+    --shadow-modal: 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+  }
+
   body {
-    @apply bg-slate-950 text-slate-100 antialiased selection:bg-blue-500 selection:text-white;
+    background-color: var(--color-bg-root);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    @apply antialiased select-none;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom scrollbar */
+/* Gradient signature VGuard Google Stitch */
+.brand-gradient {
+  background: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
+}
+
+.brand-gradient-btn {
+  background: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
+}
+
+.brand-gradient-btn:hover {
+  opacity: 0.95;
+}
+
+/* Halos ambiants fidèles à Google Stitch (Mode Clair & Mode Sombre) */
+.bg-mesh-halo {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(circle at 18% 30%, rgba(6, 182, 212, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 82% 70%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.7) 0%, #F4F4F6 100%);
+}
+
+.dark .bg-mesh-halo {
+  background: 
+    radial-gradient(circle at 18% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 82% 70%, rgba(16, 185, 129, 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.6) 0%, #09090B 100%);
+}
+
+/* Scrollbar Stitch */
+.custom-scrollbar::-webkit-scrollbar,
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: var(--color-scrollbar);
   border-radius: 9999px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+  background: var(--color-scrollbar-hover);
+}
+
+.focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-[#06B6D4] focus-visible:ring-offset-2;
+}
+
+.dark .focus-ring {
+  @apply focus-visible:ring-offset-[#09090B];
 }
