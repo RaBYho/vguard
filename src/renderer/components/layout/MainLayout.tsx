@@ -4,8 +4,7 @@ import { Header } from './Header';
 import { BottomNavBar } from './BottomNavBar';
 import { PasswordList } from '../passwords/PasswordList';
 import { TOTPList } from '../totp/TOTPList';
-import { PasswordForm } from '../passwords/PasswordForm';
-import { TOTPForm } from '../totp/TOTPForm';
+import { EntryModal } from '../common/EntryModal';
 import { QRScanner } from '../totp/QRScanner';
 import { PasswordGeneratorModal } from '../passwords/PasswordGeneratorModal';
 import { SettingsView } from '../settings/SettingsView';
@@ -123,13 +122,9 @@ export function MainLayout() {
         <BottomNavBar />
       </div>
 
-      {/* Modales globales (Formulaires, Scanner QR, Générateur) */}
+      {/* Modale globale unifiée Stitch (Mot de passe & 2FA) */}
       {isEntryModalOpen && editingEntry && (
-        editingEntry.type === 'password' ? (
-          <PasswordForm entry={editingEntry} onClose={closeEntryModal} />
-        ) : (
-          <TOTPForm entry={editingEntry} onClose={closeEntryModal} />
-        )
+        <EntryModal entry={editingEntry} onClose={closeEntryModal} />
       )}
 
       {isQRScannerOpen && <QRScanner />}

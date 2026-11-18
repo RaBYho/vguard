@@ -2,8 +2,6 @@ import {
   Search,
   Plus,
   QrCode,
-  Lock,
-  Clock,
   X,
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
@@ -13,6 +11,7 @@ import { ThemeToggle } from '../common/ThemeToggle';
 export function Header() {
   const searchQuery = useVaultStore((state) => state.searchQuery);
   const setSearchQuery = useVaultStore((state) => state.setSearchQuery);
+  const activeTab = useVaultStore((state) => state.activeTab);
   const openNewEntryModal = useVaultStore((state) => state.openNewEntryModal);
   const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
   const lock = useVaultStore((state) => state.lock);
@@ -64,33 +63,24 @@ export function Header() {
         </div>
       )}
 
-      {/* Boutons d'actions droits (Stitch) */}
+      {/* Boutons d'actions droits Stitch : 2 boutons uniquement */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Scanner QR */}
+        {/* Bouton 1 : Scanner QR */}
         <button
           onClick={() => setQRScannerOpen(true)}
-          className="hidden sm:flex items-center gap-2 px-3.5 h-10 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition cursor-pointer shadow-sm"
+          className="flex items-center gap-2 px-3.5 h-10 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition cursor-pointer shadow-sm"
         >
-          <QrCode className="w-4 h-4 text-[#06B6D4]" />
-          <span>Scanner QR</span>
+          <QrCode className="w-4 h-4 text-[#0891B2] dark:text-[#06B6D4]" />
+          <span className="hidden sm:inline">Scanner QR</span>
         </button>
 
-        {/* Bouton rapide TOTP */}
+        {/* Bouton 2 : Nouvel élément (Brand gradient) */}
         <button
-          onClick={() => openNewEntryModal('totp')}
-          className="hidden sm:flex items-center gap-2 px-3.5 h-10 rounded-xl bg-[#10B981]/15 hover:bg-[#10B981]/25 border border-[#10B981]/30 text-xs font-semibold text-[#059669] dark:text-[#10B981] transition cursor-pointer shadow-sm"
-        >
-          <Clock className="w-4 h-4" />
-          <span>+ 2FA</span>
-        </button>
-
-        {/* Bouton Nouveau Mot de passe principal (Dégradé cyan -> émeraude) */}
-        <button
-          onClick={() => openNewEntryModal('password')}
+          onClick={() => openNewEntryModal(activeTab === 'totp' ? 'totp' : 'password')}
           className="flex items-center gap-2 px-4 h-10 rounded-xl brand-gradient hover:opacity-90 text-xs font-semibold text-[#09090B] transition cursor-pointer shadow-md shadow-[#06B6D4]/10"
         >
-          <Plus className="w-4 h-4 stroke-[3]" />
-          <span className="hidden xs:inline">Nouveau mot de passe</span>
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <span>Nouvel élément</span>
         </button>
 
         {/* ThemeToggle sur mobile */}
@@ -104,7 +94,7 @@ export function Header() {
           title="Verrouiller"
           className="md:hidden p-2 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-500/10 transition"
         >
-          <Lock className="w-4 h-4" />
+          <X className="w-4 h-4" />
         </button>
       </div>
     </header>
