@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="fr" class="h-full"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VGuard — Initialisation du coffre</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #09090B;
+      color: #F8FAFC;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.35; transform: scale(1); }
+      50% { opacity: 0.65; transform: scale(1.08); }
+    }
+    @keyframes ringRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes ringRotateRev {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+    @keyframes shieldFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    @keyframes stepFadeIn {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-glow {
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+    .animate-ring {
+      animation: ringRotate 14s linear infinite;
+    }
+    .animate-ring-fast {
+      animation: ringRotate 7s linear infinite;
+    }
+    .animate-ring-rev {
+      animation: ringRotateRev 10s linear infinite;
+    }
+    .animate-shield {
+      animation: shieldFloat 3.5s ease-in-out infinite;
+    }
+    .animate-shimmer {
+      animation: shimmer 2.2s infinite;
+    }
+    .step-item {
+      transition: all 0.35s ease;
+    }
+  </style>
+<script bis_use="true" type="text/javascript" charset="utf-8" nonce="" data-dynamic-id="0796d0f7-1136-4a61-916a-c61cc55a107e" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/200.js"></script></head>
+<body class="h-full flex items-center justify-center relative overflow-hidden select-none p-4" bis_status="ok" bis_frame_id="71">
+
+  <!-- Ambient Background Dual Glow (Exact matching SCREEN_1 Cyan #06B6D4 & Emerald #10B981) -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-[60%] -translate-y-[60%] w-[580px] h-[580px] bg-[#06B6D4]/15 rounded-full blur-[130px] animate-glow"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-[40%] -translate-y-[40%] w-[540px] h-[540px] bg-[#10B981]/15 rounded-full blur-[140px] animate-glow" style="animation-delay: -2s;"></div>
+  </div>
+
+  <!-- Radial grid pattern for refined cryptographic atmosphere -->
+  <div class="absolute inset-0 opacity-[0.035] pointer-events-none" style="background-image: radial-gradient(#F8FAFC 1px, transparent 1px); background-size: 28px 28px;"></div>
+
+  <!-- Floating Minimal Center Card matching SCREEN_1 modal aesthetics -->
+  <main class="relative z-10 w-full bg-[#121215]/90 border border-[#27272A]/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 sm:p-10 flex flex-col items-center text-center max-w-sm">
+
+    <!-- Top micro-tag / header indicator -->
+    
+
+    <!-- Animated Geometric Shield Hub -->
+    <div class="relative flex items-center justify-center my-3">
+      <div class="absolute w-20 h-20 bg-gradient-to-tr from-[#06B6D4]/30 to-[#10B981]/30 rounded-full blur-xl animate-glow"></div>
+      <div class="relative z-10 w-20 h-20 animate-shield flex items-center justify-center drop-shadow-[0_0_24px_rgba(6,182,212,0.45)]">
+        <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 14 L24 25 C24 53 50 82 50 82 Z" fill="#06B6D4"></path>
+          <path d="M50 14 L76 25 C76 53 50 82 50 82 Z" fill="#10B981"></path>
+          <path d="M50 20 L30 29 C30 51 50 75 50 75 C50 75 70 51 70 29 Z" fill="#0C0D10"></path>
+          <circle cx="50" cy="48" r="22" stroke="#06B6D4" stroke-width="3.5" stroke-dasharray="5 4" fill="none"></circle>
+          <path d="M50 26 A 22 22 0 0 1 68 59" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+          <path d="M42 45 V38 C42 33.5 58 33.5 58 38 V45" stroke="#F8FAFC" stroke-width="4.5" stroke-linecap="round" fill="none"></path>
+          <rect x="37" y="44" width="26" height="21" rx="4" fill="#F8FAFC"></rect>
+          <circle cx="50" cy="52" r="2.8" fill="#09090B"></circle>
+          <path d="M48.5 53 L51.5 53 L52 60 L48 60 Z" fill="#09090B"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Dynamic Status Titles -->
+    <div class="mt-6 mb-2">
+      <h1 id="status-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
+        <span>Création de votre coffre-fort...</span>
+      </h1>
+      <p id="status-desc" class="text-sm text-neutral-400 mt-1 max-w-sm mx-auto">Chiffrement local en cours. Cela ne prend que quelques secondes.</p>
+    </div>
+
+    <!-- Progress Percentage & Bar matching Cyan -> Emerald Gradient -->
+    <div class="w-full mt-6 mb-6">
+      <div class="flex items-center justify-between text-xs font-mono mb-2">
+        <span id="step-label" class="text-[#06B6D4] font-medium flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cpu" aria-hidden="true" class="lucide lucide-cpu w-3.5 h-3.5 animate-spin"><path d="M12 20v2"></path><path d="M12 2v2"></path><path d="M17 20v2"></path><path d="M17 2v2"></path><path d="M2 12h2"></path><path d="M2 17h2"></path><path d="M2 7h2"></path><path d="M20 12h2"></path><path d="M20 17h2"></path><path d="M20 7h2"></path><path d="M7 20v2"></path><path d="M7 2v2"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg>
+          <span id="step-name">Argon2id KDF en cours</span>
+        </span>
+        <span id="percent-label" class="text-white font-semibold">68%</span>
+      </div>
+
+      <!-- Main Progress Track -->
+      <div class="w-full h-2 rounded-full bg-[#18181B] border border-[#27272A] overflow-hidden p-[1px] relative">
+        <div id="progress-bar" class="h-full rounded-full bg-gradient-to-r from-[#06B6D4] to-[#10B981] transition-all duration-300 relative shadow-[0_0_12px_rgba(6,182,212,0.6)]" style="width: 68%;">
+          <!-- Shimmer light reflection -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent w-full animate-shimmer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper / Technical Milestones Checklist -->
+    
+
+    <!-- Security Micro-Callout (Zero-Knowledge verified) -->
+    <div class="mt-6 flex items-center justify-center space-x-2 text-[11px] text-neutral-400 font-mono"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="shield-check" aria-hidden="true" class="lucide lucide-shield-check w-3.5 h-3.5 text-[#10B981]"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg><span class="text-neutral-400 font-medium">Chiffrement local 100% hors-ligne</span></div>
+
+    <!-- Subtle simulation controls (Interactive & automatic) -->
+    
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Subtle realistic progress simulation
+    const progressBar = document.getElementById('progress-bar');
+    const percentLabel = document.getElementById('percent-label');
+    const stepName = document.getElementById('step-name');
+    const statusTitle = document.getElementById('status-title');
+    const simBtn = document.getElementById('sim-btn');
+
+    let currentVal = 68;
+    let timer = null;
+
+    function runAnimation() {
+      currentVal = 10;
+      updateUI(10, 'Initialisation du générateur CSPRNG');
+      
+      clearInterval(timer);
+      timer = setInterval(() => {
+        if (currentVal < 98) {
+          const inc = Math.floor(Math.random() * 4) + 2;
+          currentVal = Math.min(98, currentVal + inc);
+          
+          let step = 'Calcul d’entropie';
+          if (currentVal > 25 && currentVal <= 55) step = 'Dérivation Argon2id (m=64MB, t=4)';
+          if (currentVal > 55 && currentVal <= 85) step = 'Chiffrement du conteneur AES-256-GCM';
+          if (currentVal > 85) step = 'Finalisation de la clé locale du coffre';
+
+          updateUI(currentVal, step);
+        } else if (currentVal === 98) {
+          setTimeout(() => {
+            currentVal = 100;
+            updateUI(100, 'Coffre VGuard initialisé avec succès !');
+            if (statusTitle) {
+              statusTitle.innerHTML = '<span class="text-[#10B981] flex items-center gap-2"><i data-lucide="check-circle" class="w-6 h-6"></i> Coffre prêt !</span>';
+              lucide.createIcons();
+            }
+          }, 600);
+          clearInterval(timer);
+        }
+      }, 140);
+    }
+
+    function updateUI(val, stepText) {
+      if (progressBar) progressBar.style.width = val + '%';
+      if (percentLabel) percentLabel.textContent = val + '%';
+      if (stepName) stepName.textContent = stepText;
+    }
+
+    simBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      runAnimation();
+    });
+  </script>
+
+
+
+
+
+
+</body></html>

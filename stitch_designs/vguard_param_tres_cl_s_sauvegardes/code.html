@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VGuard - Clés de Chiffrement &amp; Sauvegardes</title>
+<!-- Tailwind CSS v3 CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#09090B',
+            surface: {
+              card: '#121215',
+              subtle: '#18181B',
+              muted: '#1F1F24'
+            },
+            border: {
+              DEFAULT: '#27272A',
+              subtle: '#1F1F23'
+            },
+            vguard: {
+              cyan: '#06B6D4',
+              emerald: '#10B981',
+              accent: '#0891B2'
+            }
+          },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: StyleConfigurations -->
+<style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272A;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3F3F46;
+    }
+  </style>
+<style data-purpose="typography-enhancements">
+    .font-mono-numeric {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+<!-- END: StyleConfigurations -->
+</head>
+<body class="bg-[#09090B] text-zinc-200 font-sans antialiased min-h-screen flex selection:bg-cyan-500/20 selection:text-cyan-300">
+<!-- BEGIN: Sidebar -->
+<aside class="w-64 flex-shrink-0 bg-[#09090B] border-r border-[#27272A] flex flex-col justify-between h-screen sticky top-0 px-3.5 py-4 select-none">
+<div class="space-y-4">
+<!-- App Brand & Status -->
+<div class="flex items-center justify-between px-2 pt-1 pb-2">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 via-cyan-500 to-emerald-400 p-[1px] flex items-center justify-center shadow-lg shadow-cyan-950/40">
+<div class="w-full h-full bg-[#09090B] rounded-[7px] flex items-center justify-center">
+<svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+<rect height="5" rx="1" width="6" x="9" y="10"></rect>
+<path d="M10 10V8a2 2 0 1 1 4 0v2"></path>
+</svg>
+</div>
+</div>
+<div>
+<div class="text-[14px] font-semibold text-zinc-100 tracking-wide flex items-center gap-1.5 leading-none">
+              VGuard
+            </div>
+<div class="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-semibold mt-1">
+              Local Vault
+            </div>
+</div>
+</div>
+<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded border border-[#27272A] bg-zinc-900 text-zinc-400">PRO</span>
+</div>
+<!-- Current Profile Switcher -->
+<div class="p-2 bg-[#121215] border border-[#27272A] rounded-xl flex items-center justify-between hover:border-zinc-700 transition cursor-pointer">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 text-emerald-400 text-xs font-semibold flex items-center justify-center flex-shrink-0">
+            AL
+          </div>
+<div class="min-w-0">
+<p class="text-xs font-medium text-zinc-200 truncate">Alexandre L.</p>
+<p class="text-[10px] text-zinc-500 truncate font-mono">alex@domaine.com</p>
+</div>
+</div>
+<svg class="w-3.5 h-3.5 text-zinc-400 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 9l4-4 4 4m0 6l-4 4-4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Vault Main Navigation -->
+<nav class="space-y-1">
+<p class="px-2 text-[10px] uppercase font-mono tracking-wider text-zinc-500 font-semibold pt-1 pb-1">Navigation</p>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Tout le coffre</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded">12</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Mots de passe</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded">7</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Codes 2FA</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded">5</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Favoris</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded">3</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Générateur</span>
+</div>
+<span class="text-[10px] font-mono text-zinc-500 border border-zinc-800 px-1 rounded">Ctrl+G</span>
+</a>
+</nav>
+<!-- Category Filter List -->
+<nav class="space-y-1">
+<p class="px-2 text-[10px] uppercase font-mono tracking-wider text-zinc-500 font-semibold pt-2 pb-1">Catégories</p>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<span>Personnel</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500">4</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-purple-400"></span>
+<span>Travail</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500">5</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span>Finance</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500">2</span>
+</a>
+<a class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/70 transition" href="#">
+<div class="flex items-center gap-2.5">
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+<span>Réseaux</span>
+</div>
+<span class="text-[11px] font-mono text-zinc-500">1</span>
+</a>
+</nav>
+</div>
+<!-- Pinned Bottom Options -->
+<div class="space-y-1.5 pt-3 border-t border-[#27272A]/70">
+<a class="flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium bg-cyan-950/30 text-cyan-300 border border-cyan-800/60 shadow-sm shadow-cyan-950/50" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span class="font-medium">Paramètres</span>
+</div>
+<span class="text-[10px] font-mono text-cyan-400 bg-cyan-900/40 border border-cyan-700/50 px-1 rounded">⌘,</span>
+</a>
+<button class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium text-rose-300 hover:bg-rose-950/20 hover:border-rose-900/40 border border-transparent transition text-left" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="11" rx="2" ry="2" stroke-width="1.8" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0110 0v4" stroke-width="1.8"></path>
+</svg>
+<span>Verrouiller</span>
+</div>
+<span class="text-[10px] font-mono text-zinc-500">Ctrl+L</span>
+</button>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: MainContentArea -->
+<div class="flex-1 flex flex-col min-w-0 bg-[#09090B]">
+<!-- BEGIN: TopBar -->
+<header class="h-14 border-b border-[#27272A] px-8 flex items-center justify-between bg-[#09090B]/80 backdrop-blur sticky top-0 z-20">
+<!-- Left Breadcrumb -->
+<nav aria-label="Fil d'ariane" class="flex items-center gap-2 text-xs">
+<span class="text-zinc-400 hover:text-zinc-200 cursor-pointer">Paramètres</span>
+<svg class="w-3.5 h-3.5 text-zinc-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-zinc-200 font-medium flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Clés &amp; Sauvegardes
+        </span>
+<span class="ml-2 font-mono text-[10px] text-zinc-400 px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800">
+          Argon2id + AES-256-GCM
+        </span>
+</nav>
+<!-- Right Header Indicators & Quick Action -->
+<div class="flex items-center gap-3">
+<!-- E2EE Sync Badge -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-300">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+<span>Sync E2EE</span>
+</div>
+<!-- Auto-Lock Status -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] text-zinc-400 font-mono">
+<svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke-width="1.8"></circle>
+<polyline points="12 6 12 12 16 14" stroke-width="1.8"></polyline>
+</svg>
+<span>Auto-lock: 15s</span>
+</div>
+<!-- Lock Button -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-300 bg-rose-950/20 border border-rose-900/40 hover:bg-rose-900/30 transition shadow-sm" type="button">
+<svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="11" rx="2" ry="2" stroke-width="1.8" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0110 0v4" stroke-width="1.8"></path>
+</svg>
+<span>Verrouiller maintenant</span>
+<span class="text-[10px] font-mono text-rose-400/70 border border-rose-800/60 px-1 rounded">Ctrl+L</span>
+</button>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- Scrollable Main View -->
+<main class="flex-1 overflow-y-auto px-8 py-7 space-y-7 max-w-6xl w-full">
+<!-- BEGIN: HeaderBanner -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2" data-purpose="page-title-banner">
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-cyan-950/40 border border-cyan-800/40 flex items-center justify-center text-cyan-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<h1 class="text-2xl font-bold text-zinc-100 tracking-tight">
+              Clés de Chiffrement &amp; Sauvegardes
+            </h1>
+</div>
+<p class="text-xs text-zinc-400 pl-[52px]">
+            Gérez votre clé de secours d'urgence, exportez votre coffre chiffré et configurez vos sauvegardes automatiques locales.
+          </p>
+</div>
+<!-- Security Proof Badge -->
+<div class="self-start md:self-auto flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-emerald-300 text-xs">
+<svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<div class="leading-tight">
+<div class="font-semibold text-[11px] text-emerald-300 font-mono">Zero-Knowledge</div>
+<div class="text-[10px] text-emerald-400/80 font-mono">Chiffrement AES-256-GCM</div>
+</div>
+</div>
+</section>
+<!-- END: HeaderBanner -->
+<!-- BEGIN: NavigationTabs -->
+<nav class="border-b border-[#27272A] flex gap-8 text-xs font-medium" data-purpose="settings-tab-navigation">
+<a class="pb-3 text-zinc-400 hover:text-zinc-200 transition" href="#">Sécurité du coffre</a>
+<!-- Active Tab with Cyan Accent Underline -->
+<a class="pb-3 text-cyan-400 border-b-2 border-cyan-400 font-semibold tracking-wide flex items-center gap-1.5" href="#">
+          Clés &amp; Sauvegardes
+        </a>
+<a class="pb-3 text-zinc-400 hover:text-zinc-200 transition" href="#">Préférences générales</a>
+<a class="pb-3 text-zinc-400 hover:text-zinc-200 transition" href="#">Journal d'audit</a>
+</nav>
+<!-- END: NavigationTabs -->
+<!-- BEGIN: SectionEmergencyRecoveryKit -->
+<section class="bg-[#121215] border border-[#27272A] rounded-2xl p-6 relative overflow-hidden" data-purpose="emergency-recovery-kit">
+<!-- Visual Subtle Glow in Corner -->
+<div class="absolute -right-20 -top-20 w-60 h-60 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Card Header with Monospace Label -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#27272A]/70">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<h2 class="text-xs uppercase font-mono tracking-widest text-zinc-200 font-bold">
+              CLÉ DE SECOURS D'URGENCE (EMERGENCY RECOVERY KIT)
+            </h2>
+</div>
+<span class="text-[11px] text-zinc-400">
+            Protection absolue de vos accès
+          </span>
+</div>
+<p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+          Indispensable pour récupérer votre coffre si vous oubliez votre mot de passe maître. VGuard ne stocke aucun double.
+        </p>
+<!-- Recovery Key Status Badge -->
+<div class="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-mono text-zinc-400 bg-zinc-950/60 border border-zinc-800/80 px-3 py-2 rounded-xl">
+<svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Clé générée le 14 Janvier 2025</span>
+<span class="text-zinc-600">•</span>
+<span>Empreinte SHA-256 : <code class="text-zinc-300 font-semibold">7f8a...3b9c</code></span>
+</div>
+<!-- Masked Key Display Block -->
+<div class="mt-4 p-4 rounded-xl bg-[#09090B] border border-[#27272A] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="space-y-1">
+<span class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 font-medium">Clé de récupération maître</span>
+<div class="font-mono text-sm tracking-widest text-zinc-200 font-semibold select-all" id="key-container">
+              VG-RECV-••••-••••-••••-••••-••••-894E
+            </div>
+</div>
+<button class="h-11 px-4 self-start sm:self-auto rounded-lg text-xs font-medium text-zinc-300 bg-zinc-800/80 hover:bg-zinc-700/80 border border-zinc-700 flex items-center gap-2 transition" id="toggle-key-visibility" type="button">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Afficher la clé</span>
+</button>
+</div>
+<!-- Action Buttons -->
+<div class="mt-5 flex flex-wrap items-center gap-3">
+<!-- Primary CTA -->
+<button class="h-11 px-4 rounded-xl text-xs font-semibold text-zinc-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-emerald-400 hover:opacity-95 shadow-lg shadow-cyan-950/50 flex items-center gap-2 transition transform active:scale-[0.99]" type="button">
+<svg class="w-4 h-4 text-zinc-950" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Télécharger le Kit de secours (PDF sécurisé)</span>
+</button>
+<!-- Secondary Action -->
+<button class="h-11 px-4 rounded-xl text-xs font-medium text-amber-300 bg-amber-950/20 border border-amber-800/40 hover:bg-amber-900/30 flex items-center gap-2 transition" type="button">
+<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Régénérer une nouvelle clé</span>
+</button>
+<!-- Outline Button -->
+<button class="h-11 px-4 rounded-xl text-xs font-medium text-zinc-300 bg-transparent border border-zinc-700 hover:border-zinc-500 hover:bg-zinc-900/40 flex items-center gap-2 transition" type="button">
+<svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Imprimer la clé papier</span>
+</button>
+</div>
+</section>
+<!-- END: SectionEmergencyRecoveryKit -->
+<!-- BEGIN: SectionExportVault -->
+<section class="bg-[#121215] border border-[#27272A] rounded-2xl p-6" data-purpose="export-vault-section">
+<!-- Section Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#27272A]/70">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<h2 class="text-xs uppercase font-mono tracking-widest text-zinc-200 font-bold">
+              SAUVEGARDES &amp; EXPORT DU COFFRE
+            </h2>
+</div>
+<span class="text-[11px] text-zinc-400">
+            Export standardisé de l'archive
+          </span>
+</div>
+<p class="text-xs text-zinc-400 mt-3 leading-relaxed">
+          Sauvegardez l'intégralité de vos identifiants, clés TOTP et notes chiffrées.
+        </p>
+<!-- Dual Card Layout for Export Methods -->
+<div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1: Encrypted Export (Recommended) -->
+<div class="p-5 rounded-xl bg-[#09090B] border border-cyan-800/40 flex flex-col justify-between relative overflow-hidden">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-cyan-950/60 border border-cyan-800/60 flex items-center justify-center text-cyan-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="11" rx="2" stroke-width="2" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0110 0v4" stroke-width="2"></path>
+</svg>
+</div>
+<h3 class="text-sm font-semibold text-zinc-100 font-mono">
+                    Export Chiffré Sécurisé (.vguard)
+                  </h3>
+</div>
+<span class="text-[10px] font-semibold uppercase tracking-wider text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-2 py-0.5 rounded-full">
+                  Recommandé
+                </span>
+</div>
+<p class="text-xs text-zinc-400 leading-normal">
+                Chiffré avec votre mot de passe maître. Idéal pour conserver une copie sur disque dur ou clé USB externe.
+              </p>
+<div class="text-[11px] font-mono text-zinc-500 pt-1">
+                Dernier export : <span class="text-zinc-300">Il y a 3 jours</span>
+</div>
+</div>
+<div class="pt-5">
+<button class="w-full h-11 px-4 rounded-xl text-xs font-semibold text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-700/60 flex items-center justify-center gap-2 transition" type="button">
+<svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Exporter le coffre chiffré</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Plaintext Export (Not Recommended) -->
+<div class="p-5 rounded-xl bg-[#09090B] border border-amber-900/30 flex flex-col justify-between">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-amber-950/50 border border-amber-800/50 flex items-center justify-center text-amber-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h3 class="text-sm font-semibold text-zinc-100 font-mono">
+                    Export en Clair (.csv / .json)
+                  </h3>
+</div>
+<span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400 bg-amber-950/50 border border-amber-800/70 px-2 py-0.5 rounded-full">
+                  Non recommandé
+                </span>
+</div>
+<!-- Warning Banner -->
+<div class="p-2.5 rounded-lg bg-amber-950/30 border border-amber-900/50 flex items-start gap-2 text-xs text-amber-300/90 leading-snug">
+<svg class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Attention : Vos mots de passe seront lisibles en clair sans mot de passe.</span>
+</div>
+</div>
+<div class="pt-5">
+<button class="w-full h-11 px-4 rounded-xl text-xs font-semibold text-rose-300 hover:text-rose-200 bg-rose-950/10 hover:bg-rose-950/30 border border-rose-900/50 flex items-center justify-center gap-2 transition" type="button">
+<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Exporter en clair (.json)</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: SectionExportVault -->
+<!-- BEGIN: SectionImportData -->
+<section class="bg-[#121215] border border-[#27272A] rounded-2xl p-6" data-purpose="import-data-section">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#27272A]/70">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<h2 class="text-xs uppercase font-mono tracking-widest text-zinc-200 font-bold">
+              IMPORTATION DE DONNÉES
+            </h2>
+</div>
+<span class="text-[11px] text-zinc-400">
+            Migration multi-formats
+          </span>
+</div>
+<div class="mt-4 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+<div class="space-y-3 max-w-xl">
+<p class="text-xs text-zinc-400 leading-relaxed">
+              Migrez vos identifiants depuis d'autres gestionnaires de mots de passe ou restaurez une archive précédente.
+            </p>
+<!-- Supported formats pills -->
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">Bitwarden</span>
+<span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">1Password</span>
+<span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">KeePass</span>
+<span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">Chrome</span>
+<span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">Safari</span>
+<span class="text-[11px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">CSV générique</span>
+</div>
+</div>
+<div class="flex-shrink-0">
+<button class="h-11 px-5 rounded-xl text-xs font-semibold text-zinc-200 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center gap-2.5 transition" type="button">
+<svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Importer un fichier de sauvegarde</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: SectionImportData -->
+<!-- BEGIN: SectionAutoBackup -->
+<section class="bg-[#121215] border border-[#27272A] rounded-2xl p-6 mb-6" data-purpose="auto-backup-section">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#27272A]/70">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<h2 class="text-xs uppercase font-mono tracking-widest text-zinc-200 font-bold">
+              SAUVEGARDE AUTOMATIQUE LOCALE (AUTO-BACKUP)
+            </h2>
+</div>
+<span class="text-[11px] text-emerald-400 font-mono">
+            Actif en tâche de fond
+          </span>
+</div>
+<!-- Setting Row: Toggle -->
+<div class="py-4 border-b border-[#27272A]/70 flex items-center justify-between gap-4">
+<div class="space-y-0.5">
+<p class="text-xs font-semibold text-zinc-200">
+              Activer la sauvegarde automatique locale
+            </p>
+<p class="text-xs text-zinc-400">
+              Crée une copie de sauvegarde horodatée et chiffrée à chaque fermeture de l'application.
+            </p>
+</div>
+<!-- Switch Toggle Enabled (Emerald) -->
+<button aria-checked="true" class="w-12 h-6 bg-emerald-500 rounded-full p-0.5 transition duration-200 ease-in-out relative flex items-center focus:outline-none flex-shrink-0" role="switch" type="button">
+<span class="w-5 h-5 bg-white rounded-full shadow-md transform translate-x-6 transition duration-200 ease-in-out block"></span>
+</button>
+</div>
+<!-- Setting Row: Path Selector -->
+<div class="py-4 border-b border-[#27272A]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="space-y-0.5">
+<p class="text-xs font-semibold text-zinc-200">Emplacement des sauvegardes locales</p>
+<p class="text-xs font-mono text-zinc-400">/home/alexandre/.vguard/backups/</p>
+</div>
+<button class="h-10 px-3.5 self-start sm:self-auto rounded-lg text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 transition flex items-center gap-2" type="button">
+<svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Modifier le dossier</span>
+</button>
+</div>
+<!-- Setting Row: Retention Selection -->
+<div class="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="space-y-0.5">
+<p class="text-xs font-semibold text-zinc-200">Politique de rétention de l'historique</p>
+<p class="text-xs text-zinc-400">Supprime automatiquement les copies les plus anciennes pour préserver l'espace.</p>
+</div>
+<div class="relative w-full sm:w-64">
+<select class="w-full h-10 bg-[#09090B] border border-zinc-700 text-zinc-200 text-xs rounded-xl px-3 py-2 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 font-mono">
+<option selected="">Conserver les 5 dernières versions</option>
+<option>Conserver les 10 dernières versions</option>
+<option>Conserver les 25 dernières versions</option>
+<option>Conserver toutes les sauvegardes</option>
+</select>
+</div>
+</div>
+</section>
+<!-- END: SectionAutoBackup -->
+</main>
+<!-- END: MainContentArea -->
+</div>
+<!-- BEGIN: InteractiveScripts -->
+<script data-purpose="toggle-masked-key">
+    // Interactive handler to toggle key visibility between masked dots and actual key preview
+    const toggleBtn = document.getElementById('toggle-key-visibility');
+    const keyContainer = document.getElementById('key-container');
+
+    if (toggleBtn && keyContainer) {
+      let isRevealed = false;
+      const maskedText = 'VG-RECV-••••-••••-••••-••••-••••-894E';
+      const plainText = 'VG-RECV-4A9F-992C-E301-B784-A12D-894E';
+
+      toggleBtn.addEventListener('click', () => {
+        isRevealed = !isRevealed;
+        if (isRevealed) {
+          keyContainer.textContent = plainText;
+          keyContainer.classList.add('text-cyan-300');
+          toggleBtn.innerHTML = `
+            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+            </svg>
+            <span>Masquer la clé</span>
+          `;
+        } else {
+          keyContainer.textContent = maskedText;
+          keyContainer.classList.remove('text-cyan-300');
+          toggleBtn.innerHTML = `
+            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+            <span>Afficher la clé</span>
+          `;
+        }
+      });
+    }
+  </script>
+<!-- END: InteractiveScripts -->
+</body></html>

@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "VGuard — Auto-Fill Mots de passe & 2FA",
+  "version": "0.1.0",
+  "description": "Auto-remplissage sécurisé et génération de codes 2FA pour VGuard",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr93hp+4ZIQ3ilUDh/nmQoNqiB124GqTSFQmA5xrcO5xuk0pW52jvqwKF/a02n5kJZtft7MINmmH6ESAk9SO8QHUqcYfDLkb8P4peoTpFwnS/inp/h0Dkj1yvSA/L9szFRfD3zMqMwnFvnZle1/g1hcHPVTEZNumbD61++dB4r0q+OvHAxmuAHaWZRDcaH8yE6RWZLv0OiGq1mmqvNtduKWsEKRmk/qhnXfXE8eEhHc1bF0lkM2sRkgzTklIke0Uz5hOZaxuFiCQ9uoj8UbHBsYmPgzOOqESDyy9McCjJxWkqeOL2VjVhwlIzJOO9OJ3W59QApZlpVQuThzBhntttuwIDAQAB",
+  "permissions": [
+    "nativeMessaging",
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "VGuard",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

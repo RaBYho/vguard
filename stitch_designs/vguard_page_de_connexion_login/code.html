@@ -1,0 +1,186 @@
+<!DOCTYPE html><html class="h-full bg-[#09090B]" lang="fr"><head><script bis_use="true" type="text/javascript" charset="utf-8" nonce="" data-dynamic-id="0796d0f7-1136-4a61-916a-c61cc55a107e" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/200.js"></script></head><body bis_status="ok" bis_frame_id="73" class="h-full font-sans antialiased text-[#F8FAFC] flex items-center justify-center p-4 sm:p-6 lg:p-8 select-none relative overflow-x-hidden"><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VGuard — Déverrouiller le coffre-fort</title>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              cyan: '#06B6D4',
+              emerald: '#10B981',
+              dark: '#09090B',
+              card: '#121215',
+              input: '#18181B',
+              border: '#27272A',
+              borderHover: '#3F3F46',
+            }
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 45px -10px rgba(6, 182, 212, 0.28)',
+            'glow-emerald': '0 0 35px -8px rgba(16, 185, 129, 0.35)',
+            'modal': '0 25px 60px -15px rgba(0, 0, 0, 0.75)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: CustomStyles -->
+<style data-purpose="ambient-lighting">
+    /* Subtle background ambient blur replicating the Setup screen atmosphere */
+    .bg-mesh-halo {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 18% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 82% 70%, rgba(16, 185, 129, 0.07) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.6) 0%, #09090B 100%);
+    }
+  </style>
+<style data-purpose="field-customization">
+    /* Custom style for input focus state and typography */
+    input::placeholder {
+      color: #71717A;
+    }
+    .custom-input-focus:focus-within {
+      border-color: #06B6D4;
+      box-shadow: 0 0 0 1px #06B6D4, 0 0 20px -3px rgba(6, 182, 212, 0.25);
+    }
+  </style>
+<!-- END: CustomStyles -->
+<script bis_use="true" type="text/javascript" charset="utf-8" nonce="" data-dynamic-id="0796d0f7-1136-4a61-916a-c61cc55a107e" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/200.js"></script>
+
+<!-- Ambient Light Orbs -->
+<div aria-hidden="true" class="bg-mesh-halo"></div>
+<!-- BEGIN: LoginModalContainer -->
+<main class="relative z-10 w-full max-w-4xl" data-purpose="authentication-modal">
+<div class="w-full bg-[#121215] border border-[#27272A] rounded-3xl shadow-modal overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[520px]">
+<!-- BEGIN: LeftIdentityColumn -->
+<!-- Left Section: Branding, Shield Logo & Security status -->
+<section class="md:col-span-5 p-8 lg:p-10 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#27272A]/70 relative bg-gradient-to-b from-[#141418] to-[#101013]" data-purpose="brand-status-panel">
+<!-- Top: Mini Logo bar -->
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center">
+<!-- Mini SVG Logo -->
+<img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-j-De0OL4uEwlER5KybzhdJDHUNz5oZCraZcTQ-Ei-D-iI-a0lStvfm594ue0Q53Y0JIpuucXp7kKwgKV7SyOWsD1cYvzg1Qf_EY9_JaZm1XqihTFYUCGzkkbXcrY2dMvv7Q1oXQsEkW8CoxbBBEeoPoAFoX8qLG_XWPcyEAG_Fef51TVaxYScBFq9huGCIZ8QH2j7-FhRZrq1t-sUgkP-XEnzZjU8fbzw7XGup-xezxY_NEPSoHsKg" alt="VGuard" class="w-5 h-5 object-contain rounded">
+</div>
+<span class="text-sm font-semibold tracking-wide text-[#F8FAFC]">VGuard</span>
+</div>
+<!-- Center: Prominent Shield & Return Greeting -->
+<div class="my-8 md:my-0 space-y-6">
+<!-- Large Vector Shield (Identical to Setup Screen) -->
+<div class="w-16 h-16 relative flex items-center justify-center" data-purpose="shield-icon">
+<div class="absolute inset-0 bg-[#06B6D4]/20 rounded-2xl blur-xl"></div>
+<img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-j-De0OL4uEwlER5KybzhdJDHUNz5oZCraZcTQ-Ei-D-iI-a0lStvfm594ue0Q53Y0JIpuucXp7kKwgKV7SyOWsD1cYvzg1Qf_EY9_JaZm1XqihTFYUCGzkkbXcrY2dMvv7Q1oXQsEkW8CoxbBBEeoPoAFoX8qLG_XWPcyEAG_Fef51TVaxYScBFq9huGCIZ8QH2j7-FhRZrq1t-sUgkP-XEnzZjU8fbzw7XGup-xezxY_NEPSoHsKg" alt="VGuard Logo" class="w-16 h-16 object-contain relative z-10 drop-shadow-[0_4px_16px_rgba(6,182,212,0.35)] rounded-xl">
+</div>
+<!-- Greeting Headline -->
+<div class="space-y-2"><h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-[#F8FAFC]">Déverrouiller VGuard</h1><p class="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed">Saisissez votre mot de passe maître pour accéder à vos identifiants sécurisés.</p></div>
+</div>
+<!-- Bottom: Vault Encryption & Security Level Pill -->
+<div class="space-y-2 pt-4 border-t border-[#27272A]/50 text-xs" data-purpose="security-indicators"><div class="flex items-center gap-2 text-xs text-[#A1A1AA]"><span class="inline-flex h-2 w-2 rounded-full bg-[#10B981] animate-pulse"></span><span class="font-medium text-[#D4D4D8]">Chiffrement local 100% hors-ligne</span></div><div class="text-[11px] text-[#71717A] tracking-wider uppercase font-mono">Argon2id • AES-256-GCM</div></div>
+</section>
+<!-- END: LeftIdentityColumn -->
+<!-- BEGIN: RightFormColumn -->
+<!-- Right Section: Profile selector, Password input, and action triggers -->
+<section class="md:col-span-7 p-8 lg:p-10 flex flex-col justify-between" data-purpose="login-form-panel">
+<form class="space-y-6" id="vault-unlock-form" onsubmit="event.preventDefault();">
+<!-- User Profile Tile / Switcher -->
+<div class="space-y-2" data-purpose="active-profile-card"><div class="flex items-center justify-between p-3 rounded-2xl bg-[#18181B]/80 border border-[#27272A]"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#06B6D4] to-[#10B981] flex items-center justify-center font-bold text-[#09090B] text-xs shadow-sm">AL</div><div><div class="text-sm font-semibold text-[#F8FAFC]">Alexandre</div><div class="text-xs text-[#71717A]">alex@domaine.com</div></div></div><button type="button" class="text-xs text-[#06B6D4] hover:text-[#10B981] transition-colors font-medium focus:outline-none">Changer</button></div></div>
+<!-- Master Password Input Group -->
+<div class="space-y-2" data-purpose="master-password-field">
+<div class="flex items-center justify-between">
+<label class="text-[11px] font-semibold tracking-wider text-[#A1A1AA] uppercase" for="master-password">
+                Mot de passe maître
+              </label>
+<a class="text-xs text-[#71717A] hover:text-[#06B6D4] transition-colors focus:outline-none" data-purpose="recover-key-link" href="#">Kit de secours ?</a>
+</div>
+<!-- Password Input Container -->
+<div class="relative custom-input-focus rounded-xl bg-[#18181B] border border-[#27272A] transition-all">
+<!-- Left Lock Icon -->
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#71717A]">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Input -->
+<input autocomplete="current-password" class="block w-full pl-10 pr-10 py-3 bg-transparent text-sm text-[#F8FAFC] placeholder-[#52525B] focus:ring-0 focus:outline-none border-none rounded-xl font-mono tracking-wider" id="master-password" placeholder="••••••••••••••••••••••••" required="" type="password">
+<!-- Password Visibility Toggle Button -->
+<button aria-label="Afficher ou masquer le mot de passe" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#71717A] hover:text-[#A1A1AA] focus:outline-none" data-purpose="password-visibility-toggle" id="toggle-password" type="button">
+<!-- Shield / Eye Icon consistent with setup screen -->
+<svg class="w-4 h-4" fill="none" id="eye-icon" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Quick Unlock / Biometric Options -->
+<div class="flex items-center justify-between text-xs text-[#A1A1AA] pt-1">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="rounded bg-[#18181B] border-[#27272A] text-[#06B6D4] focus:ring-[#06B6D4] focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer w-4 h-4" type="checkbox">
+<span class="group-hover:text-[#F8FAFC] transition-colors">Garder la session active (4h)</span>
+</label>
+<!-- Touch ID / Biometric Quick Action Icon -->
+<button class="p-1.5 rounded-lg hover:bg-[#27272A] text-[#71717A] hover:text-[#06B6D4] transition-colors flex items-center gap-1.5" title="Déverrouillage par empreinte Touch ID / FIDO2" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.043.99-4.216.99-6.467 0-4.07-1.523-7.794-4.041-10.608M7.94 4.542A17.925 17.925 0 0112 4.1c3.552 0 6.82 1.033 9.56 2.808" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path>
+</svg>
+<span class="text-[11px] hidden sm:inline">Biométrie</span>
+</button>
+</div>
+<!-- Primary Unlock CTA Button -->
+<div class="pt-2">
+<button class="w-full h-12 rounded-xl bg-gradient-to-r from-[#06B6D4] to-[#10B981] hover:opacity-95 text-[#09090B] font-semibold text-sm flex items-center justify-center gap-2 shadow-glow-emerald transition-all duration-150 transform active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/50" data-purpose="submit-unlock" type="submit">
+<span>Déverrouiller mon coffre</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</div>
+</form>
+<!-- Bottom Footer Utility & Zero-Knowledge Assurance -->
+<div class="pt-6 mt-4 border-t border-[#27272A]/40 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#71717A] gap-2"><div class="flex items-center justify-between w-full text-xs text-[#71717A]"><a class="hover:text-[#A1A1AA] transition-colors" href="#">Créer ou importer un coffre</a><span class="text-[#52525B] text-[11px]">Zero-Knowledge</span></div></div>
+</section>
+<!-- END: RightFormColumn -->
+</div>
+</main>
+<!-- END: LoginModalContainer -->
+<!-- BEGIN: InteractiveHandlers -->
+<script data-purpose="toggle-password-interactivity">
+    const passwordInput = document.getElementById('master-password');
+    const toggleButton = document.getElementById('toggle-password');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    toggleButton.addEventListener('click', () => {
+      const isPassword = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+      
+      // Update eye icon state (crossed or open)
+      if (isPassword) {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+        `;
+      } else {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        `;
+      }
+    });
+  </script>
+<!-- END: InteractiveHandlers -->
+
+
+</body></html>

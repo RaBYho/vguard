@@ -1,0 +1,168 @@
+<!DOCTYPE html><html class="dark" lang="fr"><head><script bis_use="true" type="text/javascript" charset="utf-8" nonce="" data-dynamic-id="0796d0f7-1136-4a61-916a-c61cc55a107e" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/200.js"></script></head><body bis_status="ok" bis_frame_id="67" class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-10 radial-noise-pattern selection:bg-[#06B6D4]/30 selection:text-white relative overflow-x-hidden" bis_body_id="fr_kp0wikahv6oej45afrcnlj" bis_depth="1" bis_chainid="1" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:1280,&quot;h&quot;:1024,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" bis_size="{&quot;x&quot;:640,&quot;y&quot;:512,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:1229,&quot;abs_y&quot;:696}"></svg>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>VGuard — Initialisation du Coffre-Fort</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cyan: '#06B6D4',
+              emerald: '#10B981',
+              obsidian: '#09090B',
+              surface: '#121215',
+              panel: '#151518',
+              input: '#1A1A1E',
+              border: '#27272A',
+              borderSubtle: '#1E1E22'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #060709;
+      color: #F8FAFC;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .brand-gradient-btn {
+      background: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
+    }
+    .brand-gradient-btn:hover {
+      opacity: 0.95;
+      box-shadow: 0 10px 30px -5px rgba(6, 182, 212, 0.45);
+    }
+    .radial-noise-pattern {
+      background-image: 
+        radial-gradient(circle at 18% 25%, rgba(6, 182, 212, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 82% 75%, rgba(16, 185, 129, 0.16) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.9) 0%, #060709 100%);
+    }
+    .subtle-glass {
+      background: rgba(18, 18, 21, 0.85);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+    }
+  </style>
+
+
+<!-- Ambient background glow elements mimicking reference organic aura -->
+<div class="pointer-events-none fixed inset-0 overflow-hidden z-0" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:1280,&quot;h&quot;:919,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}">
+<div class="absolute -top-32 -left-32 w-[600px] h-[600px] bg-[#06B6D4]/15 rounded-full blur-[140px]" bis_size="{&quot;x&quot;:-128,&quot;y&quot;:-128,&quot;w&quot;:600,&quot;h&quot;:600,&quot;abs_x&quot;:461,&quot;abs_y&quot;:56}"></div>
+<div class="absolute -bottom-32 -right-32 w-[650px] h-[650px] bg-[#10B981]/12 rounded-full blur-[160px]" bis_size="{&quot;x&quot;:758,&quot;y&quot;:397,&quot;w&quot;:650,&quot;h&quot;:650,&quot;abs_x&quot;:1347,&quot;abs_y&quot;:581}"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-[#0284C7]/10 rounded-full blur-[180px]" bis_size="{&quot;x&quot;:240,&quot;y&quot;:209,&quot;w&quot;:800,&quot;h&quot;:500,&quot;abs_x&quot;:829,&quot;abs_y&quot;:393}"></div>
+</div>
+<!-- Main Floating Modal Container (2-Column Split inspired by Image 4) -->
+<main class="relative z-10 w-full max-w-[1040px] subtle-glass border border-[#27272A]/80 rounded-[28px] shadow-[0_32px_80px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.04)] overflow-hidden" bis_size="{&quot;x&quot;:120,&quot;y&quot;:221,&quot;w&quot;:1040,&quot;h&quot;:582,&quot;abs_x&quot;:709,&quot;abs_y&quot;:405}">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[580px]" bis_size="{&quot;x&quot;:121,&quot;y&quot;:222,&quot;w&quot;:1038,&quot;h&quot;:580,&quot;abs_x&quot;:710,&quot;abs_y&quot;:406}">
+<!-- ============================================== -->
+<!-- LEFT COLUMN: Welcome, Brand & Minimal Status   -->
+<!-- ============================================== -->
+<section class="lg:col-span-5 p-8 sm:p-12 lg:p-14 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#27272A]/60 bg-[#0E0E11]/40" bis_size="{&quot;x&quot;:121,&quot;y&quot;:222,&quot;w&quot;:432,&quot;h&quot;:580,&quot;abs_x&quot;:710,&quot;abs_y&quot;:406}">
+<!-- Top branding bar inside left column -->
+<div class="flex items-center gap-2.5" bis_size="{&quot;x&quot;:177,&quot;y&quot;:278,&quot;w&quot;:319,&quot;h&quot;:32,&quot;abs_x&quot;:766,&quot;abs_y&quot;:462}">
+<div class="w-8 h-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center p-1.5 shadow-sm" bis_size="{&quot;x&quot;:177,&quot;y&quot;:278,&quot;w&quot;:32,&quot;h&quot;:32,&quot;abs_x&quot;:766,&quot;abs_y&quot;:462}">
+<!-- VGuard Mini Shield SVG -->
+<svg class="w-full h-full drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]" viewBox="0 0 100 100" bis_size="{&quot;x&quot;:184,&quot;y&quot;:285,&quot;w&quot;:18,&quot;h&quot;:18,&quot;abs_x&quot;:773,&quot;abs_y&quot;:469}">
+<defs bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}">
+<linearGradient id="shieldGradSmall" x1="0%" x2="100%" y1="0%" y2="100%" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}">
+<stop offset="0%" stop-color="#06B6D4" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+<stop offset="100%" stop-color="#10B981" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+</linearGradient>
+</defs>
+<path d="M50 8 L82 22 C82 56 50 88 50 88 C50 88 18 56 18 22 Z" fill="none" stroke="url(#shieldGradSmall)" stroke-linejoin="round" stroke-width="8" bis_size="{&quot;x&quot;:187,&quot;y&quot;:286,&quot;w&quot;:11,&quot;h&quot;:14,&quot;abs_x&quot;:776,&quot;abs_y&quot;:470}"></path>
+<rect fill="#F8FAFC" height="20" rx="4" width="24" x="38" y="44" bis_size="{&quot;x&quot;:190,&quot;y&quot;:292,&quot;w&quot;:4,&quot;h&quot;:3,&quot;abs_x&quot;:779,&quot;abs_y&quot;:476}"></rect>
+<path d="M43 44 V36 C43 32 46 29 50 29 C54 29 57 32 57 36 V44" fill="none" stroke="#F8FAFC" stroke-linecap="round" stroke-width="5" bis_size="{&quot;x&quot;:191,&quot;y&quot;:290,&quot;w&quot;:2,&quot;h&quot;:2,&quot;abs_x&quot;:780,&quot;abs_y&quot;:474}"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold tracking-tight text-white" bis_size="{&quot;x&quot;:219,&quot;y&quot;:284,&quot;w&quot;:79,&quot;h&quot;:20,&quot;abs_x&quot;:808,&quot;abs_y&quot;:468}">VGuard </span>
+</div>
+<!-- Centered Core Hero Message (Matching reference Image 4 bold clean statement) -->
+<div class="my-10 lg:my-0 flex flex-col items-start" bis_size="{&quot;x&quot;:177,&quot;y&quot;:401,&quot;w&quot;:319,&quot;h&quot;:229,&quot;abs_x&quot;:766,&quot;abs_y&quot;:585}">
+<!-- Standalone Geometric Shield Mark (Cyan #06B6D4 & Emerald #10B981) -->
+<div class="w-16 h-16 mb-7 relative drop-shadow-[0_0_24px_rgba(6,182,212,0.35)] transition-transform hover:scale-105 duration-300" bis_size="{&quot;x&quot;:177,&quot;y&quot;:401,&quot;w&quot;:64,&quot;h&quot;:64,&quot;abs_x&quot;:766,&quot;abs_y&quot;:585}">
+<svg class="w-full h-full" viewBox="0 0 100 100" bis_size="{&quot;x&quot;:177,&quot;y&quot;:401,&quot;w&quot;:64,&quot;h&quot;:64,&quot;abs_x&quot;:766,&quot;abs_y&quot;:585}">
+<defs bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}">
+<linearGradient id="shieldSplitGrad" x1="0%" x2="100%" y1="0%" y2="100%" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}">
+<stop offset="0%" stop-color="#06B6D4" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+<stop offset="60%" stop-color="#0EA5E9" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+<stop offset="100%" stop-color="#10B981" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+</linearGradient>
+<radialGradient cx="50%" cy="40%" id="innerShieldAura" r="65%" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}">
+<stop offset="0%" stop-color="#06B6D4" stop-opacity="0.18" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+<stop offset="100%" stop-color="#09090B" stop-opacity="0.95" bis_size="{&quot;x&quot;:0,&quot;y&quot;:0,&quot;w&quot;:0,&quot;h&quot;:0,&quot;abs_x&quot;:589,&quot;abs_y&quot;:184}"></stop>
+</radialGradient>
+</defs>
+<!-- Shield Contour -->
+<path d="M50 6 L86 22 C86 58 50 92 50 92 C50 92 14 58 14 22 Z" fill="url(#innerShieldAura)" stroke="url(#shieldSplitGrad)" stroke-linejoin="round" stroke-width="5.5" bis_size="{&quot;x&quot;:185,&quot;y&quot;:405,&quot;w&quot;:46,&quot;h&quot;:55,&quot;abs_x&quot;:774,&quot;abs_y&quot;:589}"></path>
+<!-- Segmented Speed/Encryption Ring -->
+<circle cx="50" cy="46" fill="none" r="26" stroke="#06B6D4" stroke-dasharray="3.5 4" stroke-linecap="round" stroke-width="3" bis_size="{&quot;x&quot;:192,&quot;y&quot;:414,&quot;w&quot;:33,&quot;h&quot;:33,&quot;abs_x&quot;:781,&quot;abs_y&quot;:598}"></circle>
+<!-- Emerald Right Accent Arc -->
+<path d="M50 20 A26 26 0 0 1 76 46 A26 26 0 0 1 50 72" fill="none" stroke="#10B981" stroke-linecap="round" stroke-width="3.5" bis_size="{&quot;x&quot;:209,&quot;y&quot;:414,&quot;w&quot;:16,&quot;h&quot;:33,&quot;abs_x&quot;:798,&quot;abs_y&quot;:598}"></path>
+<!-- Padlock Shackle -->
+<path d="M42 43 V34 C42 29.5 45.5 26 50 26 C54.5 26 58 29.5 58 34 V43" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-width="4.8" bis_size="{&quot;x&quot;:203,&quot;y&quot;:417,&quot;w&quot;:10,&quot;h&quot;:10,&quot;abs_x&quot;:792,&quot;abs_y&quot;:601}"></path>
+<!-- Padlock Body -->
+<rect fill="#FFFFFF" height="21" rx="5" width="26" x="37" y="42" bis_size="{&quot;x&quot;:200,&quot;y&quot;:428,&quot;w&quot;:16,&quot;h&quot;:13,&quot;abs_x&quot;:789,&quot;abs_y&quot;:612}"></rect>
+<circle cx="50" cy="50.5" fill="#09090B" r="2.5" bis_size="{&quot;x&quot;:207,&quot;y&quot;:431,&quot;w&quot;:3,&quot;h&quot;:3,&quot;abs_x&quot;:796,&quot;abs_y&quot;:615}"></circle>
+<polygon fill="#09090B" points="48.5,50.5 51.5,50.5 52.2,56.5 47.8,56.5" bis_size="{&quot;x&quot;:207,&quot;y&quot;:433,&quot;w&quot;:2,&quot;h&quot;:3,&quot;abs_x&quot;:796,&quot;abs_y&quot;:617}"></polygon>
+</svg>
+</div>
+<h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3" bis_size="{&quot;x&quot;:177,&quot;y&quot;:493,&quot;w&quot;:319,&quot;h&quot;:80,&quot;abs_x&quot;:766,&quot;abs_y&quot;:677}">Bienvenue sur VGuard !</h1>
+<p class="text-sm text-zinc-400 leading-relaxed max-w-sm" bis_size="{&quot;x&quot;:177,&quot;y&quot;:585,&quot;w&quot;:319,&quot;h&quot;:45,&quot;abs_x&quot;:766,&quot;abs_y&quot;:769}">Configurez votre profil et initialisez votre coffre-fort chiffré en un instant.</p>
+</div>
+<!-- Bottom Security Trust Badge -->
+<div class="pt-6" bis_size="{&quot;x&quot;:177,&quot;y&quot;:722,&quot;w&quot;:319,&quot;h&quot;:24,&quot;abs_x&quot;:766,&quot;abs_y&quot;:906}">
+
+</div>
+</section>
+<!-- ============================================== -->
+<!-- RIGHT COLUMN: Clean Credentials Setup & Action -->
+<!-- ============================================== -->
+<section class="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-between space-y-6" bis_size="{&quot;x&quot;:553,&quot;y&quot;:222,&quot;w&quot;:605,&quot;h&quot;:580,&quot;abs_x&quot;:1142,&quot;abs_y&quot;:406}">
+<div class="space-y-6" bis_size="{&quot;x&quot;:601,&quot;y&quot;:270,&quot;w&quot;:509,&quot;h&quot;:350,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:454}">
+<!-- 1. Master Key Preview Card (Inspired directly by "Your API Key" box in Image 4) -->
+
+<!-- 2. Segmented Pill Switcher (Inspired by "In my codebase / In my agent" in Image 4) -->
+
+<!-- 3. Form Input Credentials Area (Crisp, Focused, Essential) -->
+<div class="space-y-4" bis_size="{&quot;x&quot;:601,&quot;y&quot;:270,&quot;w&quot;:509,&quot;h&quot;:350,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:454}"><div bis_size="{&quot;x&quot;:601,&quot;y&quot;:270,&quot;w&quot;:509,&quot;h&quot;:66,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:454}"><label class="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5" for="vault_user" bis_size="{&quot;x&quot;:601,&quot;y&quot;:270,&quot;w&quot;:509,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:454}">Nom du profil</label><div class="relative group" bis_size="{&quot;x&quot;:601,&quot;y&quot;:292,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:476}"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-[#06B6D4] transition-colors" bis_size="{&quot;x&quot;:601,&quot;y&quot;:292,&quot;w&quot;:30,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:476}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" bis_size="{&quot;x&quot;:615,&quot;y&quot;:306,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1204,&quot;abs_y&quot;:490}"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" bis_size="{&quot;x&quot;:618,&quot;y&quot;:316,&quot;w&quot;:9,&quot;h&quot;:4,&quot;abs_x&quot;:1207,&quot;abs_y&quot;:500}"></path><circle cx="12" cy="7" r="4" bis_size="{&quot;x&quot;:620,&quot;y&quot;:308,&quot;w&quot;:5,&quot;h&quot;:5,&quot;abs_x&quot;:1209,&quot;abs_y&quot;:492}"></circle></svg></div><input class="w-full h-11 bg-[#18181B] border border-[#27272A] rounded-xl pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#06B6D4] focus:ring-1 focus:ring-[#06B6D4] transition-all" id="vault_user" placeholder="Ex: Alexandre" type="text" value="Alexandre" bis_size="{&quot;x&quot;:601,&quot;y&quot;:292,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:476}"></div></div><div bis_size="{&quot;x&quot;:601,&quot;y&quot;:352,&quot;w&quot;:509,&quot;h&quot;:91,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:536}"><div class="flex items-center justify-between mb-1.5" bis_size="{&quot;x&quot;:601,&quot;y&quot;:352,&quot;w&quot;:509,&quot;h&quot;:21,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:536}"><label class="text-xs font-semibold text-zinc-300 uppercase tracking-wider" for="vault_email" bis_size="{&quot;x&quot;:601,&quot;y&quot;:354,&quot;w&quot;:233,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:538}">Adresse e-mail de récupération</label><span class="text-[10px] font-mono uppercase tracking-wider text-zinc-500 bg-[#18181B] px-1.5 py-0.5 rounded border border-[#27272A]" bis_size="{&quot;x&quot;:1038,&quot;y&quot;:352,&quot;w&quot;:72,&quot;h&quot;:21,&quot;abs_x&quot;:1627,&quot;abs_y&quot;:536}">Optionnel</span></div><div class="relative group" bis_size="{&quot;x&quot;:601,&quot;y&quot;:379,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:563}"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-[#06B6D4] transition-colors" bis_size="{&quot;x&quot;:601,&quot;y&quot;:379,&quot;w&quot;:30,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:563}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" bis_size="{&quot;x&quot;:615,&quot;y&quot;:393,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1204,&quot;abs_y&quot;:577}"><rect width="20" height="16" x="2" y="4" rx="2" bis_size="{&quot;x&quot;:616,&quot;y&quot;:395,&quot;w&quot;:13,&quot;h&quot;:10,&quot;abs_x&quot;:1205,&quot;abs_y&quot;:579}"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" bis_size="{&quot;x&quot;:616,&quot;y&quot;:397,&quot;w&quot;:13,&quot;h&quot;:3,&quot;abs_x&quot;:1205,&quot;abs_y&quot;:581}"></path></svg></div><input class="w-full h-11 bg-[#18181B] border border-[#27272A] rounded-xl pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#06B6D4] focus:ring-1 focus:ring-[#06B6D4] transition-all" id="vault_email" placeholder="alex@domaine.com" type="email" bis_size="{&quot;x&quot;:601,&quot;y&quot;:379,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:563}"></div><p class="text-[11px] text-zinc-500 mt-1 pl-1" bis_size="{&quot;x&quot;:601,&quot;y&quot;:427,&quot;w&quot;:509,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:611}">Pour exporter votre kit de secours local</p></div><div bis_size="{&quot;x&quot;:601,&quot;y&quot;:459,&quot;w&quot;:509,&quot;h&quot;:78,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:643}"><div class="flex items-center justify-between mb-1.5" bis_size="{&quot;x&quot;:601,&quot;y&quot;:459,&quot;w&quot;:509,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:643}"><label class="text-xs font-semibold text-zinc-300 uppercase tracking-wider" for="vault_pwd" bis_size="{&quot;x&quot;:601,&quot;y&quot;:459,&quot;w&quot;:148,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:643}">Mot de passe maître</label></div><div class="relative group" bis_size="{&quot;x&quot;:601,&quot;y&quot;:482,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:666}"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-[#06B6D4] transition-colors" bis_size="{&quot;x&quot;:601,&quot;y&quot;:482,&quot;w&quot;:30,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:666}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" bis_size="{&quot;x&quot;:615,&quot;y&quot;:496,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1204,&quot;abs_y&quot;:680}"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" bis_size="{&quot;x&quot;:617,&quot;y&quot;:503,&quot;w&quot;:12,&quot;h&quot;:7,&quot;abs_x&quot;:1206,&quot;abs_y&quot;:687}"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4" bis_size="{&quot;x&quot;:620,&quot;y&quot;:497,&quot;w&quot;:6,&quot;h&quot;:6,&quot;abs_x&quot;:1209,&quot;abs_y&quot;:681}"></path></svg></div><input class="w-full h-11 bg-[#18181B] border border-[#27272A] rounded-xl pl-10 pr-11 text-sm text-white font-mono placeholder-zinc-500 focus:outline-none focus:border-[#06B6D4] focus:ring-1 focus:ring-[#06B6D4] transition-all" id="vault_pwd" type="password" value="VGuard-Shield#2025-UltraSecure!" bis_size="{&quot;x&quot;:601,&quot;y&quot;:482,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:666}"><div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#10B981]" bis_size="{&quot;x&quot;:1081,&quot;y&quot;:482,&quot;w&quot;:30,&quot;h&quot;:44,&quot;abs_x&quot;:1670,&quot;abs_y&quot;:666}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" bis_size="{&quot;x&quot;:1081,&quot;y&quot;:496,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1670,&quot;abs_y&quot;:680}"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" bis_size="{&quot;x&quot;:1083,&quot;y&quot;:497,&quot;w&quot;:10,&quot;h&quot;:13,&quot;abs_x&quot;:1672,&quot;abs_y&quot;:681}"></path><path d="m9 12 2 2 4-4" bis_size="{&quot;x&quot;:1087,&quot;y&quot;:502,&quot;w&quot;:4,&quot;h&quot;:2,&quot;abs_x&quot;:1676,&quot;abs_y&quot;:686}"></path></svg></div></div><div class="grid grid-cols-4 gap-1.5 h-1 mt-2" bis_size="{&quot;x&quot;:601,&quot;y&quot;:534,&quot;w&quot;:509,&quot;h&quot;:4,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:718}"><div class="h-full rounded-full bg-[#06B6D4]" bis_size="{&quot;x&quot;:601,&quot;y&quot;:534,&quot;w&quot;:122,&quot;h&quot;:4,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:718}"></div><div class="h-full rounded-full bg-[#06B6D4]" bis_size="{&quot;x&quot;:730,&quot;y&quot;:534,&quot;w&quot;:122,&quot;h&quot;:4,&quot;abs_x&quot;:1319,&quot;abs_y&quot;:718}"></div><div class="h-full rounded-full bg-[#06B6D4]" bis_size="{&quot;x&quot;:859,&quot;y&quot;:534,&quot;w&quot;:122,&quot;h&quot;:4,&quot;abs_x&quot;:1448,&quot;abs_y&quot;:718}"></div><div class="h-full rounded-full bg-[#10B981] shadow-[0_0_6px_rgba(16,185,129,0.7)]" bis_size="{&quot;x&quot;:988,&quot;y&quot;:534,&quot;w&quot;:122,&quot;h&quot;:4,&quot;abs_x&quot;:1577,&quot;abs_y&quot;:718}"></div></div></div><div bis_size="{&quot;x&quot;:601,&quot;y&quot;:554,&quot;w&quot;:509,&quot;h&quot;:66,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:738}"><div class="flex items-center justify-between mb-1.5" bis_size="{&quot;x&quot;:601,&quot;y&quot;:554,&quot;w&quot;:509,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:738}"><label class="text-xs font-semibold text-zinc-300 uppercase tracking-wider" for="vault_pwd_confirm" bis_size="{&quot;x&quot;:601,&quot;y&quot;:554,&quot;w&quot;:222,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:738}">Confirmation du mot de passe</label><span class="text-[11px] font-mono text-[#10B981] flex items-center gap-1 font-medium" bis_size="{&quot;x&quot;:1035,&quot;y&quot;:554,&quot;w&quot;:75,&quot;h&quot;:16,&quot;abs_x&quot;:1624,&quot;abs_y&quot;:738}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 stroke-[2.5]" bis_size="{&quot;x&quot;:1035,&quot;y&quot;:556,&quot;w&quot;:12,&quot;h&quot;:12,&quot;abs_x&quot;:1624,&quot;abs_y&quot;:740}"><path d="M20 6 9 17l-5-5" bis_size="{&quot;x&quot;:1037,&quot;y&quot;:559,&quot;w&quot;:8,&quot;h&quot;:5,&quot;abs_x&quot;:1626,&quot;abs_y&quot;:743}"></path></svg> Identique</span></div><div class="relative group" bis_size="{&quot;x&quot;:601,&quot;y&quot;:576,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:760}"><div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-[#06B6D4] transition-colors" bis_size="{&quot;x&quot;:601,&quot;y&quot;:576,&quot;w&quot;:30,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:760}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" bis_size="{&quot;x&quot;:615,&quot;y&quot;:590,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1204,&quot;abs_y&quot;:774}"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" bis_size="{&quot;x&quot;:618,&quot;y&quot;:591,&quot;w&quot;:10,&quot;h&quot;:13,&quot;abs_x&quot;:1207,&quot;abs_y&quot;:775}"></path><path d="m9 12 2 2 4-4" bis_size="{&quot;x&quot;:621,&quot;y&quot;:597,&quot;w&quot;:4,&quot;h&quot;:2,&quot;abs_x&quot;:1210,&quot;abs_y&quot;:781}"></path></svg></div><input class="w-full h-11 bg-[#18181B] border border-[#27272A] rounded-xl pl-10 pr-11 text-sm text-white font-mono placeholder-zinc-500 focus:outline-none focus:border-[#06B6D4] focus:ring-1 focus:ring-[#06B6D4] transition-all" id="vault_pwd_confirm" type="password" value="VGuard-Shield#2025-UltraSecure!" bis_size="{&quot;x&quot;:601,&quot;y&quot;:576,&quot;w&quot;:509,&quot;h&quot;:44,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:760}"><div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-[#10B981]" bis_size="{&quot;x&quot;:1081,&quot;y&quot;:576,&quot;w&quot;:30,&quot;h&quot;:44,&quot;abs_x&quot;:1670,&quot;abs_y&quot;:760}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4" bis_size="{&quot;x&quot;:1081,&quot;y&quot;:590,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1670,&quot;abs_y&quot;:774}"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" bis_size="{&quot;x&quot;:1083,&quot;y&quot;:591,&quot;w&quot;:10,&quot;h&quot;:13,&quot;abs_x&quot;:1672,&quot;abs_y&quot;:775}"></path><path d="m9 12 2 2 4-4" bis_size="{&quot;x&quot;:1087,&quot;y&quot;:597,&quot;w&quot;:4,&quot;h&quot;:2,&quot;abs_x&quot;:1676,&quot;abs_y&quot;:781}"></path></svg></div></div></div></div>
+</div>
+<!-- 4. Primary CTA & Micro-footer (Matching Image 4 prominent bottom button & caption) -->
+<div class="pt-4 space-y-3" bis_size="{&quot;x&quot;:601,&quot;y&quot;:661,&quot;w&quot;:509,&quot;h&quot;:92,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:845}">
+<button class="w-full h-12 rounded-xl brand-gradient-btn text-[#09090B] font-bold text-sm flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(6,182,212,0.35)] transition-all cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-[#121215]" type="button" bis_size="{&quot;x&quot;:601,&quot;y&quot;:677,&quot;w&quot;:509,&quot;h&quot;:48,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:861}">
+<span bis_size="{&quot;x&quot;:746,&quot;y&quot;:691,&quot;w&quot;:195,&quot;h&quot;:20,&quot;abs_x&quot;:1335,&quot;abs_y&quot;:875}">Initialiser mon coffre VGuard</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-4 h-4 stroke-[2.5]" bis_size="{&quot;x&quot;:950,&quot;y&quot;:693,&quot;w&quot;:16,&quot;h&quot;:16,&quot;abs_x&quot;:1539,&quot;abs_y&quot;:877}"><path d="M5 12h14" bis_size="{&quot;x&quot;:953,&quot;y&quot;:701,&quot;w&quot;:9,&quot;h&quot;:0,&quot;abs_x&quot;:1542,&quot;abs_y&quot;:885}"></path><path d="m12 5 7 7-7 7" bis_size="{&quot;x&quot;:958,&quot;y&quot;:696,&quot;w&quot;:4,&quot;h&quot;:9,&quot;abs_x&quot;:1547,&quot;abs_y&quot;:880}"></path></svg>
+</button>
+<!-- Micro caption footer underneath button -->
+<p class="text-center font-mono text-[11px] text-zinc-500 tracking-tight" bis_size="{&quot;x&quot;:601,&quot;y&quot;:737,&quot;w&quot;:509,&quot;h&quot;:16,&quot;abs_x&quot;:1190,&quot;abs_y&quot;:921}">
+            Chiffrement Argon2id + AES-256-GCM 100% hors-ligne
+          </p>
+</div>
+</section>
+</div>
+</main>
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+
+
+
+
+</body></html>

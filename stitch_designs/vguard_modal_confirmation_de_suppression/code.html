@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+
+<html class="dark h-full" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VGuard — Paramètres de sécurité du coffre</title>
+<!-- Tailwind CSS CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration matching VGuard palette & typography -->
+<script data-purpose="tailwind-config" id="tailwind-config">
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            vault: {
+              950: '#070709',
+              900: '#09090B',
+              850: '#101014',
+              800: '#141418',
+              750: '#1B1B20',
+              700: '#27272A',
+              600: '#3F3F46',
+              500: '#71717A',
+              400: '#A1A1AA',
+              300: '#D4D4D8',
+              100: '#F4F4F5'
+            },
+            accent: {
+              cyan: '#06B6D4',
+              teal: '#0D9488',
+              emerald: '#10B981',
+              danger: '#EF4444'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+<!-- BEGIN: Custom Micro-Styles -->
+<style data-purpose="custom-scrollbars">
+    /* Subtle custom scrollbar for dark obsidian theme */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272A;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3F3F46;
+    }
+  </style>
+<style data-purpose="status-indicators">
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.15); }
+    }
+    .pulse-green {
+      animation: pulse-subtle 2.5s infinite ease-in-out;
+    }
+  </style>
+<!-- END: Custom Micro-Styles -->
+<meta content="web_dashboard" name="shell-type"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script bis_use="true" charset="utf-8" data-dynamic-id="0796d0f7-1136-4a61-916a-c61cc55a107e" nonce="" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/200.js" type="text/javascript"></script></head>
+<body bis_frame_id="233" bis_size='{"x":0,"y":0,"w":1280,"h":1024,"abs_x":512,"abs_y":485}' bis_status="ok" class="bg-vault-950 text-vault-100 font-sans antialiased h-full overflow-hidden flex flex-col selection:bg-accent-cyan/20 selection:text-accent-cyan">
+<div bis_size='{"x":0,"y":0,"w":1280,"h":1024,"abs_x":512,"abs_y":485}' class="flex h-screen w-full overflow-hidden">
+<!-- BEGIN: LeftSidebar -->
+<aside bis_size='{"x":0,"y":0,"w":288,"h":1024,"abs_x":512,"abs_y":485}' class="w-72 bg-vault-900 border-r border-vault-700/60 flex flex-col justify-between shrink-0 select-none" data-purpose="navigation-sidebar">
+<!-- Upper Section: Branding & Navigation -->
+<div bis_size='{"x":0,"y":0,"w":287,"h":566,"abs_x":512,"abs_y":485}' class="flex flex-col overflow-y-auto">
+<!-- Logo and App Identifier -->
+<div bis_size='{"x":0,"y":0,"w":287,"h":71,"abs_x":512,"abs_y":485}' class="px-5 pt-5 pb-4 flex items-center justify-between">
+<div bis_size='{"x":20,"y":20,"w":115,"h":35,"abs_x":532,"abs_y":505}' class="flex items-center space-x-3">
+<div bis_size='{"x":20,"y":21,"w":32,"h":32,"abs_x":532,"abs_y":506}' class="relative w-8 h-8 rounded-lg overflow-hidden border border-accent-cyan/40 shadow-sm flex items-center justify-center bg-vault-850">
+<img alt="VGuard Security Shield Logo" bis_size='{"x":21,"y":22,"w":30,"h":30,"abs_x":533,"abs_y":507}' class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYg5JinSxqcPWKYLzomhhsUYSNJ6QnCU1PswG_P10y55DP2pHzsT_1OTGcZigqRKG2SFpTm7ygFSQH9VNPX3jIdTlIbzBtdsvFY9O8VGuZGZQshpLQZjAsCZxWsyQdEgp-BnHHuAEa4rd4qxUQlEJdkqLmVIgYkGOD-Vi7D9a6D8zRdDAYC2ZDNtlzA42PpRoDKwkyzMZEbMZG0ippCvNLkDFd8F5FdWaYlSB4IFHBpeXoq69ym6XrRw"/>
+</div>
+<div bis_size='{"x":64,"y":20,"w":71,"h":35,"abs_x":576,"abs_y":505}' class="flex flex-col">
+<span bis_size='{"x":64,"y":20,"w":71,"h":16,"abs_x":576,"abs_y":505}' class="text-base font-bold tracking-tight text-white leading-none">VGuard</span>
+<span bis_size='{"x":64,"y":40,"w":71,"h":15,"abs_x":576,"abs_y":525}' class="text-[10px] uppercase font-mono tracking-wider text-accent-cyan font-semibold mt-1">Local Vault</span>
+</div>
+</div>
+<span bis_size='{"x":226,"y":27,"w":40,"h":21,"abs_x":738,"abs_y":512}' class="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded bg-vault-800 text-vault-400 border border-vault-700">PRO</span>
+</div>
+<!-- User Profile Card -->
+<div bis_size='{"x":0,"y":71,"w":287,"h":74,"abs_x":512,"abs_y":556}' class="px-4 py-2">
+<div bis_size='{"x":16,"y":79,"w":255,"h":58,"abs_x":528,"abs_y":564}' class="p-2.5 rounded-xl bg-vault-850 border border-vault-700/60 flex items-center justify-between hover:border-vault-600 transition-colors cursor-pointer group">
+<div bis_size='{"x":27,"y":90,"w":145,"h":36,"abs_x":539,"abs_y":575}' class="flex items-center space-x-3 overflow-hidden">
+<div bis_size='{"x":27,"y":90,"w":36,"h":36,"abs_x":539,"abs_y":575}' class="w-9 h-9 rounded-lg bg-teal-500/20 text-teal-300 font-medium text-xs flex items-center justify-center shrink-0 border border-teal-500/30">
+                AL
+              </div>
+<div bis_size='{"x":75,"y":91,"w":97,"h":32,"abs_x":587,"abs_y":576}' class="flex flex-col min-w-0">
+<span bis_size='{"x":75,"y":91,"w":97,"h":16,"abs_x":587,"abs_y":576}' class="text-xs font-semibold text-vault-100 truncate">Alexandre L.</span>
+<span bis_size='{"x":75,"y":107,"w":97,"h":16,"abs_x":587,"abs_y":592}' class="text-[11px] text-vault-400 truncate">alex@domaine.com</span>
+</div>
+</div>
+<!-- Chevron selector icon -->
+<svg bis_size='{"x":244,"y":100,"w":16,"h":16,"abs_x":756,"abs_y":585}' class="w-4 h-4 text-vault-500 group-hover:text-vault-300 transition-colors shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":249,"y":103,"w":5,"h":9,"abs_x":761,"abs_y":588}' d="M8 9l4-4 4 4m0 6l-4 4-4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Primary Navigation Links -->
+<nav aria-label="Navigation Principale" bis_size='{"x":0,"y":161,"w":287,"h":232,"abs_x":512,"abs_y":646}' class="mt-4 px-3 space-y-1">
+<div bis_size='{"x":12,"y":161,"w":263,"h":20,"abs_x":524,"abs_y":646}' class="px-3 pb-1 text-[11px] font-semibold text-vault-500 tracking-wider uppercase font-mono">Navigation</div>
+<a bis_size='{"x":12,"y":185,"w":263,"h":38,"abs_x":524,"abs_y":670}' class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":196,"w":102,"h":16,"abs_x":536,"abs_y":681}' class="flex items-center space-x-3">
+<svg bis_size='{"x":24,"y":196,"w":16,"h":16,"abs_x":536,"abs_y":681}' class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":26,"y":199,"w":12,"h":9,"abs_x":538,"abs_y":684}' d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":52,"y":196,"w":74,"h":16,"abs_x":564,"abs_y":681}'>Tout le coffre</span>
+</div>
+<span bis_size='{"x":231,"y":193,"w":31,"h":22,"abs_x":743,"abs_y":678}' class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-vault-800 text-vault-400 border border-vault-700/50">12</span>
+</a>
+<a bis_size='{"x":12,"y":227,"w":263,"h":38,"abs_x":524,"abs_y":712}' class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":238,"w":106,"h":16,"abs_x":536,"abs_y":723}' class="flex items-center space-x-3">
+<svg bis_size='{"x":24,"y":238,"w":16,"h":16,"abs_x":536,"abs_y":723}' class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":26,"y":240,"w":12,"h":11,"abs_x":538,"abs_y":725}' d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":52,"y":238,"w":78,"h":16,"abs_x":564,"abs_y":723}'>Mots de passe</span>
+</div>
+<span bis_size='{"x":238,"y":235,"w":24,"h":22,"abs_x":750,"abs_y":720}' class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-vault-800 text-vault-400 border border-vault-700/50">7</span>
+</a>
+<a bis_size='{"x":12,"y":269,"w":263,"h":38,"abs_x":524,"abs_y":754}' class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":280,"w":85,"h":16,"abs_x":536,"abs_y":765}' class="flex items-center space-x-3">
+<svg bis_size='{"x":24,"y":280,"w":16,"h":16,"abs_x":536,"abs_y":765}' class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":26,"y":282,"w":12,"h":12,"abs_x":538,"abs_y":767}' d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":52,"y":280,"w":57,"h":16,"abs_x":564,"abs_y":765}'>Codes 2FA</span>
+</div>
+<span bis_size='{"x":238,"y":277,"w":24,"h":22,"abs_x":750,"abs_y":762}' class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-vault-800 text-vault-400 border border-vault-700/50">5</span>
+</a>
+<a bis_size='{"x":12,"y":311,"w":263,"h":38,"abs_x":524,"abs_y":796}' class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":322,"w":66,"h":16,"abs_x":536,"abs_y":807}' class="flex items-center space-x-3">
+<svg bis_size='{"x":24,"y":322,"w":16,"h":16,"abs_x":536,"abs_y":807}' class="w-4 h-4 text-vault-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":25,"y":323,"w":12,"h":11,"abs_x":537,"abs_y":808}' d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":52,"y":322,"w":38,"h":16,"abs_x":564,"abs_y":807}'>Favoris</span>
+</div>
+<span bis_size='{"x":238,"y":319,"w":24,"h":22,"abs_x":750,"abs_y":804}' class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-vault-800 text-vault-400 border border-vault-700/50">3</span>
+</a>
+<a bis_size='{"x":12,"y":353,"w":263,"h":40,"abs_x":524,"abs_y":838}' class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/30 shadow-[0_0_15px_rgba(6,182,212,0.12)] transition-all" href="#">
+<div bis_size='{"x":25,"y":365,"w":92,"h":16,"abs_x":537,"abs_y":850}' class="flex items-center space-x-3">
+<svg bis_size='{"x":25,"y":365,"w":16,"h":16,"abs_x":537,"abs_y":850}' class="w-4 h-4 text-accent-cyan" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":27,"y":367,"w":12,"h":12,"abs_x":539,"abs_y":852}' d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":53,"y":365,"w":64,"h":16,"abs_x":565,"abs_y":850}'>Générateur</span>
+</div>
+<span bis_size='{"x":211,"y":362,"w":50,"h":22,"abs_x":723,"abs_y":847}' class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30">Ctrl+G</span>
+</a>
+</nav>
+<!-- Categories Section -->
+<div aria-label="Catégories" bis_size='{"x":0,"y":417,"w":287,"h":148,"abs_x":512,"abs_y":902}' class="mt-6 px-3 space-y-1">
+<div bis_size='{"x":12,"y":417,"w":263,"h":20,"abs_x":524,"abs_y":902}' class="px-3 pb-1 text-[11px] font-semibold text-vault-500 tracking-wider uppercase font-mono">Catégories</div>
+<a bis_size='{"x":12,"y":442,"w":263,"h":28,"abs_x":524,"abs_y":927}' class="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":448,"w":75,"h":16,"abs_x":536,"abs_y":933}' class="flex items-center space-x-3">
+<span bis_size='{"x":24,"y":452,"w":8,"h":8,"abs_x":536,"abs_y":937}' class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<span bis_size='{"x":44,"y":448,"w":55,"h":16,"abs_x":556,"abs_y":933}'>Personnel</span>
+</div>
+<span bis_size='{"x":256,"y":448,"w":6,"h":16,"abs_x":768,"abs_y":933}' class="text-[11px] font-mono text-vault-500">4</span>
+</a>
+<a bis_size='{"x":12,"y":474,"w":263,"h":28,"abs_x":524,"abs_y":959}' class="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":480,"w":56,"h":16,"abs_x":536,"abs_y":965}' class="flex items-center space-x-3">
+<span bis_size='{"x":24,"y":484,"w":8,"h":8,"abs_x":536,"abs_y":969}' class="w-2 h-2 rounded-full bg-purple-400"></span>
+<span bis_size='{"x":44,"y":480,"w":36,"h":16,"abs_x":556,"abs_y":965}'>Travail</span>
+</div>
+<span bis_size='{"x":256,"y":480,"w":6,"h":16,"abs_x":768,"abs_y":965}' class="text-[11px] font-mono text-vault-500">5</span>
+</a>
+<a bis_size='{"x":12,"y":506,"w":263,"h":28,"abs_x":524,"abs_y":991}' class="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":512,"w":62,"h":16,"abs_x":536,"abs_y":997}' class="flex items-center space-x-3">
+<span bis_size='{"x":24,"y":516,"w":8,"h":8,"abs_x":536,"abs_y":1001}' class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span bis_size='{"x":44,"y":512,"w":42,"h":16,"abs_x":556,"abs_y":997}'>Finance</span>
+</div>
+<span bis_size='{"x":256,"y":512,"w":6,"h":16,"abs_x":768,"abs_y":997}' class="text-[11px] font-mono text-vault-500">2</span>
+</a>
+<a bis_size='{"x":12,"y":538,"w":263,"h":28,"abs_x":524,"abs_y":1023}' class="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium text-vault-300 hover:text-white hover:bg-vault-800 transition-colors" href="#">
+<div bis_size='{"x":24,"y":544,"w":65,"h":16,"abs_x":536,"abs_y":1029}' class="flex items-center space-x-3">
+<span bis_size='{"x":24,"y":548,"w":8,"h":8,"abs_x":536,"abs_y":1033}' class="w-2 h-2 rounded-full bg-amber-400"></span>
+<span bis_size='{"x":44,"y":544,"w":45,"h":16,"abs_x":556,"abs_y":1029}'>Réseaux</span>
+</div>
+<span bis_size='{"x":256,"y":544,"w":6,"h":16,"abs_x":768,"abs_y":1029}' class="text-[11px] font-mono text-vault-500">1</span>
+</a>
+</div>
+</div>
+<!-- Lower Section: Persistent System Navigation with Active Settings -->
+<div bis_size='{"x":0,"y":911,"w":287,"h":113,"abs_x":512,"abs_y":1396}' class="p-3 border-t border-vault-700/60 bg-vault-900 space-y-1">
+<!-- Active Settings Item -->
+<a bis_size='{"x":12,"y":924,"w":263,"h":44,"abs_x":524,"abs_y":1409}' class="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/30 shadow-[0_0_15px_rgba(6,182,212,0.12)] transition-all" href="#">
+<div bis_size='{"x":25,"y":938,"w":96,"h":16,"abs_x":537,"abs_y":1423}' class="flex items-center space-x-3">
+<svg bis_size='{"x":25,"y":938,"w":16,"h":16,"abs_x":537,"abs_y":1423}' class="w-4 h-4 text-accent-cyan" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":27,"y":940,"w":12,"h":12,"abs_x":539,"abs_y":1425}' d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path bis_size='{"x":31,"y":944,"w":4,"h":4,"abs_x":543,"abs_y":1429}' d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":53,"y":938,"w":68,"h":16,"abs_x":565,"abs_y":1423}' class="tracking-wide">Paramètres</span>
+</div>
+<span bis_size='{"x":235,"y":935,"w":26,"h":22,"abs_x":747,"abs_y":1420}' class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-accent-cyan/20 text-accent-cyan border border-accent-cyan/30">⌘,</span>
+</a>
+<!-- Vault Lock Action -->
+<button bis_size='{"x":12,"y":972,"w":263,"h":40,"abs_x":524,"abs_y":1457}' class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 border border-transparent hover:border-rose-900/50 transition-colors group" type="button">
+<div bis_size='{"x":25,"y":984,"w":86,"h":16,"abs_x":537,"abs_y":1469}' class="flex items-center space-x-3">
+<svg bis_size='{"x":25,"y":984,"w":16,"h":16,"abs_x":537,"abs_y":1469}' class="w-4 h-4 text-rose-500/80 group-hover:text-rose-400 transition-colors" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":27,"y":986,"w":10,"h":12,"abs_x":539,"abs_y":1471}' d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":53,"y":984,"w":58,"h":16,"abs_x":565,"abs_y":1469}'>Verrouiller</span>
+</div>
+<span bis_size='{"x":211,"y":981,"w":50,"h":22,"abs_x":723,"abs_y":1466}' class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-vault-850 text-rose-400/80 border border-rose-950">Ctrl+L</span>
+</button>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentWrapper -->
+<div bis_size='{"x":288,"y":0,"w":992,"h":1024,"abs_x":800,"abs_y":485}' class="flex-1 flex flex-col min-w-0 bg-vault-950 overflow-hidden">
+<!-- BEGIN: TopBar -->
+<header bis_size='{"x":288,"y":0,"w":992,"h":64,"abs_x":800,"abs_y":485}' class="h-16 border-b border-vault-700/60 bg-vault-900/90 backdrop-blur-md px-8 flex items-center justify-between shrink-0 z-10" data-purpose="top-command-bar">
+<!-- Breadcrumb & Omnibox Area -->
+<div bis_size='{"x":320,"y":20,"w":390,"h":22,"abs_x":832,"abs_y":505}' class="flex items-center space-x-3">
+<div bis_size='{"x":320,"y":23,"w":214,"h":16,"abs_x":832,"abs_y":508}' class="flex items-center space-x-2 text-xs font-medium text-vault-400">
+<span bis_size='{"x":320,"y":23,"w":63,"h":16,"abs_x":832,"abs_y":508}' class="hover:text-vault-200 transition-colors">Paramètres</span>
+<svg bis_size='{"x":391,"y":24,"w":14,"h":14,"abs_x":903,"abs_y":509}' class="w-3.5 h-3.5 text-vault-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":396,"y":27,"w":4,"h":8,"abs_x":908,"abs_y":512}' d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":413,"y":23,"w":121,"h":16,"abs_x":925,"abs_y":508}' class="text-vault-100 font-semibold flex items-center gap-1.5">
+<svg bis_size='{"x":413,"y":24,"w":14,"h":14,"abs_x":925,"abs_y":509}' class="w-3.5 h-3.5 text-accent-cyan" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":415,"y":26,"w":10,"h":10,"abs_x":927,"abs_y":511}' d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+              Sécurité du coffre
+            </span>
+</div>
+<!-- Chip info -->
+<span bis_size='{"x":546,"y":20,"w":163,"h":22,"abs_x":1058,"abs_y":505}' class="hidden md:inline-flex items-center text-[11px] font-mono px-2 py-0.5 rounded-full bg-vault-800 text-vault-400 border border-vault-700">
+            Argon2id + AES-256-GCM
+          </span>
+</div>
+<!-- Right System Indicators and Quick Fast Action -->
+<div bis_size='{"x":758,"y":16,"w":489,"h":30,"abs_x":1270,"abs_y":501}' class="flex items-center space-x-3.5">
+<!-- E2EE Sync Status Pill -->
+<div bis_size='{"x":758,"y":16,"w":101,"h":30,"abs_x":1270,"abs_y":501}' class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-vault-850 border border-vault-700/60 text-xs font-mono text-vault-300">
+<span bis_size='{"x":771,"y":27,"w":8,"h":8,"abs_x":1283,"abs_y":512}' class="w-2 h-2 rounded-full bg-accent-emerald pulse-green"></span>
+<span bis_size='{"x":787,"y":23,"w":59,"h":16,"abs_x":1299,"abs_y":508}' class="text-[11px]">Sync E2EE</span>
+</div>
+<!-- Auto-lock live countdown state -->
+<div bis_size='{"x":874,"y":16,"w":138,"h":30,"abs_x":1386,"abs_y":501}' class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-vault-850 border border-vault-700/60 text-xs font-mono text-vault-400">
+<svg bis_size='{"x":887,"y":24,"w":14,"h":14,"abs_x":1399,"abs_y":509}' class="w-3.5 h-3.5 text-accent-cyan" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":888,"y":26,"w":10,"h":10,"abs_x":1400,"abs_y":511}' d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":907,"y":23,"w":92,"h":16,"abs_x":1419,"abs_y":508}' class="text-[11px]">Auto-lock: <strong bis_size='{"x":979,"y":24,"w":19,"h":13,"abs_x":1491,"abs_y":509}' class="text-vault-200 font-normal">15s</strong></span>
+</div>
+<!-- Instant Fast-Lock Action Button -->
+<button bis_size='{"x":1026,"y":16,"w":221,"h":30,"abs_x":1538,"abs_y":501}' class="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-medium transition-all shadow-sm" type="button">
+<svg bis_size='{"x":1041,"y":24,"w":14,"h":14,"abs_x":1553,"abs_y":509}' class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path bis_size='{"x":1044,"y":26,"w":9,"h":10,"abs_x":1556,"abs_y":511}' d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span bis_size='{"x":1063,"y":23,"w":125,"h":16,"abs_x":1575,"abs_y":508}'>Verrouiller maintenant</span>
+<span bis_size='{"x":1196,"y":23,"w":36,"h":16,"abs_x":1708,"abs_y":508}' class="text-[10px] font-mono opacity-70">Ctrl+L</span>
+</button>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: ScrollablePageContent -->
+<main bis_size='{"x":288,"y":64,"w":992,"h":960,"abs_x":800,"abs_y":549}' class="flex-1 overflow-y-auto px-8 py-8 space-y-8"><div bis_size='{"x":320,"y":96,"w":928,"h":1497,"abs_x":832,"abs_y":581}' class="flex flex-col w-full max-w-6xl mx-auto space-y-8 pb-16">
+<!-- Settings Horizontal Navigation Tabs -->
+<div bis_size='{"x":320,"y":96,"w":928,"h":44,"abs_x":832,"abs_y":581}' class="flex items-center space-x-1 border-b border-vault-700/60 pb-px">
+<a bis_size='{"x":320,"y":96,"w":180,"h":42,"abs_x":832,"abs_y":581}' class="px-4 py-2.5 text-xs font-semibold text-accent-cyan border-b-2 border-accent-cyan flex items-center space-x-2 transition-all" href="#">
+<span bis_size='{"x":336,"y":106,"w":14,"h":20,"abs_x":848,"abs_y":591}' class="material-symbols-outlined text-sm">tune</span>
+<span bis_size='{"x":358,"y":108,"w":126,"h":16,"abs_x":870,"abs_y":593}'>Préférences générales</span>
+</a>
+<a bis_size='{"x":504,"y":96,"w":152,"h":42,"abs_x":1016,"abs_y":581}' class="px-4 py-2.5 text-xs font-medium text-vault-400 hover:text-vault-200 border-b-2 border-transparent transition-all flex items-center space-x-2" href="#">
+<span bis_size='{"x":520,"y":106,"w":14,"h":20,"abs_x":1032,"abs_y":591}' class="material-symbols-outlined text-sm">shield</span>
+<span bis_size='{"x":542,"y":108,"w":98,"h":16,"abs_x":1054,"abs_y":593}'>Sécurité du coffre</span>
+</a>
+<a bis_size='{"x":660,"y":96,"w":160,"h":42,"abs_x":1172,"abs_y":581}' class="px-4 py-2.5 text-xs font-medium text-vault-400 hover:text-vault-200 border-b-2 border-transparent transition-all flex items-center space-x-2" href="#">
+<span bis_size='{"x":676,"y":106,"w":14,"h":20,"abs_x":1188,"abs_y":591}' class="material-symbols-outlined text-sm">key</span>
+<span bis_size='{"x":698,"y":108,"w":106,"h":16,"abs_x":1210,"abs_y":593}'>Clés &amp; Sauvegardes</span>
+</a>
+<a bis_size='{"x":825,"y":96,"w":136,"h":42,"abs_x":1337,"abs_y":581}' class="px-4 py-2.5 text-xs font-medium text-vault-400 hover:text-vault-200 border-b-2 border-transparent transition-all flex items-center space-x-2" href="#">
+<span bis_size='{"x":841,"y":106,"w":14,"h":20,"abs_x":1353,"abs_y":591}' class="material-symbols-outlined text-sm">history</span>
+<span bis_size='{"x":863,"y":108,"w":82,"h":16,"abs_x":1375,"abs_y":593}'>Journal d'audit</span>
+</a>
+</div>
+<!-- Header Section with Brand Context -->
+<header bis_size='{"x":320,"y":172,"w":928,"h":112,"abs_x":832,"abs_y":657}' class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-vault-900/80 p-6 rounded-2xl shadow-xl backdrop-blur-md relative overflow-hidden">
+<div bis_size='{"x":1088,"y":108,"w":224,"h":224,"abs_x":1600,"abs_y":593}' class="absolute -right-16 -top-16 w-56 h-56 bg-accent-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+<div bis_size='{"x":344,"y":196,"w":640,"h":64,"abs_x":856,"abs_y":681}' class="flex items-start space-x-4 z-0">
+<div bis_size='{"x":344,"y":196,"w":48,"h":48,"abs_x":856,"abs_y":681}' class="relative w-12 h-12 rounded-xl bg-vault-850 p-2.5 shadow-md flex items-center justify-center shrink-0">
+<svg bis_size='{"x":354,"y":206,"w":28,"h":28,"abs_x":866,"abs_y":691}' class="w-full h-full text-accent-cyan" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<circle bis_size='{"x":364,"y":216,"w":7,"h":7,"abs_x":876,"abs_y":701}' cx="12" cy="12" r="3"></circle>
+<path bis_size='{"x":355,"y":207,"w":25,"h":25,"abs_x":867,"abs_y":692}' d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+</div>
+<div bis_size='{"x":408,"y":196,"w":576,"h":64,"abs_x":920,"abs_y":681}'>
+<h2 bis_size='{"x":408,"y":196,"w":576,"h":28,"abs_x":920,"abs_y":681}' class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+          Préférences Générales
+        </h2>
+<p bis_size='{"x":408,"y":228,"w":576,"h":32,"abs_x":920,"abs_y":713}' class="text-xs text-vault-400 mt-1 max-w-xl">
+          Personnalisez l'apparence, le comportement au démarrage, les raccourcis système et les notifications locales.
+        </p>
+</div>
+</div>
+<div bis_size='{"x":1004,"y":214,"w":219,"h":28,"abs_x":1516,"abs_y":699}' class="flex items-center space-x-2 shrink-0 self-start md:self-center">
+<div bis_size='{"x":1004,"y":214,"w":219,"h":28,"abs_x":1516,"abs_y":699}' class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-vault-850 shadow-sm text-xs font-mono">
+<span bis_size='{"x":1016,"y":224,"w":8,"h":8,"abs_x":1528,"abs_y":709}' class="w-2 h-2 rounded-full bg-accent-emerald pulse-green"></span>
+<span bis_size='{"x":1032,"y":220,"w":108,"h":16,"abs_x":1544,"abs_y":705}' class="text-vault-200 font-semibold">v2.4.1 (Stable)</span>
+<span bis_size='{"x":1148,"y":220,"w":7,"h":16,"abs_x":1660,"abs_y":705}' class="text-vault-500">•</span>
+<span bis_size='{"x":1164,"y":220,"w":47,"h":16,"abs_x":1676,"abs_y":705}' class="text-accent-emerald flex items-center gap-1 font-sans">
+<span bis_size='{"x":1164,"y":220,"w":12,"h":16,"abs_x":1676,"abs_y":705}' class="material-symbols-outlined text-xs">verified</span>
+          À jour
+        </span>
+</div>
+</div>
+</header>
+<!-- Section 1: Interface & Display -->
+<section bis_size='{"x":320,"y":316,"w":928,"h":469,"abs_x":832,"abs_y":801}' class="space-y-4">
+<div bis_size='{"x":320,"y":316,"w":928,"h":44,"abs_x":832,"abs_y":801}' class="flex items-center justify-between">
+<div bis_size='{"x":320,"y":316,"w":244,"h":44,"abs_x":832,"abs_y":801}'>
+<span bis_size='{"x":320,"y":325,"w":147,"h":11,"abs_x":832,"abs_y":810}' class="text-[10px] font-mono uppercase tracking-widest text-accent-cyan font-semibold">INTERFACE &amp; AFFICHAGE</span>
+<h3 bis_size='{"x":320,"y":340,"w":244,"h":20,"abs_x":832,"abs_y":825}' class="text-sm font-bold text-white uppercase tracking-wider">Apparence &amp; Thème du Coffre</h3>
+</div>
+<span bis_size='{"x":1038,"y":330,"w":209,"h":16,"abs_x":1550,"abs_y":815}' class="text-xs text-vault-500 font-mono">UI RENDERING: GPU ACCELERATED</span>
+</div>
+<div bis_size='{"x":320,"y":376,"w":928,"h":155,"abs_x":832,"abs_y":861}' class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Theme Obsidian Dark (Active) -->
+<div bis_size='{"x":320,"y":376,"w":298,"h":155,"abs_x":832,"abs_y":861}' class="relative p-4 rounded-xl bg-vault-900 shadow-md cursor-pointer transition-all hover:bg-vault-850 group ring-2 ring-accent-cyan/80">
+<div bis_size='{"x":336,"y":392,"w":266,"h":20,"abs_x":848,"abs_y":877}' class="flex items-center justify-between mb-3">
+<div bis_size='{"x":336,"y":394,"w":101,"h":16,"abs_x":848,"abs_y":879}' class="flex items-center space-x-2">
+<span bis_size='{"x":336,"y":395,"w":14,"h":14,"abs_x":848,"abs_y":880}' class="w-3.5 h-3.5 rounded-full bg-vault-950 shadow-inner"></span>
+<span bis_size='{"x":358,"y":394,"w":79,"h":16,"abs_x":870,"abs_y":879}' class="text-xs font-semibold text-white">Obsidian Dark</span>
+</div>
+<span bis_size='{"x":582,"y":392,"w":20,"h":20,"abs_x":1094,"abs_y":877}' class="w-5 h-5 rounded-full bg-accent-cyan/20 text-accent-cyan flex items-center justify-center text-[11px] font-bold">✓</span>
+</div>
+<p bis_size='{"x":336,"y":424,"w":266,"h":35,"abs_x":848,"abs_y":909}' class="text-[11px] text-vault-400 leading-relaxed mb-4">
+          Palette sombre ultra-contrastée optimisée pour environnements de sécurité et écrans OLED.
+        </p>
+<div bis_size='{"x":336,"y":475,"w":266,"h":40,"abs_x":848,"abs_y":960}' class="h-10 rounded-lg bg-vault-950 p-2 flex items-center justify-between">
+<div bis_size='{"x":344,"y":489,"w":48,"h":12,"abs_x":856,"abs_y":974}' class="flex space-x-1.5">
+<span bis_size='{"x":344,"y":489,"w":12,"h":12,"abs_x":856,"abs_y":974}' class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+<span bis_size='{"x":362,"y":489,"w":12,"h":12,"abs_x":874,"abs_y":974}' class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+<span bis_size='{"x":380,"y":489,"w":12,"h":12,"abs_x":892,"abs_y":974}' class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+</div>
+<span bis_size='{"x":556,"y":489,"w":37,"h":13,"abs_x":1068,"abs_y":974}' class="text-[9px] font-mono text-accent-cyan">#09090B</span>
+</div>
+</div>
+<!-- Theme Midnight Slate -->
+<div bis_size='{"x":634,"y":376,"w":298,"h":155,"abs_x":1146,"abs_y":861}' class="relative p-4 rounded-xl bg-vault-900 shadow-md cursor-pointer transition-all hover:bg-vault-850 group">
+<div bis_size='{"x":650,"y":392,"w":266,"h":20,"abs_x":1162,"abs_y":877}' class="flex items-center justify-between mb-3">
+<div bis_size='{"x":650,"y":394,"w":104,"h":16,"abs_x":1162,"abs_y":879}' class="flex items-center space-x-2">
+<span bis_size='{"x":650,"y":395,"w":14,"h":14,"abs_x":1162,"abs_y":880}' class="w-3.5 h-3.5 rounded-full bg-slate-900 shadow-inner"></span>
+<span bis_size='{"x":672,"y":394,"w":82,"h":16,"abs_x":1184,"abs_y":879}' class="text-xs font-semibold text-vault-300 group-hover:text-white">Midnight Slate</span>
+</div>
+<span bis_size='{"x":897,"y":392,"w":20,"h":20,"abs_x":1409,"abs_y":877}' class="w-5 h-5 rounded-full bg-vault-800 text-vault-600 flex items-center justify-center text-[10px]"></span>
+</div>
+<p bis_size='{"x":650,"y":424,"w":266,"h":35,"abs_x":1162,"abs_y":909}' class="text-[11px] text-vault-400 leading-relaxed mb-4">
+          Nuance bleutée reposante conçue pour un confort de lecture prolongé en faible luminosité.
+        </p>
+<div bis_size='{"x":650,"y":475,"w":266,"h":40,"abs_x":1162,"abs_y":960}' class="h-10 rounded-lg bg-[#0d1527] p-2 flex items-center justify-between">
+<div bis_size='{"x":658,"y":489,"w":48,"h":12,"abs_x":1170,"abs_y":974}' class="flex space-x-1.5">
+<span bis_size='{"x":658,"y":489,"w":12,"h":12,"abs_x":1170,"abs_y":974}' class="w-3 h-3 rounded-full bg-rose-500/50"></span>
+<span bis_size='{"x":676,"y":489,"w":12,"h":12,"abs_x":1188,"abs_y":974}' class="w-3 h-3 rounded-full bg-amber-500/50"></span>
+<span bis_size='{"x":694,"y":489,"w":12,"h":12,"abs_x":1206,"abs_y":974}' class="w-3 h-3 rounded-full bg-emerald-500/50"></span>
+</div>
+<span bis_size='{"x":871,"y":489,"w":37,"h":13,"abs_x":1383,"abs_y":974}' class="text-[9px] font-mono text-vault-400">#0D1527</span>
+</div>
+</div>
+<!-- Theme System Auto -->
+<div bis_size='{"x":949,"y":376,"w":298,"h":155,"abs_x":1461,"abs_y":861}' class="relative p-4 rounded-xl bg-vault-900 shadow-md cursor-pointer transition-all hover:bg-vault-850 group">
+<div bis_size='{"x":965,"y":392,"w":266,"h":20,"abs_x":1477,"abs_y":877}' class="flex items-center justify-between mb-3">
+<div bis_size='{"x":965,"y":394,"w":106,"h":16,"abs_x":1477,"abs_y":879}' class="flex items-center space-x-2">
+<span bis_size='{"x":965,"y":394,"w":12,"h":16,"abs_x":1477,"abs_y":879}' class="material-symbols-outlined text-xs text-vault-400">desktop_windows</span>
+<span bis_size='{"x":985,"y":394,"w":86,"h":16,"abs_x":1497,"abs_y":879}' class="text-xs font-semibold text-vault-300 group-hover:text-white">Système (Auto)</span>
+</div>
+<span bis_size='{"x":1211,"y":392,"w":20,"h":20,"abs_x":1723,"abs_y":877}' class="w-5 h-5 rounded-full bg-vault-800 text-vault-600 flex items-center justify-center text-[10px]"></span>
+</div>
+<p bis_size='{"x":965,"y":424,"w":266,"h":35,"abs_x":1477,"abs_y":909}' class="text-[11px] text-vault-400 leading-relaxed mb-4">
+          Synchronisation automatique avec le mode clair/sombre de votre système d'exploitation.
+        </p>
+<div bis_size='{"x":965,"y":475,"w":266,"h":40,"abs_x":1477,"abs_y":960}' class="h-10 rounded-lg bg-gradient-to-r from-vault-950 to-vault-800 p-2 flex items-center justify-between">
+<span bis_size='{"x":973,"y":489,"w":119,"h":13,"abs_x":1485,"abs_y":974}' class="text-[9px] font-mono text-vault-300">AUTO-SYNC D-BUS / APPS</span>
+<span bis_size='{"x":1211,"y":487,"w":12,"h":16,"abs_x":1723,"abs_y":972}' class="material-symbols-outlined text-xs text-vault-400">sync</span>
+</div>
+</div>
+</div>
+<!-- Interface Toggles & Language Selector Container -->
+<div bis_size='{"x":320,"y":547,"w":928,"h":237,"abs_x":832,"abs_y":1032}' class="p-5 rounded-xl bg-vault-900 shadow-md space-y-4">
+<div bis_size='{"x":340,"y":567,"w":888,"h":52,"abs_x":852,"abs_y":1052}' class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3">
+<div bis_size='{"x":340,"y":567,"w":496,"h":40,"abs_x":852,"abs_y":1052}' class="flex items-start space-x-3">
+<span bis_size='{"x":340,"y":569,"w":18,"h":28,"abs_x":852,"abs_y":1054}' class="material-symbols-outlined text-vault-400 text-lg mt-0.5">format_size</span>
+<div bis_size='{"x":370,"y":567,"w":466,"h":40,"abs_x":882,"abs_y":1052}'>
+<span bis_size='{"x":370,"y":574,"w":141,"h":13,"abs_x":882,"abs_y":1059}' class="text-xs font-semibold text-white">Taille de police compacte</span>
+<p bis_size='{"x":370,"y":591,"w":466,"h":16,"abs_x":882,"abs_y":1076}' class="text-[11px] text-vault-400">Réduit l'interlignage et le padding pour maximiser la vue des listes volumineuses d'identifiants.</p>
+</div>
+</div>
+<button aria-checked="true" bis_size='{"x":1184,"y":576,"w":44,"h":24,"abs_x":1696,"abs_y":1061}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0" type="button">
+<span bis_size='{"x":1206,"y":578,"w":20,"h":20,"abs_x":1718,"abs_y":1063}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+<div bis_size='{"x":320,"y":636,"w":928,"h":64,"abs_x":832,"abs_y":1121}' class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3 bg-vault-850/50 -mx-5 px-5">
+<div bis_size='{"x":340,"y":648,"w":574,"h":40,"abs_x":852,"abs_y":1133}' class="flex items-start space-x-3">
+<span bis_size='{"x":340,"y":650,"w":18,"h":28,"abs_x":852,"abs_y":1135}' class="material-symbols-outlined text-vault-400 text-lg mt-0.5">code</span>
+<div bis_size='{"x":370,"y":648,"w":544,"h":40,"abs_x":882,"abs_y":1133}'>
+<span bis_size='{"x":370,"y":655,"w":260,"h":13,"abs_x":882,"abs_y":1140}' class="text-xs font-semibold text-white">Utiliser une police monospace pour les secrets</span>
+<p bis_size='{"x":370,"y":672,"w":544,"h":16,"abs_x":882,"abs_y":1157}' class="text-[11px] text-vault-400">Affiche les mots de passe et clés cryptographiques en JetBrains Mono pour éviter la confusion entre 0/O et l/1.</p>
+</div>
+</div>
+<button aria-checked="true" bis_size='{"x":1184,"y":656,"w":44,"h":24,"abs_x":1696,"abs_y":1141}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0" type="button">
+<span bis_size='{"x":1206,"y":658,"w":20,"h":20,"abs_x":1718,"abs_y":1143}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+<div bis_size='{"x":340,"y":716,"w":888,"h":48,"abs_x":852,"abs_y":1201}' class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+<div bis_size='{"x":340,"y":724,"w":352,"h":40,"abs_x":852,"abs_y":1209}' class="flex items-start space-x-3">
+<span bis_size='{"x":340,"y":726,"w":18,"h":28,"abs_x":852,"abs_y":1211}' class="material-symbols-outlined text-vault-400 text-lg mt-0.5">language</span>
+<div bis_size='{"x":370,"y":724,"w":322,"h":40,"abs_x":882,"abs_y":1209}'>
+<span bis_size='{"x":370,"y":731,"w":118,"h":13,"abs_x":882,"abs_y":1216}' class="text-xs font-semibold text-white">Langue de l'interface</span>
+<p bis_size='{"x":370,"y":748,"w":322,"h":16,"abs_x":882,"abs_y":1233}' class="text-[11px] text-vault-400">Définit la langue globale de l'application et des modules d'export.</p>
+</div>
+</div>
+<div bis_size='{"x":1048,"y":728,"w":180,"h":34,"abs_x":1560,"abs_y":1213}' class="relative min-w-[180px]">
+<select bis_label="style" bis_size='{"x":1048,"y":728,"w":180,"h":34,"abs_x":1560,"abs_y":1213}' class="w-full bg-vault-850 text-vault-100 text-xs font-medium rounded-lg px-3 py-2 shadow-sm focus:ring-1 focus:ring-accent-cyan cursor-pointer" style="background-image: url('data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e');">
+<option bis_size='{"x":0,"y":0,"w":0,"h":0,"abs_x":512,"abs_y":485}' selected="" value="fr">🇫🇷 Français (FR)</option>
+<option bis_size='{"x":0,"y":0,"w":0,"h":0,"abs_x":512,"abs_y":485}' value="en">🇺🇸 English (US)</option>
+<option bis_size='{"x":0,"y":0,"w":0,"h":0,"abs_x":512,"abs_y":485}' value="de">🇩🇪 Deutsch (DE)</option>
+<option bis_size='{"x":0,"y":0,"w":0,"h":0,"abs_x":512,"abs_y":485}' value="es">🇪🇸 Español (ES)</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: System & Integration -->
+<section bis_size='{"x":320,"y":817,"w":928,"h":308,"abs_x":832,"abs_y":1302}' class="space-y-4">
+<div bis_size='{"x":320,"y":817,"w":928,"h":44,"abs_x":832,"abs_y":1302}' class="flex items-center justify-between">
+<div bis_size='{"x":320,"y":817,"w":361,"h":44,"abs_x":832,"abs_y":1302}'>
+<span bis_size='{"x":320,"y":826,"w":147,"h":11,"abs_x":832,"abs_y":1311}' class="text-[10px] font-mono uppercase tracking-widest text-accent-cyan font-semibold">SYSTÈME &amp; INTÉGRATION</span>
+<h3 bis_size='{"x":320,"y":841,"w":361,"h":20,"abs_x":832,"abs_y":1326}' class="text-sm font-bold text-white uppercase tracking-wider">Comportement au Démarrage &amp; Raccourcis</h3>
+</div>
+<span bis_size='{"x":1060,"y":831,"w":187,"h":16,"abs_x":1572,"abs_y":1316}' class="text-xs text-vault-500 font-mono">PROCESS: BACKGROUND DAEMON</span>
+</div>
+<div bis_size='{"x":320,"y":877,"w":928,"h":248,"abs_x":832,"abs_y":1362}' class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Startup Toggles -->
+<div bis_size='{"x":320,"y":877,"w":456,"h":248,"abs_x":832,"abs_y":1362}' class="p-5 rounded-xl bg-vault-900 shadow-md space-y-4 flex flex-col justify-between">
+<div bis_size='{"x":340,"y":897,"w":416,"h":133,"abs_x":852,"abs_y":1382}' class="space-y-4">
+<div bis_size='{"x":340,"y":897,"w":416,"h":61,"abs_x":852,"abs_y":1382}' class="flex items-start justify-between gap-3">
+<div bis_size='{"x":340,"y":897,"w":360,"h":61,"abs_x":852,"abs_y":1382}'>
+<span bis_size='{"x":340,"y":904,"w":229,"h":13,"abs_x":852,"abs_y":1389}' class="text-xs font-semibold text-white">Lancer VGuard au démarrage du système</span>
+<p bis_size='{"x":340,"y":925,"w":360,"h":33,"abs_x":852,"abs_y":1410}' class="text-[11px] text-vault-400 mt-1">Démarre silencieusement en arrière-plan dans la barre d'état système / menu bar sans afficher la fenêtre principale.</p>
+</div>
+<button aria-checked="true" bis_size='{"x":712,"y":899,"w":44,"h":24,"abs_x":1224,"abs_y":1384}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0 mt-0.5" type="button">
+<span bis_size='{"x":734,"y":901,"w":20,"h":20,"abs_x":1246,"abs_y":1386}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+<div bis_size='{"x":340,"y":974,"w":416,"h":56,"abs_x":852,"abs_y":1459}' class="flex items-start justify-between gap-3 pt-3">
+<div bis_size='{"x":340,"y":986,"w":359,"h":44,"abs_x":852,"abs_y":1471}'>
+<span bis_size='{"x":340,"y":993,"w":245,"h":13,"abs_x":852,"abs_y":1478}' class="text-xs font-semibold text-white">Démarrer minimisé dans la barre des tâches</span>
+<p bis_size='{"x":340,"y":1014,"w":359,"h":16,"abs_x":852,"abs_y":1499}' class="text-[11px] text-vault-400 mt-1">L'application s'isole immédiatement dans la zone de notification (systray).</p>
+</div>
+<button aria-checked="true" bis_size='{"x":712,"y":988,"w":44,"h":24,"abs_x":1224,"abs_y":1473}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0 mt-0.5" type="button">
+<span bis_size='{"x":734,"y":990,"w":20,"h":20,"abs_x":1246,"abs_y":1475}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+</div>
+<div bis_size='{"x":340,"y":1065,"w":416,"h":40,"abs_x":852,"abs_y":1550}' class="p-2.5 rounded-lg bg-vault-850 flex items-center space-x-2 text-[11px] text-vault-400 font-mono">
+<span bis_size='{"x":350,"y":1075,"w":14,"h":20,"abs_x":862,"abs_y":1560}' class="material-symbols-outlined text-accent-teal text-sm">memory</span>
+<span bis_size='{"x":372,"y":1077,"w":218,"h":16,"abs_x":884,"abs_y":1562}'>Empreinte RAM en veille: ~18.4 Mo</span>
+</div>
+</div>
+<!-- Hotkeys Configuration -->
+<div bis_size='{"x":792,"y":877,"w":456,"h":248,"abs_x":1304,"abs_y":1362}' class="p-5 rounded-xl bg-vault-900 shadow-md space-y-4">
+<div bis_size='{"x":812,"y":897,"w":416,"h":24,"abs_x":1324,"abs_y":1382}' class="flex items-center justify-between pb-2">
+<span bis_size='{"x":812,"y":897,"w":167,"h":16,"abs_x":1324,"abs_y":1382}' class="text-xs font-bold text-white tracking-wide">Raccourcis Globaux Système</span>
+<span bis_size='{"x":1143,"y":897,"w":84,"h":15,"abs_x":1655,"abs_y":1382}' class="text-[10px] font-mono text-accent-cyan uppercase">Actifs partout</span>
+</div>
+<!-- Quick Access Hotkey -->
+<div bis_size='{"x":812,"y":937,"w":416,"h":76,"abs_x":1324,"abs_y":1422}' class="p-3.5 rounded-lg bg-vault-850 space-y-2">
+<div bis_size='{"x":826,"y":951,"w":388,"h":16,"abs_x":1338,"abs_y":1436}' class="flex items-center justify-between">
+<span bis_size='{"x":826,"y":951,"w":181,"h":16,"abs_x":1338,"abs_y":1436}' class="text-xs font-semibold text-vault-200">Recherche rapide (Quick Access)</span>
+<button bis_size='{"x":1165,"y":951,"w":48,"h":15,"abs_x":1677,"abs_y":1436}' class="text-[10px] text-accent-cyan hover:underline font-mono" type="button">Modifier</button>
+</div>
+<div bis_size='{"x":826,"y":975,"w":388,"h":24,"abs_x":1338,"abs_y":1460}' class="flex items-center justify-between">
+<div bis_size='{"x":826,"y":975,"w":172,"h":24,"abs_x":1338,"abs_y":1460}' class="flex items-center space-x-1.5 font-mono text-xs">
+<kbd bis_size='{"x":826,"y":975,"w":42,"h":24,"abs_x":1338,"abs_y":1460}' class="px-2 py-1 rounded bg-vault-800 text-vault-200 shadow-sm text-[11px]">Ctrl</kbd>
+<span bis_size='{"x":874,"y":979,"w":7,"h":16,"abs_x":1386,"abs_y":1464}' class="text-vault-500">+</span>
+<kbd bis_size='{"x":887,"y":975,"w":35,"h":24,"abs_x":1399,"abs_y":1460}' class="px-2 py-1 rounded bg-vault-800 text-vault-200 shadow-sm text-[11px]">Alt</kbd>
+<span bis_size='{"x":929,"y":979,"w":7,"h":16,"abs_x":1441,"abs_y":1464}' class="text-vault-500">+</span>
+<kbd bis_size='{"x":942,"y":975,"w":55,"h":24,"abs_x":1454,"abs_y":1460}' class="px-2 py-1 rounded bg-vault-800 text-accent-cyan font-bold shadow-sm text-[11px]">Espace</kbd>
+</div>
+<span bis_size='{"x":1131,"y":979,"w":82,"h":16,"abs_x":1643,"abs_y":1464}' class="text-[11px] text-vault-500">Palette flottante</span>
+</div>
+</div>
+<!-- Autofill Hotkey -->
+<div bis_size='{"x":812,"y":1029,"w":416,"h":76,"abs_x":1324,"abs_y":1514}' class="p-3.5 rounded-lg bg-vault-850 space-y-2">
+<div bis_size='{"x":826,"y":1043,"w":388,"h":16,"abs_x":1338,"abs_y":1528}' class="flex items-center justify-between">
+<span bis_size='{"x":826,"y":1043,"w":200,"h":16,"abs_x":1338,"abs_y":1528}' class="text-xs font-semibold text-vault-200">Remplissage automatique (Autofill)</span>
+<button bis_size='{"x":1165,"y":1043,"w":48,"h":15,"abs_x":1677,"abs_y":1528}' class="text-[10px] text-accent-cyan hover:underline font-mono" type="button">Modifier</button>
+</div>
+<div bis_size='{"x":826,"y":1067,"w":388,"h":24,"abs_x":1338,"abs_y":1552}' class="flex items-center justify-between">
+<div bis_size='{"x":826,"y":1067,"w":152,"h":24,"abs_x":1338,"abs_y":1552}' class="flex items-center space-x-1.5 font-mono text-xs">
+<kbd bis_size='{"x":826,"y":1067,"w":42,"h":24,"abs_x":1338,"abs_y":1552}' class="px-2 py-1 rounded bg-vault-800 text-vault-200 shadow-sm text-[11px]">Ctrl</kbd>
+<span bis_size='{"x":874,"y":1071,"w":7,"h":16,"abs_x":1386,"abs_y":1556}' class="text-vault-500">+</span>
+<kbd bis_size='{"x":887,"y":1067,"w":49,"h":24,"abs_x":1399,"abs_y":1552}' class="px-2 py-1 rounded bg-vault-800 text-vault-200 shadow-sm text-[11px]">Shift</kbd>
+<span bis_size='{"x":942,"y":1071,"w":7,"h":16,"abs_x":1454,"abs_y":1556}' class="text-vault-500">+</span>
+<kbd bis_size='{"x":956,"y":1067,"w":22,"h":24,"abs_x":1468,"abs_y":1552}' class="px-2 py-1 rounded bg-vault-800 text-accent-cyan font-bold shadow-sm text-[11px]">V</kbd>
+</div>
+<span bis_size='{"x":1138,"y":1071,"w":75,"h":16,"abs_x":1650,"abs_y":1556}' class="text-[11px] text-vault-500">Injecteur direct</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3 & 4: Privacy & Clipboard Security (Split Grid) -->
+<div bis_size='{"x":320,"y":1157,"w":928,"h":372,"abs_x":832,"abs_y":1642}' class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Section 3: Privacy & Visual Security -->
+<section bis_size='{"x":320,"y":1157,"w":452,"h":372,"abs_x":832,"abs_y":1642}' class="p-6 rounded-xl bg-vault-900 shadow-md space-y-5">
+<div bis_size='{"x":344,"y":1181,"w":404,"h":46,"abs_x":856,"abs_y":1666}'>
+<span bis_size='{"x":344,"y":1190,"w":140,"h":11,"abs_x":856,"abs_y":1675}' class="text-[10px] font-mono uppercase tracking-widest text-accent-cyan font-semibold">VIE PRIVÉE &amp; ALERTES</span>
+<h3 bis_size='{"x":344,"y":1207,"w":404,"h":20,"abs_x":856,"abs_y":1692}' class="text-sm font-bold text-white uppercase tracking-wider mt-0.5">Notifications &amp; Confidentialité Visuelle</h3>
+</div>
+<div bis_size='{"x":344,"y":1247,"w":404,"h":233,"abs_x":856,"abs_y":1732}' class="space-y-4">
+<!-- Privacy Shield -->
+<div bis_size='{"x":344,"y":1247,"w":404,"h":59,"abs_x":856,"abs_y":1732}' class="flex items-start justify-between gap-3">
+<div bis_size='{"x":344,"y":1247,"w":348,"h":59,"abs_x":856,"abs_y":1732}' class="flex items-start space-x-3">
+<span bis_size='{"x":344,"y":1249,"w":18,"h":28,"abs_x":856,"abs_y":1734}' class="material-symbols-outlined text-accent-cyan text-lg mt-0.5">visibility_off</span>
+<div bis_size='{"x":374,"y":1247,"w":318,"h":59,"abs_x":886,"abs_y":1732}'>
+<span bis_size='{"x":374,"y":1254,"w":246,"h":13,"abs_x":886,"abs_y":1739}' class="text-xs font-semibold text-white">Masquer le contenu sensible en arrière-plan</span>
+<p bis_size='{"x":374,"y":1273,"w":318,"h":33,"abs_x":886,"abs_y":1758}' class="text-[11px] text-vault-400 mt-0.5">Floute automatiquement la fenêtre et bloque les captures d'écran dès que VGuard perd le focus.</p>
+</div>
+</div>
+<button aria-checked="true" bis_size='{"x":704,"y":1247,"w":44,"h":24,"abs_x":1216,"abs_y":1732}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0" type="button">
+<span bis_size='{"x":726,"y":1249,"w":20,"h":20,"abs_x":1238,"abs_y":1734}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+<!-- Audio Notifications -->
+<div bis_size='{"x":344,"y":1322,"w":404,"h":71,"abs_x":856,"abs_y":1807}' class="flex items-start justify-between gap-3 pt-3">
+<div bis_size='{"x":344,"y":1334,"w":348,"h":59,"abs_x":856,"abs_y":1819}' class="flex items-start space-x-3">
+<span bis_size='{"x":344,"y":1336,"w":18,"h":28,"abs_x":856,"abs_y":1821}' class="material-symbols-outlined text-vault-500 text-lg mt-0.5">volume_off</span>
+<div bis_size='{"x":374,"y":1334,"w":318,"h":59,"abs_x":886,"abs_y":1819}'>
+<span bis_size='{"x":374,"y":1341,"w":208,"h":13,"abs_x":886,"abs_y":1826}' class="text-xs font-semibold text-vault-300">Notifications sonores lors de la copie</span>
+<p bis_size='{"x":374,"y":1360,"w":318,"h":33,"abs_x":886,"abs_y":1845}' class="text-[11px] text-vault-400 mt-0.5">Émet un signal sonore discret lors de la copie d'un mot de passe ou d'un token TOTP.</p>
+</div>
+</div>
+<button aria-checked="false" bis_size='{"x":704,"y":1334,"w":44,"h":24,"abs_x":1216,"abs_y":1819}' class="w-11 h-6 rounded-full bg-vault-700 transition-colors relative p-0.5 shrink-0" type="button">
+<span bis_size='{"x":706,"y":1336,"w":20,"h":20,"abs_x":1218,"abs_y":1821}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-0 transition-transform"></span>
+</button>
+</div>
+<!-- Breach Alerts -->
+<div bis_size='{"x":344,"y":1409,"w":404,"h":71,"abs_x":856,"abs_y":1894}' class="flex items-start justify-between gap-3 pt-3">
+<div bis_size='{"x":344,"y":1421,"w":348,"h":59,"abs_x":856,"abs_y":1906}' class="flex items-start space-x-3">
+<span bis_size='{"x":344,"y":1423,"w":18,"h":28,"abs_x":856,"abs_y":1908}' class="material-symbols-outlined text-rose-400 text-lg mt-0.5">gpp_maybe</span>
+<div bis_size='{"x":374,"y":1421,"w":318,"h":59,"abs_x":886,"abs_y":1906}'>
+<span bis_size='{"x":374,"y":1428,"w":206,"h":13,"abs_x":886,"abs_y":1913}' class="text-xs font-semibold text-white">Alerte des mots de passe compromis</span>
+<p bis_size='{"x":374,"y":1447,"w":318,"h":33,"abs_x":886,"abs_y":1932}' class="text-[11px] text-vault-400 mt-0.5">Vérification locale des hash (k-Anonymity) sans transmission externe de vos identifiants.</p>
+</div>
+</div>
+<button aria-checked="true" bis_size='{"x":704,"y":1421,"w":44,"h":24,"abs_x":1216,"abs_y":1906}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0" type="button">
+<span bis_size='{"x":726,"y":1423,"w":20,"h":20,"abs_x":1238,"abs_y":1908}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section 4: Clipboard & Input Protection -->
+<section bis_size='{"x":796,"y":1157,"w":452,"h":372,"abs_x":1308,"abs_y":1642}' class="p-6 rounded-xl bg-vault-900 shadow-md space-y-5 flex flex-col justify-between">
+<div bis_size='{"x":820,"y":1181,"w":404,"h":276,"abs_x":1332,"abs_y":1666}' class="space-y-5">
+<div bis_size='{"x":820,"y":1181,"w":404,"h":46,"abs_x":1332,"abs_y":1666}'>
+<span bis_size='{"x":820,"y":1190,"w":189,"h":11,"abs_x":1332,"abs_y":1675}' class="text-[10px] font-mono uppercase tracking-widest text-accent-cyan font-semibold">TAMPON SYSTÈME &amp; PROTECTION</span>
+<h3 bis_size='{"x":820,"y":1207,"w":404,"h":20,"abs_x":1332,"abs_y":1692}' class="text-sm font-bold text-white uppercase tracking-wider mt-0.5">Presse-papier &amp; Sécurité de Saisie</h3>
+</div>
+<!-- Clipboard Auto-Clear Timeout -->
+<div bis_size='{"x":820,"y":1247,"w":404,"h":105,"abs_x":1332,"abs_y":1732}' class="space-y-2.5">
+<div bis_size='{"x":820,"y":1247,"w":404,"h":16,"abs_x":1332,"abs_y":1732}' class="flex items-center justify-between">
+<span bis_size='{"x":820,"y":1247,"w":232,"h":16,"abs_x":1332,"abs_y":1732}' class="text-xs font-semibold text-white">Nettoyage automatique du presse-papier</span>
+<span bis_size='{"x":1133,"y":1247,"w":90,"h":15,"abs_x":1645,"abs_y":1732}' class="text-[10px] font-mono text-accent-emerald">Recommandé: 30s</span>
+</div>
+<p bis_size='{"x":820,"y":1273,"w":404,"h":33,"abs_x":1332,"abs_y":1758}' class="text-[11px] text-vault-400">Efface de manière sécurisée les chaînes confidentielles copiées dans la mémoire vive.</p>
+<div bis_size='{"x":820,"y":1316,"w":404,"h":36,"abs_x":1332,"abs_y":1801}' class="grid grid-cols-4 gap-2 pt-1">
+<button bis_size='{"x":820,"y":1320,"w":95,"h":32,"abs_x":1332,"abs_y":1805}' class="py-2 px-3 rounded-lg bg-vault-850 hover:bg-vault-800 text-vault-400 text-xs font-mono font-medium transition-colors text-center" type="button">
+              15s
+            </button>
+<button bis_size='{"x":923,"y":1320,"w":95,"h":32,"abs_x":1435,"abs_y":1805}' class="py-2 px-3 rounded-lg bg-accent-cyan/15 text-accent-cyan text-xs font-mono font-bold shadow-sm text-center" type="button">
+              30s
+            </button>
+<button bis_size='{"x":1026,"y":1320,"w":95,"h":32,"abs_x":1538,"abs_y":1805}' class="py-2 px-3 rounded-lg bg-vault-850 hover:bg-vault-800 text-vault-400 text-xs font-mono font-medium transition-colors text-center" type="button">
+              60s
+            </button>
+<button bis_size='{"x":1129,"y":1320,"w":95,"h":32,"abs_x":1641,"abs_y":1805}' class="py-2 px-3 rounded-lg bg-vault-850 hover:bg-vault-800 text-vault-400 text-xs font-mono font-medium transition-colors text-center" type="button">
+              Off
+            </button>
+</div>
+</div>
+<!-- Anti-Keylogger Protection -->
+<div bis_size='{"x":820,"y":1372,"w":404,"h":85,"abs_x":1332,"abs_y":1857}' class="p-4 rounded-lg bg-vault-850 flex items-start justify-between gap-3">
+<div bis_size='{"x":836,"y":1388,"w":316,"h":53,"abs_x":1348,"abs_y":1873}' class="flex items-start space-x-3">
+<span bis_size='{"x":836,"y":1390,"w":18,"h":28,"abs_x":1348,"abs_y":1875}' class="material-symbols-outlined text-accent-emerald text-lg mt-0.5">shield_locked</span>
+<div bis_size='{"x":866,"y":1388,"w":286,"h":53,"abs_x":1378,"abs_y":1873}'>
+<div bis_size='{"x":866,"y":1388,"w":286,"h":16,"abs_x":1378,"abs_y":1873}' class="flex items-center space-x-2">
+<span bis_size='{"x":866,"y":1388,"w":145,"h":16,"abs_x":1378,"abs_y":1873}' class="text-xs font-semibold text-white">Protection anti-keylogger</span>
+<span bis_size='{"x":1019,"y":1389,"w":39,"h":13,"abs_x":1531,"abs_y":1874}' class="px-1.5 py-0.2 text-[9px] font-mono bg-accent-emerald/20 text-accent-emerald rounded">Actif</span>
+</div>
+<p bis_size='{"x":866,"y":1408,"w":286,"h":33,"abs_x":1378,"abs_y":1893}' class="text-[11px] text-vault-400 mt-1">Intercepte les hooks API malveillants lors de la saisie du mot de passe maître.</p>
+</div>
+</div>
+<button aria-checked="true" bis_size='{"x":1164,"y":1388,"w":44,"h":24,"abs_x":1676,"abs_y":1873}' class="w-11 h-6 rounded-full bg-accent-emerald transition-colors relative p-0.5 shrink-0" type="button">
+<span bis_size='{"x":1186,"y":1390,"w":20,"h":20,"abs_x":1698,"abs_y":1875}' class="block w-5 h-5 rounded-full bg-white shadow-md transform translate-x-5 transition-transform"></span>
+</button>
+</div>
+</div>
+<!-- Action Footer -->
+<div bis_size='{"x":820,"y":1477,"w":404,"h":28,"abs_x":1332,"abs_y":1962}' class="pt-3 flex items-center justify-between text-xs">
+<span bis_size='{"x":820,"y":1489,"w":225,"h":16,"abs_x":1332,"abs_y":1974}' class="text-[11px] text-vault-500 font-mono">Modifications appliquées en direct</span>
+<button bis_size='{"x":1059,"y":1489,"w":164,"h":16,"abs_x":1571,"abs_y":1974}' class="text-vault-400 hover:text-white transition-colors underline font-medium" type="button">
+          Rétablir les valeurs par défaut
+        </button>
+</div>
+</section>
+</div>
+</div></main>
+<!-- END: ScrollablePageContent -->
+</div>
+<!-- END: MainContentWrapper -->
+</div>
+<!-- Interactive behavior for tabs and toggle mockups -->
+<script data-purpose="toggle-interactions">
+    document.addEventListener('DOMContentLoaded', () => {
+      // Toggle switches click simulation
+      const toggles = document.querySelectorAll('button[aria-checked]');
+      toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const isChecked = toggle.getAttribute('aria-checked') === 'true';
+          const knob = toggle.querySelector('span');
+          
+          if (isChecked) {
+            toggle.setAttribute('aria-checked', 'false');
+            toggle.classList.remove('bg-accent-emerald');
+            toggle.classList.add('bg-vault-700');
+            knob.classList.remove('translate-x-5');
+            knob.classList.add('translate-x-0');
+          } else {
+            toggle.setAttribute('aria-checked', 'true');
+            toggle.classList.remove('bg-vault-700');
+            toggle.classList.add('bg-accent-emerald');
+            knob.classList.remove('translate-x-0');
+            knob.classList.add('translate-x-5');
+          }
+        });
+      });
+    });
+  </script>
+<div bis_size='{"x":0,"y":0,"w":1280,"h":1024,"abs_x":512,"abs_y":485}' class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-sm select-none animate-in fade-in duration-200"><div class="relative w-full max-w-lg bg-[#101014] border border-vault-700/80 rounded-2xl shadow-2xl shadow-black/90 overflow-hidden flex flex-col animate-in fade-in duration-200"><div class="absolute -top-24 -right-24 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div><div class="flex items-center justify-between px-6 py-5 border-b border-vault-700/60 bg-vault-900/80 relative z-10"><div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400"><span class="material-symbols-outlined text-lg">warning</span></div><h3 class="text-base font-bold text-white tracking-tight">Supprimer cet élément ?</h3></div><button class="w-8 h-8 rounded-lg bg-vault-850 hover:bg-vault-800 border border-vault-700/60 text-vault-400 hover:text-white flex items-center justify-center transition-colors" title="Fermer" type="button"><span class="material-symbols-outlined text-base">close</span></button></div><div class="p-6 space-y-4 relative z-10"><p class="text-xs text-vault-300 leading-relaxed">Êtes-vous sûr de vouloir supprimer définitivement l'identifiant <strong class="text-white font-semibold">« Compte Google (alexandre@...) »</strong> ? Cette action est irréversible et effacera également la clé 2FA associée du coffre-fort local.</p><div class="p-3.5 rounded-xl bg-vault-850/80 border border-vault-700/60 flex items-center justify-between gap-3"><div class="flex items-center space-x-3 min-w-0"><div class="w-9 h-9 rounded-lg bg-vault-800 border border-vault-700 flex items-center justify-center shrink-0 text-vault-300"><span class="material-symbols-outlined text-base text-accent-cyan">key</span></div><div class="flex flex-col min-w-0"><span class="text-xs font-semibold text-white truncate">Compte Google</span><span class="text-[11px] font-mono text-vault-400 truncate">alexandre@gmail.com</span></div></div><span class="px-2 py-0.5 text-[10px] font-mono rounded bg-vault-800 border border-vault-700 text-vault-300 shrink-0">Mot de passe + 2FA</span></div><div class="p-3 rounded-lg bg-vault-900 border border-vault-700/40 flex items-start space-x-2.5"><span class="material-symbols-outlined text-vault-500 text-sm mt-0.5 shrink-0">info</span><p class="text-[11px] text-vault-400 leading-normal">Les copies chiffrées dans les sauvegardes antérieures ne seront pas affectées.</p></div></div><div class="flex items-center justify-end space-x-3 px-6 py-4 border-t border-vault-700/60 bg-vault-900/90 relative z-10"><button class="px-4 py-2.5 rounded-xl bg-vault-850 hover:bg-vault-800 border border-vault-700/60 text-vault-300 hover:text-white text-xs font-medium transition-colors" type="button">Annuler</button><button class="px-4 py-2.5 rounded-xl bg-rose-500/80 hover:bg-rose-500 text-white font-semibold text-xs border border-rose-500/50 shadow-lg shadow-black/40 flex items-center space-x-1.5 transition-all active:scale-[0.98]" type="button"><span class="material-symbols-outlined text-sm font-semibold">delete_forever</span><span>Supprimer définitivement</span></button></div></div></div>
+</body></html>
