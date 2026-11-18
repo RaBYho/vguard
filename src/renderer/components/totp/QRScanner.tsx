@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   X,
   Camera,
@@ -16,12 +16,42 @@ export function QRScanner() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
   const saveEntry = useVaultStore((state) => state.saveEntry);
   const categories = useVaultStore((state) => state.categories);
 
+  // Arrêt complet et immédiat des flux caméra (hardware release)
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+        track.enabled = false;
+      });
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      if (videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => {
+          track.stop();
+          track.enabled = false;
+        });
+        videoRef.current.srcObject = null;
+      }
+      videoRef.current.pause();
+    }
+  }, []);
+
+  const handleClose = useCallback(() => {
+    stopCamera();
+    setQRScannerOpen(false);
+  }, [stopCamera, setQRScannerOpen]);
+
   const handleTOTPUri = async (uri: string) => {
+    stopCamera();
     try {
       const parsed = await window.vaultAPI.parseTOTPUri(uri);
       await saveEntry({
@@ -43,32 +73,51 @@ export function QRScanner() {
   };
 
   useEffect(() => {
-    if (activeTab !== 'camera') return;
+    // Si l'onglet actif n'est pas la caméra, libérer le matériel immédiatement
+    if (activeTab !== 'camera') {
+      stopCamera();
+      return;
+    }
 
-    let stream: MediaStream | null = null;
+    let isCancelled = false;
     let animationFrameId: number;
 
     const startCamera = async () => {
       try {
         setError(null);
-        stream = await navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } },
         });
+
+        // Si le composant a été fermé pendant l'initialisation asynchrone du matériel
+        if (isCancelled) {
+          stream.getTracks().forEach((track) => {
+            track.stop();
+            track.enabled = false;
+          });
+          return;
+        }
+
+        streamRef.current = stream;
 
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
           videoRef.current.setAttribute('playsinline', 'true');
-          videoRef.current.play();
-          requestAnimationFrame(scanFrame);
+          videoRef.current.play().catch(() => {});
+          animationFrameId = requestAnimationFrame(scanFrame);
         }
       } catch (err) {
-        console.warn('Camera access denied or unavailable:', err);
-        setHasCamera(false);
-        setActiveTab('file');
+        if (!isCancelled) {
+          console.warn('Camera access denied or unavailable:', err);
+          setHasCamera(false);
+          setActiveTab('file');
+        }
       }
     };
 
     const scanFrame = () => {
+      if (isCancelled) return;
+
       if (
         videoRef.current &&
         videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA &&
@@ -95,12 +144,24 @@ export function QRScanner() {
     startCamera();
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
+      isCancelled = true;
       cancelAnimationFrame(animationFrameId);
+      stopCamera();
     };
-  }, [activeTab]);
+  }, [activeTab, stopCamera]);
+
+  // Fermeture propre sur la touche Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleClose]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -146,7 +207,7 @@ export function QRScanner() {
             </h3>
           </div>
           <button
-            onClick={() => setQRScannerOpen(false)}
+            onClick={handleClose}
             className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white p-1 rounded-lg transition cursor-pointer"
             title="Fermer"
           >
@@ -185,38 +246,50 @@ export function QRScanner() {
             </button>
           </div>
 
-          {/* Viseur Caméra ou Drag & Drop Fichier */}
-          {activeTab === 'camera' ? (
+          {/* Zone de scan caméra */}
+          {activeTab === 'camera' && (
             <div className="relative w-full h-64 bg-[#09090B] rounded-2xl border border-zinc-300 dark:border-[#27272A] overflow-hidden flex items-center justify-center shadow-inner">
               <video
                 ref={videoRef}
-                className="absolute inset-0 w-full h-full object-cover"
+                playsInline
                 muted
+                className="w-full h-full object-cover"
               />
               <canvas ref={canvasRef} className="hidden" />
 
-              {/* Cadre de visée Glowing Stitch */}
-              <div className="relative w-44 h-44 flex items-center justify-center z-10 pointer-events-none">
-                {/* Coins cyan lumineux */}
-                <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#06B6D4] rounded-tl-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
-                <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#06B6D4] rounded-tr-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
-                <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#06B6D4] rounded-bl-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
-                <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#06B6D4] rounded-br-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
-                {/* Ligne laser animée */}
-                <div className="absolute left-1 right-1 h-0.5 brand-gradient shadow-[0_0_12px_#06B6D4] animate-pulse" />
+              {/* Réticule de visée Stitch avec coins biseautés */}
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <div className="relative w-44 h-44 border border-[#06B6D4]/30 rounded-xl">
+                  <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#06B6D4] rounded-tl-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
+                  <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#06B6D4] rounded-tr-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
+                  <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#06B6D4] rounded-bl-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
+                  <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#06B6D4] rounded-br-sm drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
+
+                  {/* Ligne laser animée */}
+                  <div className="absolute inset-x-2 h-0.5 bg-gradient-to-r from-transparent via-[#06B6D4] to-transparent animate-pulse top-1/2 -translate-y-1/2 drop-shadow-[0_0_6px_#06B6D4]"></div>
+                </div>
+              </div>
+
+              <div className="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none">
+                <span className="text-[11px] font-mono text-zinc-300 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                  Cadrez le QR Code dans le réticule
+                </span>
               </div>
             </div>
-          ) : (
+          )}
+
+          {/* Zone d'import de fichier */}
+          {activeTab === 'file' && (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-64 bg-zinc-50 hover:bg-zinc-100 dark:bg-[#18181B]/60 dark:hover:bg-[#18181B] border-2 border-dashed border-zinc-300 dark:border-[#27272A] hover:border-[#06B6D4]/50 rounded-2xl flex flex-col items-center justify-center p-6 text-center transition cursor-pointer group"
+              className="w-full h-64 border-2 border-dashed border-zinc-300 dark:border-[#27272A] hover:border-[#06B6D4] rounded-2xl flex flex-col items-center justify-center p-6 text-center cursor-pointer transition bg-zinc-50 dark:bg-[#18181B]/50 hover:bg-zinc-100 dark:hover:bg-[#18181B] group"
             >
               <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-[#0891B2] dark:text-[#06B6D4] mb-3 group-hover:scale-110 transition-transform shadow-sm">
                 <Upload className="w-6 h-6" />
               </div>
-              <h4 className="text-xs font-semibold text-zinc-900 dark:text-white mb-1">
-                Cliquez pour importer une capture ou un QR code
-              </h4>
+              <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
+                Cliquez pour importer un QR code
+              </p>
               <p className="text-[11px] text-zinc-500 font-mono">
                 Formats acceptés : PNG, JPG, WEBP
               </p>
