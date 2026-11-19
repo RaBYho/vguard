@@ -1,6 +1,6 @@
 {
   "name": "vguard",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Gestionnaire sécurisé de mots de passe et codes 2FA",
   "main": "dist/main/index.js",
   "scripts": {

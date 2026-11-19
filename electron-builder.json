@@ -1,0 +1,22 @@
+{
+  "appId": "dev.vguard.app",
+  "productName": "VGuard",
+  "copyright": "Copyright © 2026 Hoby",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/main/**/*",
+    "dist/preload/**/*",
+    "dist/renderer/**/*",
+    "dist/shared/**/*",
+    "resources/**/*",
+    "package.json"
+  ],
+  "linux": {
+    "target": ["AppImage", "tar.gz"],
+    "category": "Utility",
+    "icon": "resources/icon.png",
+    "maintainer": "Hoby <hoby@vguard.dev>"
+  }
+}
