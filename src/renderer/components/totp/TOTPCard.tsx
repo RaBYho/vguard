@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import type { TOTPEntry } from '../../../shared/types';
 import { useVaultStore } from '../../stores/vault-store';
+import { toast } from '../../stores/toast-store';
 
 interface Props {
   entry: TOTPEntry;
@@ -19,7 +20,7 @@ export function TOTPCard({ entry }: Props) {
   const totpCodes = useVaultStore((state) => state.totpCodes);
   const toggleFavorite = useVaultStore((state) => state.toggleFavorite);
   const openEdit = useVaultStore((state) => state.openEditEntryModal);
-  const deleteEntry = useVaultStore((state) => state.deleteEntry);
+  const requestDeleteEntry = useVaultStore((state) => state.requestDeleteEntry);
   const categories = useVaultStore((state) => state.categories);
 
   const category = categories.find((c) => c.id === entry.categoryId);
@@ -46,6 +47,7 @@ export function TOTPCard({ entry }: Props) {
     if (!code || code === '------') return;
     await window.vaultAPI.copyToClipboard(code);
     setCopied(true);
+    toast.info(`Code 2FA pour ${entry.issuer || entry.title} copié !`);
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -204,12 +206,8 @@ export function TOTPCard({ entry }: Props) {
           </button>
 
           <button
-            onClick={() => {
-              if (confirm(`Supprimer le code 2FA "${entry.title}" ?`)) {
-                deleteEntry(entry.id);
-              }
-            }}
-            className="text-zinc-400 hover:text-red-600 dark:text-zinc-500 dark:hover:text-red-400 transition p-1"
+            onClick={() => requestDeleteEntry(entry)}
+            className="text-zinc-400 hover:text-red-600 dark:text-zinc-500 dark:hover:text-red-400 transition p-1 cursor-pointer"
             title="Supprimer"
           >
             <Trash2 className="w-3.5 h-3.5" />

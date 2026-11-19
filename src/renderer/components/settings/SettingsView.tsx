@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
 import { useThemeStore } from '../../hooks/useTheme';
+import { toast } from '../../stores/toast-store';
+import { formatErrorMessage } from '../../utils/format-error';
 
 export function SettingsView() {
   const settings = useVaultStore((state) => state.settings);
@@ -52,11 +54,14 @@ export function SettingsView() {
     try {
       await window.vaultAPI.changeMasterPassword(oldPassword, newPassword);
       setPwMessage({ type: 'success', text: 'Mot de passe maître modifié avec succès !' });
+      toast.success('Mot de passe maître modifié avec succès !');
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err: any) {
-      setPwMessage({ type: 'error', text: err?.message || 'Mot de passe actuel incorrect.' });
+      const cleanErr = formatErrorMessage(err, 'Mot de passe actuel incorrect.');
+      setPwMessage({ type: 'error', text: cleanErr });
+      toast.error(cleanErr);
     } finally {
       setIsChangingPw(false);
     }
@@ -74,10 +79,12 @@ export function SettingsView() {
       a.download = `vguard_backup_${new Date().toISOString().slice(0, 10)}.${format}`;
       a.click();
       URL.revokeObjectURL(url);
-      setExportMessage(`Sauvegarde ${format.toUpperCase()} exportée avec succès.`);
+      const successMsg = `Sauvegarde ${format.toUpperCase()} exportée avec succès.`;
+      setExportMessage(successMsg);
+      toast.success(successMsg);
       setTimeout(() => setExportMessage(null), 3000);
     } catch (e: any) {
-      alert(`Erreur d'export: ${e.message}`);
+      toast.error(formatErrorMessage(e, "Erreur lors de l'exportation du coffre."));
     }
   };
 
@@ -90,10 +97,12 @@ export function SettingsView() {
       try {
         const content = event.target?.result as string;
         const res = await window.vaultAPI.importVault(content, 'json');
-        alert(`${res.importedCount} entrées importées avec succès !`);
-        window.location.reload();
+        toast.success(`${res.importedCount} élément(s) importé(s) avec succès !`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } catch (err: any) {
-        alert(`Erreur d'importation : ${err.message}`);
+        toast.error(formatErrorMessage(err, "Erreur lors de l'importation de la sauvegarde."));
       }
     };
     reader.readAsText(file);

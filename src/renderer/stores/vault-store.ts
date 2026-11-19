@@ -8,6 +8,8 @@ import type {
   TOTPCodeResult,
 } from '../../shared/types';
 import { useThemeStore } from '../hooks/useTheme';
+import { toast } from './toast-store';
+import { formatErrorMessage } from '../utils/format-error';
 
 export type ActiveTab = 'all' | 'passwords' | 'totp' | 'favorites' | 'generator' | 'settings';
 
@@ -22,6 +24,7 @@ interface VaultState {
   settings: VaultData['settings'];
   totpCodes: Record<string, TOTPCodeResult>;
   editingEntry: VaultEntry | null;
+  deletingEntry: VaultEntry | null;
   isEntryModalOpen: boolean;
   isQRScannerOpen: boolean;
   isGeneratorModalOpen: boolean;
@@ -40,6 +43,9 @@ interface VaultState {
   openNewEntryModal: (type?: 'password' | 'totp') => void;
   openEditEntryModal: (entry: VaultEntry) => void;
   closeEntryModal: () => void;
+  requestDeleteEntry: (entry: VaultEntry) => void;
+  cancelDeleteEntry: () => void;
+  confirmDeleteEntry: () => Promise<void>;
   setQRScannerOpen: (open: boolean) => void;
   setGeneratorModalOpen: (open: boolean) => void;
 
@@ -68,6 +74,7 @@ export const useVaultStore = create<VaultState>((set, get) => ({
   },
   totpCodes: {},
   editingEntry: null,
+  deletingEntry: null,
   isEntryModalOpen: false,
   isQRScannerOpen: false,
   isGeneratorModalOpen: false,
@@ -174,6 +181,23 @@ export const useVaultStore = create<VaultState>((set, get) => ({
 
   openEditEntryModal: (entry) => set({ editingEntry: entry, isEntryModalOpen: true }),
   closeEntryModal: () => set({ isEntryModalOpen: false, editingEntry: null }),
+  requestDeleteEntry: (entry) => set({ deletingEntry: entry }),
+  cancelDeleteEntry: () => set({ deletingEntry: null }),
+  confirmDeleteEntry: async () => {
+    const entry = get().deletingEntry;
+    if (!entry) return;
+    try {
+      await get().deleteEntry(entry.id);
+      set({ deletingEntry: null });
+      toast.success(
+        entry.type === 'password'
+          ? 'Mot de passe supprimé avec succès.'
+          : 'Code 2FA supprimé avec succès.'
+      );
+    } catch (err: any) {
+      toast.error(formatErrorMessage(err, "Erreur lors de la suppression de l'élément."));
+    }
+  },
   setQRScannerOpen: (open) => set({ isQRScannerOpen: open }),
   setGeneratorModalOpen: (open) => set({ isGeneratorModalOpen: open }),
 

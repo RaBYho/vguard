@@ -19,6 +19,8 @@ import {
 import * as OTPAuth from 'otpauth';
 import type { VaultEntry, PasswordEntry, TOTPEntry } from '../../../shared/types';
 import { useVaultStore } from '../../stores/vault-store';
+import { toast } from '../../stores/toast-store';
+import { formatErrorMessage } from '../../utils/format-error';
 
 interface Props {
   entry: Partial<VaultEntry>;
@@ -233,9 +235,17 @@ export function EntryModal({ entry, onClose }: Props) {
           });
         }
       }
+      if (isEditing) {
+        toast.success('Modifications enregistrées avec succès.');
+      } else if (activeType === 'password') {
+        toast.success('Mot de passe créé avec succès.');
+      } else {
+        toast.success('Code 2FA ajouté avec succès.');
+      }
+
       onClose();
     } catch (err: any) {
-      setError(err?.message || "Erreur lors de l'enregistrement.");
+      setError(formatErrorMessage(err, "Erreur lors de l'enregistrement."));
     } finally {
       setIsSubmitting(false);
     }

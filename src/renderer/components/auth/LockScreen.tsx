@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
 import { ThemeToggle } from '../common/ThemeToggle';
+import { formatErrorMessage } from '../../utils/format-error';
+import { toast } from '../../stores/toast-store';
 
 export function LockScreen() {
   const [password, setPassword] = useState('');
@@ -42,8 +44,9 @@ export function LockScreen() {
 
     try {
       await unlock(password);
+      toast.success('Coffre-fort déverrouillé avec succès.');
     } catch (err: any) {
-      setError(err?.message || 'Mot de passe maître invalide.');
+      setError(formatErrorMessage(err, 'Mot de passe incorrect.'));
     } finally {
       setIsLoading(false);
       setPassword('');

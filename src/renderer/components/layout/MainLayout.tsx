@@ -5,6 +5,7 @@ import { BottomNavBar } from './BottomNavBar';
 import { PasswordList } from '../passwords/PasswordList';
 import { TOTPList } from '../totp/TOTPList';
 import { EntryModal } from '../common/EntryModal';
+import { DeleteConfirmModal } from '../common/DeleteConfirmModal';
 import { QRScanner } from '../totp/QRScanner';
 import { PasswordGeneratorModal } from '../passwords/PasswordGeneratorModal';
 import { SettingsView } from '../settings/SettingsView';
@@ -15,8 +16,11 @@ export function MainLayout() {
   const activeTab = useVaultStore((state) => state.activeTab);
   const selectedCategoryId = useVaultStore((state) => state.selectedCategoryId);
   const editingEntry = useVaultStore((state) => state.editingEntry);
+  const deletingEntry = useVaultStore((state) => state.deletingEntry);
   const isEntryModalOpen = useVaultStore((state) => state.isEntryModalOpen);
   const closeEntryModal = useVaultStore((state) => state.closeEntryModal);
+  const cancelDeleteEntry = useVaultStore((state) => state.cancelDeleteEntry);
+  const confirmDeleteEntry = useVaultStore((state) => state.confirmDeleteEntry);
   const isQRScannerOpen = useVaultStore((state) => state.isQRScannerOpen);
   const isGeneratorModalOpen = useVaultStore((state) => state.isGeneratorModalOpen);
   const refreshTOTPCodes = useVaultStore((state) => state.refreshTOTPCodes);
@@ -141,6 +145,15 @@ export function MainLayout() {
       {/* Modale globale unifiée Stitch (Mot de passe & 2FA) */}
       {isEntryModalOpen && editingEntry && (
         <EntryModal entry={editingEntry} onClose={closeEntryModal} />
+      )}
+
+      {/* Modale de confirmation de suppression Stitch */}
+      {deletingEntry && (
+        <DeleteConfirmModal
+          entry={deletingEntry}
+          onConfirm={confirmDeleteEntry}
+          onCancel={cancelDeleteEntry}
+        />
       )}
 
       {isQRScannerOpen && <QRScanner />}

@@ -7,6 +7,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
+import { toast } from '../../stores/toast-store';
 
 export function PasswordGeneratorModal() {
   const isGeneratorModalOpen = useVaultStore((state) => state.isGeneratorModalOpen);
@@ -51,6 +52,7 @@ export function PasswordGeneratorModal() {
     if (!password) return;
     await window.vaultAPI.copyToClipboard(password);
     setCopied(true);
+    toast.info('Mot de passe copié dans le presse-papier !');
     setTimeout(() => setCopied(false), 2000);
   };
 

@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import jsQR from 'jsqr';
 import { useVaultStore } from '../../stores/vault-store';
+import { toast } from '../../stores/toast-store';
+import { formatErrorMessage } from '../../utils/format-error';
 
 export function QRScanner() {
   const [activeTab, setActiveTab] = useState<'camera' | 'file'>('camera');
@@ -66,9 +68,12 @@ export function QRScanner() {
         categoryId: categories[0]?.id || '',
         favorite: false,
       });
+      toast.success(`Code 2FA pour « ${parsed.issuer || parsed.title} » configuré avec succès !`);
       setQRScannerOpen(false);
     } catch (err: any) {
-      setError(err?.message || 'QR code invalide pour le protocole TOTP.');
+      const cleanErr = formatErrorMessage(err, 'QR code invalide pour le protocole TOTP.');
+      setError(cleanErr);
+      toast.error(cleanErr);
     }
   };
 

@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
 import { ThemeToggle } from '../common/ThemeToggle';
+import { formatErrorMessage } from '../../utils/format-error';
+import { toast } from '../../stores/toast-store';
 
 export function SetupWizard() {
   const [userName, setUserName] = useState('');
@@ -77,8 +79,9 @@ export function SetupWizard() {
           console.warn('Could not save user profile preferences', e);
         }
       }
+      toast.success('Coffre-fort créé et configuré avec succès !');
     } catch (err: any) {
-      setError(err?.message || 'Erreur lors de la création du coffre-fort.');
+      setError(formatErrorMessage(err, 'Erreur lors de la création du coffre-fort.'));
     } finally {
       setIsLoading(false);
     }
