@@ -8,7 +8,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useVaultStore, ActiveTab } from '../../stores/vault-store';
-import { VGuardLogo } from '../common/VGuardLogo';
 import { ThemeToggle } from '../common/ThemeToggle';
 
 export function Sidebar() {
@@ -76,8 +75,20 @@ export function Sidebar() {
       {/* Partie haute */}
       <div className="p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
         {/* Brand Header */}
-        <div className="flex items-center gap-3">
-          <VGuardLogo size={36} variant="full" />
+        <div className="flex items-center gap-3 select-none">
+          <img
+            src="./icons/vguard-icon.svg"
+            alt="VGuard Logo"
+            className="w-9 h-9 shrink-0 drop-shadow-[0_0_12px_rgba(6,182,212,0.4)]"
+          />
+          <div className="flex flex-col">
+            <span className="text-base font-bold tracking-tight text-zinc-900 dark:text-[#F8FAFC] leading-none">
+              VGuard
+            </span>
+            <span className="text-[10px] uppercase font-mono tracking-wider text-[#06B6D4] font-semibold mt-1">
+              Local Vault
+            </span>
+          </div>
         </div>
 
         {/* User Profile Badge */}
@@ -111,9 +122,9 @@ export function Sidebar() {
                   setActiveTab(item.id);
                   setSelectedCategory(null);
                 }}
-                className={`flex items-center justify-between px-3 h-10 rounded-xl text-xs font-medium transition cursor-pointer ${
+                className={`flex items-center justify-between px-3 h-10 rounded-xl text-xs font-medium transition-all duration-200 ease-out cursor-pointer ${
                   isActive
-                    ? 'bg-[#06B6D4]/10 border border-[#06B6D4]/30 text-[#0891B2] dark:text-[#06B6D4]'
+                    ? 'bg-[#06B6D4]/10 border border-[#06B6D4]/30 text-[#0891B2] dark:text-[#06B6D4] shadow-xs'
                     : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-[#18181B]'
                 }`}
               >
@@ -139,9 +150,6 @@ export function Sidebar() {
               <Sparkles className="w-4 h-4 text-[#06B6D4] group-hover:rotate-12 transition-transform" />
               <span className="font-medium">Générateur</span>
             </div>
-            <span className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 bg-white dark:bg-[#121215] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-[#27272A]">
-              ⌥G
-            </span>
           </button>
         </div>
 
@@ -158,7 +166,7 @@ export function Sidebar() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center justify-between px-3 py-1.5 text-xs transition cursor-pointer rounded-lg ${
+                className={`flex items-center justify-between px-3 py-1.5 text-xs transition-all duration-200 ease-out cursor-pointer rounded-lg ${
                   isCatActive
                     ? 'bg-zinc-100 dark:bg-[#18181B] text-zinc-900 dark:text-white border border-zinc-200 dark:border-[#27272A]'
                     : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100/60 dark:hover:bg-[#18181B]/50'
@@ -193,7 +201,6 @@ export function Sidebar() {
               <Settings className="w-4 h-4" />
               <span>Paramètres</span>
             </div>
-            <span className="text-[10px] font-mono text-zinc-400">⌘,</span>
           </button>
           <ThemeToggle />
         </div>
@@ -206,9 +213,6 @@ export function Sidebar() {
             <Lock className="w-4 h-4" />
             <span>Verrouiller</span>
           </div>
-          <span className="text-[10px] font-mono bg-red-500/20 px-1.5 py-0.5 rounded text-red-600 dark:text-[#EF4444]">
-            Ctrl+L
-          </span>
         </button>
       </div>
     </aside>

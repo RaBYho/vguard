@@ -110,9 +110,11 @@ async function testVaultIntegration() {
   console.log('10. ✅ Changement de mot de passe maître et re-chiffrement du vault validés');
 
   // Nettoyage
+  vault.lock();
   await fs.rm(testDir, { recursive: true, force: true });
 
   console.log('\n🏆 INTÉGRATION COMPLÈTE VALIDÉE À 100% SANS AUCUNE ANOMALIE !\n');
+  process.exit(0);
 }
 
 testVaultIntegration().catch((e) => {

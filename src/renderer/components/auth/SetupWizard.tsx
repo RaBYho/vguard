@@ -10,7 +10,6 @@ import {
   Check,
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
-import { VGuardLogo } from '../common/VGuardLogo';
 import { ThemeToggle } from '../common/ThemeToggle';
 
 export function SetupWizard() {
@@ -99,11 +98,17 @@ export function SetupWizard() {
           
           {/* Colonne gauche (Branding & Statut épuré) */}
           <section className="lg:col-span-5 p-8 sm:p-12 lg:p-14 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-[#27272A]/60 bg-zinc-50/80 dark:bg-[#0E0E11]/40 transition-colors">
-            <div className="flex items-center gap-2.5">
-              <VGuardLogo size={32} variant="full" />
-            </div>
+            {/* Centre : Grand Bouclier VGuard & Titre */}
+            <div className="my-auto space-y-6">
+              <div className="w-16 h-16 relative flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#06B6D4]/25 rounded-2xl blur-xl"></div>
+                <img
+                  src="./icons/vguard-icon.svg"
+                  alt="VGuard Bouclier"
+                  className="w-16 h-16 relative z-10 shrink-0 drop-shadow-[0_0_12px_rgba(6,182,212,0.4)] select-none"
+                />
+              </div>
 
-            <div className="my-8 lg:my-0 space-y-6">
               <div className="space-y-3">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#06B6D4]/10 border border-[#06B6D4]/20 text-[#0891B2] dark:text-[#06B6D4] text-[11px] font-mono font-medium">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#06B6D4] animate-pulse"></span>
@@ -138,43 +143,44 @@ export function SetupWizard() {
             </div>
           </section>
 
-          {/* Colonne droite (Formulaire) */}
+          {/* Colonne droite (Formulaire centré) */}
           <section className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between">
-            <form onSubmit={handleCreate} className="space-y-5">
-              {/* Profil utilisateur (Nom & Email) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5">
-                    Nom d'utilisateur <span className="text-zinc-400 font-normal">(optionnel)</span>
-                  </label>
-                  <div className="flex items-center gap-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-300 dark:border-[#27272A] rounded-xl px-3 h-11 focus-within:border-[#06B6D4] transition">
-                    <User className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
-                    <input
-                      type="text"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      placeholder="Ex: Alexandre"
-                      className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
-                    />
+            <div className="my-auto w-full max-w-lg mx-auto">
+              <form onSubmit={handleCreate} className="space-y-5">
+                {/* Profil utilisateur (Nom & Email) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5">
+                      Nom d'utilisateur <span className="text-zinc-400 font-normal">(optionnel)</span>
+                    </label>
+                    <div className="flex items-center gap-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-300 dark:border-[#27272A] rounded-xl px-3 h-11 focus-within:border-[#06B6D4] transition">
+                      <User className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+                      <input
+                        type="text"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        placeholder="Votre nom ou pseudonyme"
+                        className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5">
-                    Email de contact <span className="text-zinc-400 font-normal">(optionnel)</span>
-                  </label>
-                  <div className="flex items-center gap-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-300 dark:border-[#27272A] rounded-xl px-3 h-11 focus-within:border-[#06B6D4] transition">
-                    <Mail className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
-                    <input
-                      type="email"
-                      value={recoveryEmail}
-                      onChange={(e) => setRecoveryEmail(e.target.value)}
-                      placeholder="alex@domaine.com"
-                      className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
-                    />
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5">
+                      Email de contact <span className="text-zinc-400 font-normal">(optionnel)</span>
+                    </label>
+                    <div className="flex items-center gap-2.5 bg-zinc-50 dark:bg-[#18181B] border border-zinc-300 dark:border-[#27272A] rounded-xl px-3 h-11 focus-within:border-[#06B6D4] transition">
+                      <Mail className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+                      <input
+                        type="email"
+                        value={recoveryEmail}
+                        onChange={(e) => setRecoveryEmail(e.target.value)}
+                        placeholder="contact@exemple.com"
+                        className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
               {/* Mot de passe maître */}
               <div>
@@ -272,11 +278,13 @@ export function SetupWizard() {
                 </button>
               </div>
             </form>
+          </div>
 
-            <p className="text-[11px] text-zinc-500 dark:text-[#71717A] text-center mt-4">
-              ⚠️ Attention : aucun kit de récupération en ligne n'existe. Mémorisez bien ce mot de passe.
-            </p>
-          </section>
+          <div className="pt-4 border-t border-zinc-200 dark:border-[#27272A]/40 flex items-center justify-between text-xs text-zinc-500 dark:text-[#71717A]">
+            <span>⚠️ Aucun kit en ligne : conservez votre mot de passe</span>
+            <span className="text-zinc-400 dark:text-[#52525B] text-[11px] font-mono">100% Hors-ligne</span>
+          </div>
+        </section>
 
         </div>
       </main>

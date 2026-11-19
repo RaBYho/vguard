@@ -101,6 +101,7 @@ async function testNativeMessaging() {
   await fs.rm(testDir, { recursive: true, force: true });
 
   console.log('\n🎉 TOUS LES TESTS NATIVE MESSAGING PASSÉS AVEC SUCCÈS !\n');
+  process.exit(0);
 }
 
 testNativeMessaging().catch((err) => {

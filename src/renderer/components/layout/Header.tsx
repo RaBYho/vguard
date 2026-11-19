@@ -5,7 +5,6 @@ import {
   X,
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
-import { VGuardLogo } from '../common/VGuardLogo';
 import { ThemeToggle } from '../common/ThemeToggle';
 
 export function Header() {
@@ -25,7 +24,11 @@ export function Header() {
     <header className="h-16 px-4 sm:px-8 bg-white dark:bg-[#121215] border-b border-zinc-200 dark:border-[#27272A] flex items-center justify-between gap-4 flex-shrink-0 z-20 select-none transition-colors">
       {/* Logo mobile */}
       <div className="md:hidden flex items-center">
-        <VGuardLogo size={28} variant="icon" />
+        <img
+          src="./icons/vguard-icon.svg"
+          alt="VGuard Logo"
+          className="w-7 h-7 shrink-0 drop-shadow-[0_0_10px_rgba(6,182,212,0.4)] select-none"
+        />
       </div>
 
       {/* Omnibox de recherche Stitch */}
@@ -38,9 +41,6 @@ export function Header() {
           placeholder="Rechercher un identifiant ou code TOTP..."
           className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
         />
-        <kbd className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-200 dark:bg-[#27272A] text-zinc-600 dark:text-zinc-400 flex-shrink-0 hidden sm:inline">
-          Ctrl+F
-        </kbd>
       </div>
 
       {/* Badge filtre catégorie active */}

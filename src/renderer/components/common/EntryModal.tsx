@@ -242,8 +242,8 @@ export function EntryModal({ entry, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors">
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+      <div className="w-full max-w-md bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors animate-modal-pop">
         {/* Header Épuré */}
         <div className="px-6 py-4 border-b border-zinc-200 dark:border-[#27272A] flex items-center justify-between bg-zinc-50 dark:bg-[#121215] transition-colors">
           <h3 className="text-sm font-semibold text-zinc-900 dark:text-white tracking-tight">
@@ -363,7 +363,7 @@ export function EntryModal({ entry, onClose }: Props) {
 
             {/* ═══ SECTION SPÉCIFIQUE MOT DE PASSE ═══ */}
             {activeType === 'password' && (
-              <>
+              <div key="pw-section" className="space-y-3.5 animate-fade-in">
                 {/* URL de connexion */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
@@ -431,12 +431,12 @@ export function EntryModal({ entry, onClose }: Props) {
                     </span>
                   </div>
                 </div>
-              </>
+              </div>
             )}
 
             {/* ═══ SECTION SPÉCIFIQUE CODE 2FA ═══ */}
             {activeType === 'totp' && (
-              <>
+              <div key="totp-section" className="space-y-3.5 animate-fade-in">
                 {/* Clé secrète 2FA (Secret Key Base32) avec bouton Scanner QR */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
@@ -565,7 +565,7 @@ export function EntryModal({ entry, onClose }: Props) {
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             )}
 
             {/* Notes chiffrées (Disponibles pour Mot de passe & TOTP) */}

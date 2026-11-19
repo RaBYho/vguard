@@ -196,8 +196,8 @@ export function QRScanner() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+      <div className="w-full max-w-lg bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors animate-modal-pop">
         {/* En-tête Modal Stitch */}
         <div className="px-6 py-4 border-b border-zinc-200 dark:border-[#27272A] flex items-center justify-between bg-zinc-50 dark:bg-[#121215] transition-colors">
           <div className="flex items-center gap-2">
@@ -248,7 +248,7 @@ export function QRScanner() {
 
           {/* Zone de scan caméra */}
           {activeTab === 'camera' && (
-            <div className="relative w-full h-64 bg-[#09090B] rounded-2xl border border-zinc-300 dark:border-[#27272A] overflow-hidden flex items-center justify-center shadow-inner">
+            <div key="camera-zone" className="relative w-full h-64 bg-[#09090B] rounded-2xl border border-zinc-300 dark:border-[#27272A] overflow-hidden flex items-center justify-center shadow-inner animate-fade-in">
               <video
                 ref={videoRef}
                 playsInline
@@ -281,8 +281,9 @@ export function QRScanner() {
           {/* Zone d'import de fichier */}
           {activeTab === 'file' && (
             <div
+              key="file-zone"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-64 border-2 border-dashed border-zinc-300 dark:border-[#27272A] hover:border-[#06B6D4] rounded-2xl flex flex-col items-center justify-center p-6 text-center cursor-pointer transition bg-zinc-50 dark:bg-[#18181B]/50 hover:bg-zinc-100 dark:hover:bg-[#18181B] group"
+              className="w-full h-64 border-2 border-dashed border-zinc-300 dark:border-[#27272A] hover:border-[#06B6D4] rounded-2xl flex flex-col items-center justify-center p-6 text-center cursor-pointer transition bg-zinc-50 dark:bg-[#18181B]/50 hover:bg-zinc-100 dark:hover:bg-[#18181B] group animate-fade-in"
             >
               <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-[#0891B2] dark:text-[#06B6D4] mb-3 group-hover:scale-110 transition-transform shadow-sm">
                 <Upload className="w-6 h-6" />

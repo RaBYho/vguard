@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="tileBgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#18181C" />
+      <stop offset="60%" stop-color="#111114" />
+      <stop offset="100%" stop-color="#0A0A0C" />
+    </linearGradient>
+
+    <filter id="tileShadowMain" x="-15%" y="-15%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.70" />
+    </filter>
+
+    <linearGradient id="vguardStitchGradTile" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <filter id="continuousNeonGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#06B6D4" flood-opacity="0.65" />
+      <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#06B6D4" flood-opacity="0.40" />
+      <feDropShadow dx="0" dy="0" stdDeviation="38" flood-color="#06B6D4" flood-opacity="0.18" />
+    </filter>
+  </defs>
+
+  <rect
+    x="102"
+    y="102"
+    width="820"
+    height="820"
+    rx="195"
+    ry="195"
+    fill="url(#tileBgGrad)"
+    stroke="rgba(255, 255, 255, 0.08)"
+    stroke-width="2"
+    filter="url(#tileShadowMain)"
+  />
+
+  <g transform="translate(262, 268) scale(5.0)" filter="url(#continuousNeonGlow)">
+    <path
+      d="M50 8 L82 22 C82 56 50 88 50 88 C50 88 18 56 18 22 Z"
+      fill="none"
+      stroke="url(#vguardStitchGradTile)"
+      stroke-width="7"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M50 16 C68 16 75 32 75 48 C75 66 50 80 50 80 C50 80 25 66 25 48 C25 32 32 16 50 16 Z"
+      fill="#09090B"
+      opacity="0.95"
+    />
+
+    <rect x="39" y="44" width="22" height="18" rx="4" fill="#F8FAFC" />
+
+    <path
+      d="M43 44 V37 C43 32.5 46.5 29 50 29 C53.5 29 57 32.5 57 37 V44"
+      fill="none"
+      stroke="#F8FAFC"
+      stroke-width="4.5"
+      stroke-linecap="round"
+    />
+
+    <circle cx="50" cy="51" r="2.2" fill="#09090B" />
+    <path d="M50 53.2 V56.5" stroke="#09090B" stroke-width="2" stroke-linecap="round" />
+  </g>
+</svg>

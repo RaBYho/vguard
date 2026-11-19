@@ -36,9 +36,9 @@ export function BottomNavBar() {
               setActiveTab(item.id);
               setSelectedCategory(null);
             }}
-            className={`min-h-[44px] min-w-[44px] flex-1 flex flex-col items-center justify-center gap-1 rounded-xl transition cursor-pointer focus-ring ${
+            className={`min-h-[44px] min-w-[44px] flex-1 flex flex-col items-center justify-center gap-1 rounded-xl transition-all duration-200 ease-out cursor-pointer focus-ring ${
               isActive
-                ? 'text-[#0891B2] dark:text-[#06B6D4] font-semibold'
+                ? 'text-[#0891B2] dark:text-[#06B6D4] font-semibold scale-105'
                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
             }`}
           >
