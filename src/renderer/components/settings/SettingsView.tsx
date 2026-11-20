@@ -9,11 +9,16 @@ import {
   Sliders,
   Moon,
   Sun,
+  ZoomIn,
+  Keyboard,
+  RotateCcw,
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
 import { useThemeStore } from '../../hooks/useTheme';
+import { useZoom } from '../../hooks/useZoom';
 import { toast } from '../../stores/toast-store';
 import { formatErrorMessage } from '../../utils/format-error';
+import { LIMITS, validateMasterPassword } from '../../../shared/validation';
 
 export function SettingsView() {
   const settings = useVaultStore((state) => state.settings);
@@ -21,6 +26,8 @@ export function SettingsView() {
 
   const themeMode = useThemeStore((state) => state.mode);
   const setTheme = useThemeStore((state) => state.setTheme);
+
+  const { zoomFactor, setZoomFactor, resetZoom, presets } = useZoom();
 
   // Modification mot de passe maître
   const [oldPassword, setOldPassword] = useState('');
@@ -38,10 +45,17 @@ export function SettingsView() {
     e.preventDefault();
     setPwMessage(null);
 
-    if (newPassword.length < 8) {
+    const validOld = validateMasterPassword(oldPassword, false);
+    if (!validOld.valid) {
+      setPwMessage({ type: 'error', text: validOld.error || 'Mot de passe actuel invalide.' });
+      return;
+    }
+
+    const validNew = validateMasterPassword(newPassword, true);
+    if (!validNew.valid) {
       setPwMessage({
         type: 'error',
-        text: 'Le nouveau mot de passe maître doit comporter au moins 8 caractères.',
+        text: validNew.error || 'Le nouveau mot de passe maître doit comporter au moins 8 caractères.',
       });
       return;
     }
@@ -170,6 +184,110 @@ export function SettingsView() {
           </div>
         </div>
 
+        {/* Section 2 : Mise à l'échelle de l'interface (Zoom UI - Proposition 1) */}
+        <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl p-6 space-y-4 shadow-sm transition-colors">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[#0891B2] dark:text-[#06B6D4] flex items-center justify-center">
+                <ZoomIn className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-zinc-900 dark:text-white">Mise à l'échelle (Zoom UI)</h2>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  Adaptez la taille générale de l'interface à votre écran
+                </p>
+              </div>
+            </div>
+            {zoomFactor !== 1.0 && (
+              <button
+                type="button"
+                onClick={resetZoom}
+                className="flex items-center gap-1 px-2.5 py-1 text-xs text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-[#18181B] dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] rounded-lg transition cursor-pointer"
+                title="Réinitialiser à 100% (Ctrl 0)"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>100%</span>
+              </button>
+            )}
+          </div>
+
+          {/* Grille des boutons presets de zoom */}
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2">
+            {presets.map((preset) => {
+              const isActive = Math.abs(zoomFactor - preset.value) < 0.02;
+              return (
+                <button
+                  key={preset.value}
+                  type="button"
+                  onClick={() => setZoomFactor(preset.value)}
+                  className={`py-2 px-1.5 rounded-xl border flex flex-col items-center justify-center gap-0.5 transition cursor-pointer text-xs ${
+                    isActive
+                      ? 'bg-[#06B6D4]/15 border-[#06B6D4] text-[#0891B2] dark:text-[#06B6D4] font-bold shadow-xs'
+                      : 'bg-zinc-50 dark:bg-[#18181B]/50 border-zinc-200 dark:border-[#27272A] text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-[#18181B]'
+                  }`}
+                >
+                  <span className="font-mono">{preset.label.replace(' (Normal)', '')}</span>
+                  {preset.value === 1.0 && (
+                    <span className="text-[9px] uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-sans">
+                      Défaut
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] text-zinc-400 dark:text-zinc-500 font-mono pt-1">
+            <span>Raccourcis : <kbd className="px-1 py-0.5 bg-zinc-100 dark:bg-[#18181B] rounded border border-zinc-200 dark:border-[#27272A]">Ctrl +</kbd> / <kbd className="px-1 py-0.5 bg-zinc-100 dark:bg-[#18181B] rounded border border-zinc-200 dark:border-[#27272A]">Ctrl -</kbd></span>
+            <span>Actuel : <strong className="text-zinc-700 dark:text-zinc-300 font-bold">{Math.round(zoomFactor * 100)}%</strong></span>
+          </div>
+        </div>
+
+        {/* Section : Raccourcis Clavier Globaux */}
+        <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl p-6 space-y-4 md:col-span-2 shadow-sm transition-colors">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[#059669] dark:text-[#10B981] flex items-center justify-center">
+              <Keyboard className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-white">Raccourcis Clavier Globaux</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Commandes rapides pour naviguer, rechercher et sécuriser votre coffre
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+            <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#18181B]/60 border border-zinc-200 dark:border-[#27272A] flex flex-col justify-between gap-2">
+              <span className="text-xs text-zinc-600 dark:text-zinc-400">Recherche omnibox</span>
+              <kbd className="inline-flex self-start items-center gap-1 px-2 py-1 text-xs font-mono font-medium text-zinc-800 dark:text-zinc-200 bg-zinc-200/70 dark:bg-zinc-800/80 rounded border border-zinc-300 dark:border-zinc-700">
+                Ctrl + F <span className="text-zinc-400">/ ⌘F</span>
+              </kbd>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#18181B]/60 border border-zinc-200 dark:border-[#27272A] flex flex-col justify-between gap-2">
+              <span className="text-xs text-zinc-600 dark:text-zinc-400">Générateur de mot de passe</span>
+              <kbd className="inline-flex self-start items-center gap-1 px-2 py-1 text-xs font-mono font-medium text-zinc-800 dark:text-zinc-200 bg-zinc-200/70 dark:bg-zinc-800/80 rounded border border-zinc-300 dark:border-zinc-700">
+                Alt + G <span className="text-zinc-400">/ ⌥G</span>
+              </kbd>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#18181B]/60 border border-zinc-200 dark:border-[#27272A] flex flex-col justify-between gap-2">
+              <span className="text-xs text-zinc-600 dark:text-zinc-400">Verrouillage & Zéroisation</span>
+              <kbd className="inline-flex self-start items-center gap-1 px-2 py-1 text-xs font-mono font-medium text-red-600 dark:text-red-400 bg-red-500/10 rounded border border-red-500/30">
+                Ctrl + L <span className="text-red-400/70">/ ⌘L</span>
+              </kbd>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#18181B]/60 border border-zinc-200 dark:border-[#27272A] flex flex-col justify-between gap-2">
+              <span className="text-xs text-zinc-600 dark:text-zinc-400">Fermer modale / Scanner</span>
+              <kbd className="inline-flex self-start items-center gap-1 px-2 py-1 text-xs font-mono font-medium text-zinc-800 dark:text-zinc-200 bg-zinc-200/70 dark:bg-zinc-800/80 rounded border border-zinc-300 dark:border-zinc-700">
+                Échap <span className="text-zinc-400">(Esc)</span>
+              </kbd>
+            </div>
+          </div>
+        </div>
+
         {/* Section 2 : Minuteries de sécurité */}
         <div className="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl p-6 space-y-4 shadow-sm transition-colors">
           <div className="flex items-center gap-3">
@@ -238,6 +356,7 @@ export function SettingsView() {
               <input
                 type="password"
                 required
+                maxLength={LIMITS.MASTER_PASSWORD_MAX}
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 placeholder="Votre mot de passe actuel"
@@ -253,6 +372,7 @@ export function SettingsView() {
                 <input
                   type="password"
                   required
+                  maxLength={LIMITS.MASTER_PASSWORD_MAX}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Min. 8 caractères"
@@ -267,6 +387,7 @@ export function SettingsView() {
                 <input
                   type="password"
                   required
+                  maxLength={LIMITS.MASTER_PASSWORD_MAX}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Répétez le mot de passe"

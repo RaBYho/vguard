@@ -13,6 +13,11 @@ import { useVaultStore } from '../../stores/vault-store';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { formatErrorMessage } from '../../utils/format-error';
 import { toast } from '../../stores/toast-store';
+import {
+  LIMITS,
+  validateMasterPassword,
+  sanitizeSingleLine,
+} from '../../../shared/validation';
 
 export function SetupWizard() {
   const [userName, setUserName] = useState('');
@@ -48,8 +53,9 @@ export function SetupWizard() {
     e.preventDefault();
     setError('');
 
-    if (password.length < 8) {
-      setError('Le mot de passe maître doit comporter au moins 8 caractères.');
+    const { valid, error: pwError } = validateMasterPassword(password, true);
+    if (!valid) {
+      setError(pwError || 'Le mot de passe maître doit comporter au moins 8 caractères.');
       return;
     }
 
@@ -63,17 +69,20 @@ export function SetupWizard() {
     try {
       await createVault(password);
 
-      if (userName.trim() || recoveryEmail.trim()) {
+      const cleanUserName = sanitizeSingleLine(userName, LIMITS.USER_NAME_MAX);
+      const cleanEmail = sanitizeSingleLine(recoveryEmail, LIMITS.RECOVERY_EMAIL_MAX);
+
+      if (cleanUserName || cleanEmail) {
         try {
-          if (userName.trim() && typeof localStorage !== 'undefined') {
-            localStorage.setItem('vguard-user-name', userName.trim());
+          if (cleanUserName && typeof localStorage !== 'undefined') {
+            localStorage.setItem('vguard-user-name', cleanUserName);
           }
-          if (recoveryEmail.trim() && typeof localStorage !== 'undefined') {
-            localStorage.setItem('vguard-user-email', recoveryEmail.trim());
+          if (cleanEmail && typeof localStorage !== 'undefined') {
+            localStorage.setItem('vguard-user-email', cleanEmail);
           }
           await updateSettings({
-            userName: userName.trim() || undefined,
-            recoveryEmail: recoveryEmail.trim() || undefined,
+            userName: cleanUserName || undefined,
+            recoveryEmail: cleanEmail || undefined,
           });
         } catch (e) {
           console.warn('Could not save user profile preferences', e);
@@ -160,6 +169,7 @@ export function SetupWizard() {
                       <User className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
                       <input
                         type="text"
+                        maxLength={LIMITS.USER_NAME_MAX}
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                         placeholder="Votre nom ou pseudonyme"
@@ -176,6 +186,7 @@ export function SetupWizard() {
                       <Mail className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
                       <input
                         type="email"
+                        maxLength={LIMITS.RECOVERY_EMAIL_MAX}
                         value={recoveryEmail}
                         onChange={(e) => setRecoveryEmail(e.target.value)}
                         placeholder="contact@exemple.com"
@@ -203,6 +214,7 @@ export function SetupWizard() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
+                    maxLength={LIMITS.MASTER_PASSWORD_MAX}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Min. 8 caractères, majuscule, chiffre..."
@@ -245,6 +257,7 @@ export function SetupWizard() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
+                    maxLength={LIMITS.MASTER_PASSWORD_MAX}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Répétez le mot de passe maître"

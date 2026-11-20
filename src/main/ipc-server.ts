@@ -4,6 +4,9 @@ import path from 'node:path';
 import os from 'node:os';
 import type { VaultManager } from './vault/vault-manager';
 import { generatePassword } from './crypto/password-generator';
+import { LIMITS } from '../shared/validation';
+
+export const IPC_TCP_PORT = 48485;
 
 export function getSocketPath(): string {
   if (process.platform === 'win32') {
@@ -14,6 +17,7 @@ export function getSocketPath(): string {
 
 export class VGuardIPCServer {
   private server: net.Server | null = null;
+  private tcpServer: net.Server | null = null;
   private vaultManager: VaultManager;
   private socketPath: string;
 
@@ -34,36 +38,8 @@ export class VGuardIPCServer {
       }
     }
 
-    this.server = net.createServer((socket) => {
-      let buffer = '';
-
-      socket.on('data', async (chunk) => {
-        buffer += chunk.toString('utf8');
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Garde la ligne incomplète pour le prochain chunk
-
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          try {
-            const request = JSON.parse(line);
-            const response = await this.handleRequest(request);
-            socket.write(JSON.stringify(response) + '\n');
-          } catch (err: any) {
-            socket.write(
-              JSON.stringify({
-                status: 'error',
-                message: err?.message || 'Requête invalide',
-              }) + '\n'
-            );
-          }
-        }
-      });
-
-      socket.on('error', (err) => {
-        // Déconnexion normale ou erreur client
-      });
-    });
-
+    // 1. Serveur Unix domain socket / named pipe
+    this.server = net.createServer((socket) => this.handleConnection(socket));
     this.server.listen(this.socketPath, () => {
       // Sécuriser les permissions du socket sur Unix (lecture/écriture utilisateur uniquement)
       if (process.platform !== 'win32') {
@@ -75,7 +51,63 @@ export class VGuardIPCServer {
     });
 
     this.server.on('error', (err) => {
-      console.error('[VGuard IPC] Erreur serveur :', err);
+      console.error('[VGuard IPC] Erreur serveur socket :', err);
+    });
+
+    // 2. Serveur TCP local (127.0.0.1) pour compatibilité universelle (Snap, Flatpak, sandboxes)
+    this.tcpServer = net.createServer((socket) => this.handleConnection(socket));
+    this.tcpServer.listen(IPC_TCP_PORT, '127.0.0.1', () => {
+      console.log(`[VGuard IPC] Serveur TCP local démarré sur 127.0.0.1:${IPC_TCP_PORT}`);
+    });
+
+    this.tcpServer.on('error', (err: any) => {
+      console.warn('[VGuard IPC] Avertissement serveur TCP local :', err?.message || err);
+    });
+  }
+
+  private handleConnection(socket: net.Socket): void {
+    let buffer = '';
+
+    socket.on('data', async (chunk) => {
+      buffer += chunk.toString('utf8');
+
+      // Protection contre Buffer Overflow / Bombing / Épuisement mémoire
+      if (buffer.length > LIMITS.MAX_IPC_BUFFER_BYTES) {
+        buffer = '';
+        try {
+          socket.write(
+            JSON.stringify({
+              status: 'error',
+              message: 'Dépassement de capacité : charge utile trop volumineuse.',
+            }) + '\n'
+          );
+          socket.destroy();
+        } catch {}
+        return;
+      }
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || ''; // Garde la ligne incomplète pour le prochain chunk
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const request = JSON.parse(line);
+          const response = await this.handleRequest(request);
+          socket.write(JSON.stringify(response) + '\n');
+        } catch (err: any) {
+          socket.write(
+            JSON.stringify({
+              status: 'error',
+              message: err?.message || 'Requête invalide',
+            }) + '\n'
+          );
+        }
+      }
+    });
+
+    socket.on('error', () => {
+      // Déconnexion normale ou erreur client
     });
   }
 
@@ -83,6 +115,10 @@ export class VGuardIPCServer {
     if (this.server) {
       this.server.close();
       this.server = null;
+    }
+    if (this.tcpServer) {
+      this.tcpServer.close();
+      this.tcpServer = null;
     }
     if (process.platform !== 'win32') {
       try {

@@ -136,6 +136,10 @@ export interface VaultAPI {
   // Clipboard
   copyToClipboard: (text: string, clearAfterSeconds?: number) => Promise<void>;
 
+  // UI Zoom & scaling
+  setZoomFactor: (factor: number) => void;
+  getZoomFactor: () => number;
+
   // Export / Import
   exportVault: (format: 'json' | 'csv') => Promise<string>;
   importVault: (content: string, format: 'json' | 'csv' | 'bitwarden') => Promise<{ importedCount: number }>;

@@ -11,7 +11,8 @@ import { toast } from '../../stores/toast-store';
 
 export function PasswordGeneratorModal() {
   const isGeneratorModalOpen = useVaultStore((state) => state.isGeneratorModalOpen);
-  const setGeneratorModalOpen = useVaultStore((state) => state.setGeneratorModalOpen);
+  const closePasswordGenerator = useVaultStore((state) => state.closePasswordGenerator);
+  const generatorTargetCallback = useVaultStore((state) => state.generatorTargetCallback);
 
   const [password, setPassword] = useState('');
   const [length, setLength] = useState(20);
@@ -56,10 +57,21 @@ export function PasswordGeneratorModal() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleUsePassword = () => {
+    if (!password) return;
+    if (generatorTargetCallback) {
+      generatorTargetCallback(password);
+      closePasswordGenerator();
+      toast.success('Mot de passe inséré avec succès.');
+    } else {
+      copyPassword();
+    }
+  };
+
   if (!isGeneratorModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
       <div className="w-full max-w-md bg-white dark:bg-[#121215] border border-zinc-200 dark:border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors animate-modal-pop">
         {/* En-tête Modal Stitch */}
         <div className="px-6 py-4 border-b border-zinc-200 dark:border-[#27272A] flex items-center justify-between bg-zinc-50 dark:bg-[#121215] transition-colors">
@@ -69,13 +81,18 @@ export function PasswordGeneratorModal() {
               Générateur Cryptographique
             </h3>
           </div>
-          <button
-            onClick={() => setGeneratorModalOpen(false)}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white p-1 rounded-lg transition cursor-pointer"
-            title="Fermer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800/60 rounded border border-zinc-300/60 dark:border-zinc-700/60 select-none">
+              Esc
+            </kbd>
+            <button
+              onClick={() => closePasswordGenerator()}
+              className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white p-1 rounded-lg transition cursor-pointer"
+              title="Fermer (Échap)"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Corps */}
@@ -196,23 +213,34 @@ export function PasswordGeneratorModal() {
 
           {/* Footer Bouton */}
           <div className="pt-2">
-            <button
-              type="button"
-              onClick={copyPassword}
-              className="w-full h-11 rounded-xl brand-gradient hover:opacity-90 text-[#09090B] font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-[#06B6D4]/15"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4 stroke-[2.5]" />
-                  <span>Copié dans le presse-papier !</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4 stroke-[2.5]" />
-                  <span>Copier et utiliser</span>
-                </>
-              )}
-            </button>
+            {generatorTargetCallback ? (
+              <button
+                type="button"
+                onClick={handleUsePassword}
+                className="w-full h-11 rounded-xl brand-gradient hover:opacity-90 text-[#09090B] font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-[#06B6D4]/15"
+              >
+                <Check className="w-4 h-4 stroke-[2.5]" />
+                <span>Utiliser</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={copyPassword}
+                className="w-full h-11 rounded-xl brand-gradient hover:opacity-90 text-[#09090B] font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md shadow-[#06B6D4]/15"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4 stroke-[2.5]" />
+                    <span>Copié dans le presse-papier !</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4 stroke-[2.5]" />
+                    <span>Copier le mot de passe</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>

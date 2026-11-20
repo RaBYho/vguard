@@ -22,42 +22,58 @@ function sendMessage(msg) {
   process.stdout.write(buffer);
 }
 
+const TCP_PORT = 48485;
+
 function queryVGuardApp(requestPayload) {
   const socketPath = getSocketPath();
 
-  if (process.platform !== 'win32' && !fs.existsSync(socketPath)) {
-    sendMessage({
-      status: 'app_not_running',
-      message: "L'application VGuard n'est pas ouverte. Veuillez lancer VGuard pour activer le remplissage.",
+  // Fonction utilitaire pour attacher les écouteurs de communication
+  const setupClient = (client, onFail) => {
+    let dataBuffer = '';
+
+    client.on('connect', () => {
+      client.write(JSON.stringify(requestPayload) + '\n');
     });
-    return;
-  }
 
-  const client = net.createConnection(socketPath, () => {
-    client.write(JSON.stringify(requestPayload) + '\n');
-  });
-
-  let dataBuffer = '';
-
-  client.on('data', (chunk) => {
-    dataBuffer += chunk.toString('utf8');
-    if (dataBuffer.includes('\n')) {
-      const line = dataBuffer.split('\n')[0];
-      try {
-        const response = JSON.parse(line);
-        sendMessage(response);
-      } catch (e) {
-        sendMessage({ status: 'error', message: 'Réponse corrompue de VGuard' });
+    client.on('data', (chunk) => {
+      dataBuffer += chunk.toString('utf8');
+      if (dataBuffer.includes('\n')) {
+        const line = dataBuffer.split('\n')[0];
+        try {
+          const response = JSON.parse(line);
+          sendMessage(response);
+        } catch (e) {
+          sendMessage({ status: 'error', message: 'Réponse corrompue de VGuard' });
+        }
+        client.end();
       }
-      client.end();
-    }
-  });
-
-  client.on('error', (err) => {
-    sendMessage({
-      status: 'app_not_running',
-      message: "Impossible de joindre VGuard. Assurez-vous que l'application est démarrée.",
     });
+
+    client.on('error', (err) => {
+      if (onFail) {
+        onFail();
+      } else {
+        sendMessage({
+          status: 'app_not_running',
+          message: "Impossible de joindre VGuard. Assurez-vous que l'application est démarrée.",
+        });
+      }
+    });
+  };
+
+  // 1. Tenter TCP 127.0.0.1 en premier
+  const tcpClient = net.createConnection({ port: TCP_PORT, host: '127.0.0.1' });
+  setupClient(tcpClient, () => {
+    // 2. Si échec TCP, tenter socket Unix local
+    if (process.platform === 'win32' || fs.existsSync(socketPath)) {
+      const unixClient = net.createConnection(socketPath);
+      setupClient(unixClient, null);
+    } else {
+      sendMessage({
+        status: 'app_not_running',
+        message: "L'application VGuard n'est pas ouverte. Veuillez lancer VGuard pour activer le remplissage.",
+      });
+    }
   });
 }
 

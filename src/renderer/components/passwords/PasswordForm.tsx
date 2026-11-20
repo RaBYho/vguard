@@ -35,7 +35,7 @@ export function PasswordForm({ entry, onClose }: Props) {
   const saveEntry = useVaultStore((state) => state.saveEntry);
   const updateEntry = useVaultStore((state) => state.updateEntry);
   const categories = useVaultStore((state) => state.categories);
-  const setGeneratorModalOpen = useVaultStore((state) => state.setGeneratorModalOpen);
+  const openPasswordGenerator = useVaultStore((state) => state.openPasswordGenerator);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,7 +176,11 @@ export function PasswordForm({ entry, onClose }: Props) {
               </label>
               <button
                 type="button"
-                onClick={() => setGeneratorModalOpen(true)}
+                onClick={() =>
+                  openPasswordGenerator((newPw) => {
+                    setPassword(newPw);
+                  })
+                }
                 className="flex items-center gap-1 text-[11px] font-mono text-[#0891B2] dark:text-[#06B6D4] hover:underline cursor-pointer"
               >
                 <Sparkles className="w-3 h-3" />

@@ -6,13 +6,14 @@ import {
 } from 'lucide-react';
 import { useVaultStore } from '../../stores/vault-store';
 import { ThemeToggle } from '../common/ThemeToggle';
+import { LIMITS, sanitizeSearchQuery } from '../../../shared/validation';
 
 export function Header() {
   const searchQuery = useVaultStore((state) => state.searchQuery);
   const setSearchQuery = useVaultStore((state) => state.setSearchQuery);
   const activeTab = useVaultStore((state) => state.activeTab);
   const openNewEntryModal = useVaultStore((state) => state.openNewEntryModal);
-  const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
+  const openQRScanner = useVaultStore((state) => state.openQRScanner);
   const lock = useVaultStore((state) => state.lock);
   const selectedCategoryId = useVaultStore((state) => state.selectedCategoryId);
   const setSelectedCategory = useVaultStore((state) => state.setSelectedCategory);
@@ -35,12 +36,17 @@ export function Header() {
       <div className="flex items-center gap-3 flex-1 max-w-lg bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] px-3.5 h-10 rounded-xl focus-within:border-[#06B6D4] focus-within:ring-1 focus-within:ring-[#06B6D4] transition">
         <Search className="w-4 h-4 text-zinc-400 dark:text-zinc-500 shrink-0" />
         <input
+          id="omnibox-search-input"
           type="text"
+          maxLength={LIMITS.SEARCH_QUERY_MAX}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => setSearchQuery(sanitizeSearchQuery(e.target.value))}
           placeholder="Rechercher un identifiant ou code TOTP..."
           className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
         />
+        <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800/60 rounded border border-zinc-300/60 dark:border-zinc-700/60 select-none shrink-0">
+          Ctrl F
+        </kbd>
       </div>
 
       {/* Badge filtre catégorie active */}
@@ -67,7 +73,7 @@ export function Header() {
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Bouton 1 : Scanner QR */}
         <button
-          onClick={() => setQRScannerOpen(true)}
+          onClick={() => openQRScanner()}
           className="flex items-center gap-2 px-3.5 h-10 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition cursor-pointer shadow-sm"
         >
           <QrCode className="w-4 h-4 text-[#0891B2] dark:text-[#06B6D4]" />

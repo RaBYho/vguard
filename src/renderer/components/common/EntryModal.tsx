@@ -18,6 +18,14 @@ import {
 } from 'lucide-react';
 import * as OTPAuth from 'otpauth';
 import type { VaultEntry, PasswordEntry, TOTPEntry } from '../../../shared/types';
+import {
+  LIMITS,
+  validateAndSanitizeUrl,
+  validateAndSanitizeTotpSecret,
+  sanitizeSingleLine,
+  sanitizeMultiline,
+  sanitizePassword,
+} from '../../../shared/validation';
 import { useVaultStore } from '../../stores/vault-store';
 import { toast } from '../../stores/toast-store';
 import { formatErrorMessage } from '../../utils/format-error';
@@ -67,8 +75,8 @@ export function EntryModal({ entry, onClose }: Props) {
   const saveEntry = useVaultStore((state) => state.saveEntry);
   const updateEntry = useVaultStore((state) => state.updateEntry);
   const categories = useVaultStore((state) => state.categories);
-  const setGeneratorModalOpen = useVaultStore((state) => state.setGeneratorModalOpen);
-  const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
+  const openPasswordGenerator = useVaultStore((state) => state.openPasswordGenerator);
+  const openQRScanner = useVaultStore((state) => state.openQRScanner);
 
   // Décompte et calcul direct du code TOTP en temps réel
   const [remainingSeconds, setRemainingSeconds] = useState(30);
@@ -158,79 +166,104 @@ export function EntryModal({ entry, onClose }: Props) {
 
     try {
       if (activeType === 'password') {
-        if (!title.trim()) {
+        const cleanTitle = sanitizeSingleLine(title, LIMITS.TITLE_MAX);
+        if (!cleanTitle) {
           setError('Le titre ou nom du service est requis.');
           setIsSubmitting(false);
           return;
         }
-        if (!password) {
+
+        const cleanPassword = sanitizePassword(password, LIMITS.PASSWORD_MAX);
+        if (!cleanPassword) {
           setError('Le mot de passe est requis.');
           setIsSubmitting(false);
           return;
         }
 
+        // Validation de l'URL si présente
+        const { valid: urlValid, url: sanitizedUrl, error: urlError } = validateAndSanitizeUrl(url);
+        if (!urlValid) {
+          setError(urlError || 'URL invalide.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        const cleanUsername = sanitizeSingleLine(username, LIMITS.USERNAME_MAX);
+        const cleanEmail = sanitizeSingleLine(email, LIMITS.EMAIL_MAX);
+        const cleanNotes = sanitizeMultiline(notes, LIMITS.NOTES_MAX);
+
         if (isEditing && entry.id) {
           await updateEntry(entry.id, {
-            title: title.trim(),
-            username: username.trim(),
-            password,
-            email: email.trim() || undefined,
-            url: url.trim() || undefined,
+            title: cleanTitle,
+            username: cleanUsername,
+            password: cleanPassword,
+            email: cleanEmail || undefined,
+            url: sanitizedUrl,
             categoryId: categoryId || categories[0]?.id || '',
-            notes: notes.trim() || undefined,
+            notes: cleanNotes || undefined,
           });
         } else {
           await saveEntry({
             type: 'password',
-            title: title.trim(),
-            username: username.trim(),
-            password,
-            email: email.trim() || undefined,
-            url: url.trim() || undefined,
+            title: cleanTitle,
+            username: cleanUsername,
+            password: cleanPassword,
+            email: cleanEmail || undefined,
+            url: sanitizedUrl,
             categoryId: categoryId || categories[0]?.id || '',
-            notes: notes.trim() || undefined,
+            notes: cleanNotes || undefined,
             favorite: false,
           });
         }
       } else {
         // Mode TOTP
-        if (!title.trim() && !issuer.trim()) {
+        const cleanTitle = sanitizeSingleLine(title, LIMITS.TITLE_MAX);
+        const cleanIssuer = sanitizeSingleLine(issuer, LIMITS.ISSUER_MAX);
+        if (!cleanTitle && !cleanIssuer) {
           setError("Le nom de l'émetteur ou le titre est requis.");
           setIsSubmitting(false);
           return;
         }
-        if (!secret.trim()) {
-          setError('La clé secrète TOTP est requise.');
+
+        const { valid: secretValid, secret: cleanSecret, error: secretError } = validateAndSanitizeTotpSecret(secret);
+        if (!secretValid || !cleanSecret) {
+          setError(secretError || 'La clé secrète TOTP est invalide.');
           setIsSubmitting(false);
           return;
         }
 
-        const cleanSecret = secret.replace(/[\s-]/g, '').toUpperCase();
+        const cleanAccount = sanitizeSingleLine(account, LIMITS.ACCOUNT_MAX);
+        const cleanNotes = sanitizeMultiline(notes, LIMITS.NOTES_MAX);
+        const finalTitle = cleanTitle || cleanIssuer;
+        const finalIssuer =
+          cleanIssuer && cleanIssuer.length === 1 && finalTitle.length > 1
+            ? finalTitle
+            : (cleanIssuer || finalTitle);
 
         if (isEditing && entry.id) {
           await updateEntry(entry.id, {
-            title: title.trim() || issuer.trim(),
-            issuer: issuer.trim() || title.trim(),
-            account: account.trim(),
+            title: finalTitle,
+            issuer: finalIssuer,
+            account: cleanAccount,
             secret: cleanSecret,
             algorithm,
             digits,
             period,
             categoryId: categoryId || categories[0]?.id || '',
-            notes: notes.trim() || undefined,
+            notes: cleanNotes || undefined,
           });
         } else {
           await saveEntry({
             type: 'totp',
-            title: title.trim() || issuer.trim(),
-            issuer: issuer.trim() || title.trim(),
-            account: account.trim(),
+            title: finalTitle,
+            issuer: finalIssuer,
+            account: cleanAccount,
             secret: cleanSecret,
             algorithm,
             digits,
             period,
             categoryId: categoryId || categories[0]?.id || '',
-            notes: notes.trim() || undefined,
+            notes: cleanNotes || undefined,
             favorite: false,
           });
         }
@@ -263,13 +296,18 @@ export function EntryModal({ entry, onClose }: Props) {
                 : 'Modifier le code 2FA'
               : 'Nouvel élément'}
           </h3>
-          <button
-            onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white p-1 rounded-lg transition cursor-pointer"
-            title="Fermer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800/60 rounded border border-zinc-300/60 dark:border-zinc-700/60 select-none">
+              Esc
+            </kbd>
+            <button
+              onClick={onClose}
+              className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white p-1 rounded-lg transition cursor-pointer"
+              title="Fermer (Échap)"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Corps du Formulaire */}
@@ -336,10 +374,14 @@ export function EntryModal({ entry, onClose }: Props) {
                 <input
                   type="text"
                   required
+                  maxLength={LIMITS.TITLE_MAX}
                   value={title}
                   onChange={(e) => {
-                    setTitle(e.target.value);
-                    if (activeType === 'totp' && !issuer) setIssuer(e.target.value);
+                    const val = e.target.value;
+                    setTitle(val);
+                    if (activeType === 'totp') {
+                      setIssuer(val);
+                    }
                   }}
                   placeholder={activeType === 'password' ? 'ex: GitHub, Google, AWS' : 'ex: Google Workspace, GitHub'}
                   className="bg-transparent text-xs text-zinc-900 dark:text-[#F8FAFC] placeholder-zinc-400 dark:placeholder-zinc-500 outline-none w-full font-sans"
@@ -356,6 +398,7 @@ export function EntryModal({ entry, onClose }: Props) {
                 <Mail className="w-4 h-4 text-zinc-400 dark:text-zinc-500 shrink-0" />
                 <input
                   type="text"
+                  maxLength={LIMITS.USERNAME_MAX}
                   value={activeType === 'password' ? (email || username) : account}
                   onChange={(e) => {
                     if (activeType === 'password') {
@@ -388,6 +431,7 @@ export function EntryModal({ entry, onClose }: Props) {
                     <Link className="w-4 h-4 text-zinc-400 dark:text-zinc-500 shrink-0" />
                     <input
                       type="url"
+                      maxLength={LIMITS.URL_MAX}
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder="https://github.com/login"
@@ -404,7 +448,11 @@ export function EntryModal({ entry, onClose }: Props) {
                     </label>
                     <button
                       type="button"
-                      onClick={() => setGeneratorModalOpen(true)}
+                      onClick={() =>
+                        openPasswordGenerator((generatedPw) => {
+                          setPassword(generatedPw);
+                        })
+                      }
                       className="flex items-center gap-1 text-[11px] font-mono text-[#0891B2] dark:text-[#06B6D4] hover:underline cursor-pointer"
                     >
                       <Sparkles className="w-3 h-3" />
@@ -416,6 +464,7 @@ export function EntryModal({ entry, onClose }: Props) {
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
+                      maxLength={LIMITS.PASSWORD_MAX}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Mot de passe"
@@ -456,8 +505,16 @@ export function EntryModal({ entry, onClose }: Props) {
                     <button
                       type="button"
                       onClick={() => {
-                        onClose();
-                        setQRScannerOpen(true);
+                        openQRScanner((parsed) => {
+                          if (parsed.secret) setSecret(parsed.secret);
+                          if (parsed.issuer) setIssuer(parsed.issuer);
+                          if (parsed.account) setAccount(parsed.account);
+                          if (parsed.algorithm) setAlgorithm(parsed.algorithm);
+                          if (parsed.digits) setDigits(parsed.digits);
+                          if (parsed.period) setPeriod(parsed.period);
+                          if (parsed.title) setTitle(parsed.title);
+                          else if (parsed.issuer && !title) setTitle(parsed.issuer);
+                        });
                       }}
                       className="flex items-center gap-1 text-[11px] font-mono text-[#0891B2] dark:text-[#06B6D4] hover:underline cursor-pointer"
                     >
@@ -470,6 +527,7 @@ export function EntryModal({ entry, onClose }: Props) {
                     <input
                       type="text"
                       required
+                      maxLength={LIMITS.TOTP_SECRET_MAX}
                       value={secret}
                       onChange={(e) => handleSecretChange(e.target.value)}
                       placeholder="JBSWY3DPEHPK3PXP"
@@ -591,6 +649,7 @@ export function EntryModal({ entry, onClose }: Props) {
               <div className="bg-zinc-50 dark:bg-[#18181B] border border-zinc-300 dark:border-[#27272A] rounded-xl p-2.5 focus-within:border-[#06B6D4] transition">
                 <textarea
                   value={notes}
+                  maxLength={LIMITS.NOTES_MAX}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Notes privées, codes de secours ou questions de sécurité..."
                   rows={2}
@@ -642,9 +701,12 @@ export function EntryModal({ entry, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3.5 py-2 rounded-xl text-xs font-medium transition cursor-pointer"
+              className="flex items-center gap-1.5 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3.5 py-2 rounded-xl text-xs font-medium transition cursor-pointer"
             >
-              Annuler
+              <span>Annuler</span>
+              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-zinc-400 dark:text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800/60 rounded border border-zinc-300/60 dark:border-zinc-700/60">
+                Esc
+              </kbd>
             </button>
             <button
               type="submit"

@@ -6,6 +6,7 @@ import type {
   Category,
   VaultData,
   TOTPCodeResult,
+  ParsedTOTPUri,
 } from '../../shared/types';
 import { useThemeStore } from '../hooks/useTheme';
 import { toast } from './toast-store';
@@ -27,7 +28,9 @@ interface VaultState {
   deletingEntry: VaultEntry | null;
   isEntryModalOpen: boolean;
   isQRScannerOpen: boolean;
+  qrScannerTargetCallback: ((parsed: ParsedTOTPUri) => void) | null;
   isGeneratorModalOpen: boolean;
+  generatorTargetCallback: ((password: string) => void) | null;
 
   // Actions
   checkVaultExists: () => Promise<void>;
@@ -47,7 +50,11 @@ interface VaultState {
   cancelDeleteEntry: () => void;
   confirmDeleteEntry: () => Promise<void>;
   setQRScannerOpen: (open: boolean) => void;
+  openQRScanner: (callback?: (parsed: ParsedTOTPUri) => void) => void;
+  closeQRScanner: () => void;
   setGeneratorModalOpen: (open: boolean) => void;
+  openPasswordGenerator: (onUsePassword?: (password: string) => void) => void;
+  closePasswordGenerator: () => void;
 
   saveEntry: (entryData: Omit<VaultEntry, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateEntry: (id: string, entryData: Partial<VaultEntry>) => Promise<void>;
@@ -77,7 +84,9 @@ export const useVaultStore = create<VaultState>((set, get) => ({
   deletingEntry: null,
   isEntryModalOpen: false,
   isQRScannerOpen: false,
+  qrScannerTargetCallback: null,
   isGeneratorModalOpen: false,
+  generatorTargetCallback: null,
 
   checkVaultExists: async () => {
     try {
@@ -144,7 +153,18 @@ export const useVaultStore = create<VaultState>((set, get) => ({
   },
 
   setActiveTab: (tab) => set({ activeTab: tab, selectedCategoryId: null }),
-  setSelectedCategory: (id) => set({ selectedCategoryId: id }),
+  setSelectedCategory: (id) => {
+    const current = get().selectedCategoryId;
+    if (current === id) {
+      set({ selectedCategoryId: null });
+    } else {
+      const currentTab = get().activeTab;
+      set({
+        selectedCategoryId: id,
+        activeTab: currentTab === 'settings' ? 'all' : currentTab,
+      });
+    }
+  },
   setSearchQuery: (query) => set({ searchQuery: query }),
 
   openNewEntryModal: (type = 'password') => {
@@ -198,8 +218,36 @@ export const useVaultStore = create<VaultState>((set, get) => ({
       toast.error(formatErrorMessage(err, "Erreur lors de la suppression de l'élément."));
     }
   },
-  setQRScannerOpen: (open) => set({ isQRScannerOpen: open }),
-  setGeneratorModalOpen: (open) => set({ isGeneratorModalOpen: open }),
+  setQRScannerOpen: (open) =>
+    set({
+      isQRScannerOpen: open,
+      qrScannerTargetCallback: open ? get().qrScannerTargetCallback : null,
+    }),
+  openQRScanner: (callback) =>
+    set({
+      isQRScannerOpen: true,
+      qrScannerTargetCallback: callback || null,
+    }),
+  closeQRScanner: () =>
+    set({
+      isQRScannerOpen: false,
+      qrScannerTargetCallback: null,
+    }),
+  openPasswordGenerator: (onUsePassword) =>
+    set({
+      isGeneratorModalOpen: true,
+      generatorTargetCallback: onUsePassword || null,
+    }),
+  closePasswordGenerator: () =>
+    set({
+      isGeneratorModalOpen: false,
+      generatorTargetCallback: null,
+    }),
+  setGeneratorModalOpen: (open) =>
+    set({
+      isGeneratorModalOpen: open,
+      generatorTargetCallback: open ? get().generatorTargetCallback : null,
+    }),
 
   saveEntry: async (entryData) => {
     const saved = await window.vaultAPI.addEntry(entryData);

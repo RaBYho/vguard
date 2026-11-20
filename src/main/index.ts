@@ -1,21 +1,50 @@
-import { app, BrowserWindow, ipcMain, clipboard } from 'electron';
+import { app, BrowserWindow, ipcMain, clipboard, nativeImage, Menu } from 'electron';
 import path from 'node:path';
+import fs from 'node:fs';
 import { VaultManager } from './vault/vault-manager';
 import { VGuardIPCServer } from './ipc-server';
 import { generatePassword, evaluateStrength } from './crypto/password-generator';
 import { parseUri } from './totp/totp-engine';
 
-// Désactive le sandbox SUID Linux strict en mode développement
+// Désactivation intégrale du menu natif Electron (File, Edit, View, Window, Help)
+Menu.setApplicationMenu(null);
+
+// Nom officiel et association au bureau Linux / Wayland
+app.name = 'VGuard';
 if (process.platform === 'linux') {
   app.commandLine.appendSwitch('no-sandbox');
+  if (typeof app.setDesktopName === 'function') {
+    app.setDesktopName('vguard.desktop');
+  }
 }
+app.setAppUserModelId('dev.vguard.app');
 
 let mainWindow: BrowserWindow | null = null;
 const vaultManager = new VaultManager();
 const ipcServer = new VGuardIPCServer(vaultManager);
 let clipboardTimer: NodeJS.Timeout | null = null;
 
+function getAppIconPath(): string {
+  const candidates = [
+    path.join(__dirname, '../renderer/icons/vguard-tile-icon-512.png'),
+    path.join(__dirname, '../renderer/icons/vguard-tile-icon.png'),
+    path.join(process.resourcesPath, 'icon.png'),
+    path.join(process.resourcesPath, 'resources/icon.png'),
+    path.join(__dirname, '../../resources/icon.png'),
+    path.join(__dirname, '../../src/renderer/public/icons/vguard-tile-icon-512.png'),
+    path.join(process.cwd(), 'src/renderer/public/icons/vguard-tile-icon-512.png'),
+    path.join(process.cwd(), 'resources/icon.png'),
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+  return '';
+}
+
 function createWindow(): void {
+  const iconPath = getAppIconPath();
+  const iconImage = iconPath ? nativeImage.createFromPath(iconPath) : undefined;
+
   mainWindow = new BrowserWindow({
     width: 1180,
     height: 780,
@@ -23,6 +52,8 @@ function createWindow(): void {
     minHeight: 600,
     backgroundColor: '#0f172a',
     title: 'VGuard — Mots de Passe & 2FA',
+    icon: iconImage,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -44,11 +75,12 @@ function createWindow(): void {
     }
   });
 
-  const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+  const isDev = process.env.NODE_ENV === 'development';
 
   if (isDev) {
-    mainWindow.loadURL('http://localhost:5173');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.loadURL('http://localhost:5173').catch(() => {
+      mainWindow?.loadFile(path.join(__dirname, '../renderer/index.html'));
+    });
   } else {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
@@ -93,21 +125,27 @@ ipcMain.handle('totp:getAllCodes', () => vaultManager.getAllTOTPCodes());
 ipcMain.handle('totp:parseUri', (_, uri) => parseUri(uri));
 
 // Clipboard sécurisé avec minuterie d'effacement automatique
-ipcMain.handle('system:copyToClipboard', (_, text: string, clearSeconds = 30) => {
-  clipboard.writeText(text);
+ipcMain.handle('system:copyToClipboard', (_, text: unknown, clearSeconds = 30) => {
+  if (typeof text !== 'string') return;
+  const safeText = text.slice(0, 100 * 1024);
+  clipboard.writeText(safeText);
 
   if (clipboardTimer) {
     clearTimeout(clipboardTimer);
   }
 
-  if (clearSeconds > 0) {
+  const validClearSeconds = typeof clearSeconds === 'number' && clearSeconds > 0 && clearSeconds <= 600
+    ? clearSeconds
+    : 30;
+
+  if (validClearSeconds > 0) {
     clipboardTimer = setTimeout(async () => {
       // Efface le presse-papier seulement si le texte n'a pas changé entre-temps
       const current = await clipboard.readText();
-      if (current === text) {
+      if (current === safeText) {
         clipboard.clear();
       }
-    }, clearSeconds * 1000);
+    }, validClearSeconds * 1000);
   }
 });
 

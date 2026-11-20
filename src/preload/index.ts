@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, webFrame } from 'electron';
 import type {
   VaultEntry,
   Category,
@@ -7,6 +7,21 @@ import type {
 } from '../shared/types';
 
 contextBridge.exposeInMainWorld('vaultAPI', {
+  // UI Zoom & scaling
+  setZoomFactor: (factor: number) => {
+    try {
+      webFrame.setZoomFactor(factor);
+    } catch (e) {
+      console.error('Error setting zoom factor:', e);
+    }
+  },
+  getZoomFactor: () => {
+    try {
+      return webFrame.getZoomFactor();
+    } catch {
+      return 1.0;
+    }
+  },
   // Vault lifecycle & auth
   vaultExists: () => ipcRenderer.invoke('vault:exists'),
   createVault: (masterPassword: string) => ipcRenderer.invoke('vault:create', masterPassword),

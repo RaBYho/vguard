@@ -10,6 +10,7 @@ import { useVaultStore } from '../../stores/vault-store';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { formatErrorMessage } from '../../utils/format-error';
 import { toast } from '../../stores/toast-store';
+import { LIMITS, validateMasterPassword } from '../../../shared/validation';
 
 export function LockScreen() {
   const [password, setPassword] = useState('');
@@ -38,6 +39,12 @@ export function LockScreen() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) return;
+
+    const { valid, error: pwError } = validateMasterPassword(password, false);
+    if (!valid) {
+      setError(pwError || 'Mot de passe maître invalide.');
+      return;
+    }
 
     setIsLoading(true);
     setError('');
@@ -151,6 +158,7 @@ export function LockScreen() {
                     <input
                       id="master-password"
                       type={showPassword ? 'text' : 'password'}
+                      maxLength={LIMITS.MASTER_PASSWORD_MAX}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••••••••••••••"

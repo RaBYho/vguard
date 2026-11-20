@@ -43,15 +43,21 @@ export function TOTPCard({ entry }: Props) {
   const formattedCode =
     code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
 
+  // Nom d'affichage robuste (priorise le titre si l'émetteur est manquant ou tronqué à 1 caractère)
+  const displayName =
+    entry.issuer && entry.issuer.trim().length === 1 && entry.title && entry.title.trim().length > 1
+      ? entry.title.trim()
+      : entry.issuer?.trim() || entry.title?.trim() || 'Compte 2FA';
+
   const copyCode = async () => {
     if (!code || code === '------') return;
     await window.vaultAPI.copyToClipboard(code);
     setCopied(true);
-    toast.info(`Code 2FA pour ${entry.issuer || entry.title} copié !`);
+    toast.info(`Code 2FA pour ${displayName} copié !`);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const initial = (entry.issuer || entry.title || '2F').slice(0, 2).toUpperCase();
+  const initial = (displayName || '2F').slice(0, 2).toUpperCase();
 
   return (
     <div
@@ -81,7 +87,7 @@ export function TOTPCard({ entry }: Props) {
 
             <div className="min-w-0">
               <div className="text-xs font-bold text-zinc-900 dark:text-white flex items-center gap-2 truncate">
-                <span className="truncate">{entry.issuer || entry.title}</span>
+                <span className="truncate">{displayName}</span>
                 {category && (
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -91,7 +97,7 @@ export function TOTPCard({ entry }: Props) {
                 )}
               </div>
               <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 truncate">
-                {entry.account || entry.title}
+                {entry.account || (entry.issuer && entry.issuer !== displayName ? entry.issuer : 'Code 2FA')}
               </div>
             </div>
           </div>

@@ -16,7 +16,14 @@
   "linux": {
     "target": ["AppImage", "tar.gz"],
     "category": "Utility",
-    "icon": "resources/icon.png",
-    "maintainer": "Hoby <hoby@vguard.dev>"
+    "icon": "resources/icons",
+    "syncDesktopName": true,
+    "maintainer": "Hoby <hoby@vguard.dev>",
+    "desktop": {
+      "entry": {
+        "StartupWMClass": "vguard",
+        "Comment": "Gestionnaire sécurisé de mots de passe et codes 2FA Zero-Knowledge"
+      }
+    }
   }
 }

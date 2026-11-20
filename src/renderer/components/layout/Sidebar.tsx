@@ -18,7 +18,7 @@ export function Sidebar() {
   const entries = useVaultStore((state) => state.entries);
   const categories = useVaultStore((state) => state.categories);
   const lock = useVaultStore((state) => state.lock);
-  const setGeneratorModalOpen = useVaultStore((state) => state.setGeneratorModalOpen);
+  const openPasswordGenerator = useVaultStore((state) => state.openPasswordGenerator);
   const settings = useVaultStore((state) => state.settings);
 
   const passwordCount = entries.filter((e) => e.type === 'password').length;
@@ -122,10 +122,10 @@ export function Sidebar() {
                   setActiveTab(item.id);
                   setSelectedCategory(null);
                 }}
-                className={`flex items-center justify-between px-3 h-10 rounded-xl text-xs font-medium transition-all duration-200 ease-out cursor-pointer ${
+                className={`flex items-center justify-between px-3 h-10 rounded-xl text-xs font-medium border transition-colors duration-150 ease-out cursor-pointer outline-none focus:outline-none ${
                   isActive
-                    ? 'bg-[#06B6D4]/10 border border-[#06B6D4]/30 text-[#0891B2] dark:text-[#06B6D4] shadow-xs'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-[#18181B]'
+                    ? 'bg-[#06B6D4]/10 border-[#06B6D4]/30 text-[#0891B2] dark:text-[#06B6D4] shadow-xs'
+                    : 'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-[#18181B]'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -143,13 +143,16 @@ export function Sidebar() {
         {/* Action rapide : Générateur */}
         <div className="pt-1">
           <button
-            onClick={() => setGeneratorModalOpen(true)}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs text-zinc-900 dark:text-white transition group cursor-pointer"
+            onClick={() => openPasswordGenerator()}
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-[#18181B] hover:bg-zinc-200 dark:hover:bg-[#27272A] border border-zinc-200 dark:border-[#27272A] text-xs text-zinc-900 dark:text-white transition-colors duration-150 group cursor-pointer outline-none focus:outline-none"
           >
             <div className="flex items-center gap-2.5">
               <Sparkles className="w-4 h-4 text-[#06B6D4] group-hover:rotate-12 transition-transform" />
               <span className="font-medium">Générateur</span>
             </div>
+            <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-200/60 dark:bg-zinc-800/60 rounded border border-zinc-300/60 dark:border-zinc-700/60 select-none">
+              Alt G
+            </kbd>
           </button>
         </div>
 
@@ -165,11 +168,19 @@ export function Sidebar() {
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center justify-between px-3 py-1.5 text-xs transition-all duration-200 ease-out cursor-pointer rounded-lg ${
+                onClick={() => {
+                  if (selectedCategoryId === cat.id) {
+                    setSelectedCategory(null);
+                  } else {
+                    setActiveTab('all');
+                    setSelectedCategory(cat.id);
+                  }
+                }}
+                title={isCatActive ? `Retirer le filtre ${cat.name}` : `Filtrer par ${cat.name}`}
+                className={`flex items-center justify-between px-3 py-1.5 text-xs rounded-lg border transition-colors duration-150 ease-out cursor-pointer outline-none focus:outline-none ${
                   isCatActive
-                    ? 'bg-zinc-100 dark:bg-[#18181B] text-zinc-900 dark:text-white border border-zinc-200 dark:border-[#27272A]'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100/60 dark:hover:bg-[#18181B]/50'
+                    ? 'bg-[#06B6D4]/10 text-[#0891B2] dark:text-[#06B6D4] border-[#06B6D4]/30 font-medium shadow-xs'
+                    : 'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100/60 dark:hover:bg-[#18181B]/50'
                 }`}
               >
                 <span className="flex items-center gap-2.5 truncate">
@@ -179,7 +190,9 @@ export function Sidebar() {
                   />
                   <span className="truncate">{cat.name}</span>
                 </span>
-                <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">{count}</span>
+                <span className={`text-[10px] font-mono ${isCatActive ? 'text-[#0891B2] dark:text-[#06B6D4] font-semibold' : 'text-zinc-400 dark:text-zinc-500'}`}>
+                  {count}
+                </span>
               </button>
             );
           })}
@@ -191,10 +204,10 @@ export function Sidebar() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveTab('settings')}
-            className={`flex-1 flex items-center justify-between px-3 h-10 rounded-xl text-xs transition cursor-pointer ${
+            className={`flex-1 flex items-center justify-between px-3 h-10 rounded-xl text-xs border transition-colors duration-150 ease-out cursor-pointer outline-none focus:outline-none ${
               activeTab === 'settings'
-                ? 'bg-zinc-200 dark:bg-[#18181B] text-zinc-900 dark:text-white border border-zinc-300 dark:border-[#27272A]'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-[#18181B]'
+                ? 'bg-zinc-200 dark:bg-[#18181B] text-zinc-900 dark:text-white border-zinc-300 dark:border-[#27272A]'
+                : 'border-transparent text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-[#18181B]'
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -207,12 +220,15 @@ export function Sidebar() {
 
         <button
           onClick={() => lock()}
-          className="w-full flex items-center justify-between px-3 h-10 rounded-xl text-xs bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-[#EF4444] border border-red-500/20 transition font-medium cursor-pointer"
+          className="w-full flex items-center justify-between px-3 h-10 rounded-xl text-xs bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-[#EF4444] border border-red-500/20 transition-colors duration-150 font-medium cursor-pointer outline-none focus:outline-none"
         >
           <div className="flex items-center gap-2.5">
             <Lock className="w-4 h-4" />
             <span>Verrouiller</span>
           </div>
+          <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-medium text-red-600/70 dark:text-red-400/70 bg-red-500/10 rounded border border-red-500/20 select-none">
+            Ctrl L
+          </kbd>
         </button>
       </div>
     </aside>

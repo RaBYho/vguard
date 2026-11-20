@@ -10,7 +10,7 @@ export function TOTPList() {
   const selectedCategoryId = useVaultStore((state) => state.selectedCategoryId);
   const searchQuery = useVaultStore((state) => state.searchQuery);
   const openNewEntryModal = useVaultStore((state) => state.openNewEntryModal);
-  const setQRScannerOpen = useVaultStore((state) => state.setQRScannerOpen);
+  const openQRScanner = useVaultStore((state) => state.openQRScanner);
 
   const totpEntries = entries.filter((e): e is TOTPEntry => e.type === 'totp');
 
@@ -43,7 +43,7 @@ export function TOTPList() {
           !searchQuery ? (
             <div className="flex gap-2">
               <button
-                onClick={() => setQRScannerOpen(true)}
+                onClick={() => openQRScanner()}
                 className="flex items-center gap-2 px-3.5 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#18181B] dark:hover:bg-[#27272A] text-zinc-900 dark:text-white rounded-xl text-xs font-medium border border-zinc-200 dark:border-[#27272A] transition cursor-pointer shadow-sm"
               >
                 <QrCode className="w-4 h-4 text-[#0891B2] dark:text-[#06B6D4]" />

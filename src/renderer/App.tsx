@@ -5,6 +5,7 @@ import { MainLayout } from './components/layout/MainLayout';
 import { ToastContainer } from './components/common/ToastContainer';
 import { useVaultStore } from './stores/vault-store';
 import { useThemeStore } from './hooks/useTheme';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
 export function App() {
   const isInitialized = useVaultStore((state) => state.isInitialized);
@@ -15,8 +16,9 @@ export function App() {
   const checkVaultExists = useVaultStore((state) => state.checkVaultExists);
   const lock = useVaultStore((state) => state.lock);
 
-  // Initialise l'écoute du store de thème
+  // Initialise l'écoute du store de thème et des raccourcis clavier globaux
   useThemeStore();
+  useKeyboardShortcuts();
 
   useEffect(() => {
     checkVaultExists();

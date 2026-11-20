@@ -49,7 +49,9 @@ export function generatePassword(options: PasswordGeneratorOptions): string {
     requiredChars.push(charset[crypto.randomInt(charset.length)]);
   }
 
-  const length = Math.max(options.length, requiredChars.length);
+  const requestedLength = typeof options.length === 'number' && !isNaN(options.length) ? options.length : 16;
+  // Bounded length: min required chars (or 4), max 256 chars
+  const length = Math.min(Math.max(requestedLength, requiredChars.length), 256);
   const passwordChars = [...requiredChars];
 
   for (let i = passwordChars.length; i < length; i++) {
@@ -69,17 +71,20 @@ export function generatePassword(options: PasswordGeneratorOptions): string {
  * Évalue la force d'un mot de passe (entropie en bits de Shannon)
  */
 export function evaluateStrength(password: string): PasswordEvaluation {
-  if (!password) {
+  if (!password || typeof password !== 'string') {
     return { score: 0, entropy: 0, label: 'Vide' };
   }
 
-  let poolSize = 0;
-  if (/[a-z]/.test(password)) poolSize += 26;
-  if (/[A-Z]/.test(password)) poolSize += 26;
-  if (/[0-9]/.test(password)) poolSize += 10;
-  if (/[^a-zA-Z0-9]/.test(password)) poolSize += 32;
+  // Bornage à 1024 caractères pour éviter tout blocage d'analyse
+  const boundedPw = password.slice(0, 1024);
 
-  const entropy = Math.round(password.length * (poolSize > 0 ? Math.log2(poolSize) : 0));
+  let poolSize = 0;
+  if (/[a-z]/.test(boundedPw)) poolSize += 26;
+  if (/[A-Z]/.test(boundedPw)) poolSize += 26;
+  if (/[0-9]/.test(boundedPw)) poolSize += 10;
+  if (/[^a-zA-Z0-9]/.test(boundedPw)) poolSize += 32;
+
+  const entropy = Math.round(boundedPw.length * (poolSize > 0 ? Math.log2(poolSize) : 0));
 
   let score = 0;
   let label = 'Très faible';

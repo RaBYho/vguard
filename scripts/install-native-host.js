@@ -22,10 +22,21 @@ const manifestContent = {
 
 const home = os.homedir();
 const targetDirs = [
+  // Navigateurs Debian / RPM / APT standards
   path.join(home, '.config', 'google-chrome', 'NativeMessagingHosts'),
   path.join(home, '.config', 'chromium', 'NativeMessagingHosts'),
   path.join(home, '.config', 'BraveSoftware', 'Brave-Browser', 'NativeMessagingHosts'),
   path.join(home, '.config', 'microsoft-edge', 'NativeMessagingHosts'),
+
+  // Navigateurs Snap (Ubuntu / Debian Snap confinement)
+  path.join(home, 'snap', 'brave', 'current', '.config', 'BraveSoftware', 'Brave-Browser', 'NativeMessagingHosts'),
+  path.join(home, 'snap', 'brave', 'current', '.config', 'chromium', 'NativeMessagingHosts'),
+  path.join(home, 'snap', 'chromium', 'current', '.config', 'chromium', 'NativeMessagingHosts'),
+
+  // Navigateurs Flatpak
+  path.join(home, '.var', 'app', 'com.brave.Browser', 'config', 'BraveSoftware', 'Brave-Browser', 'NativeMessagingHosts'),
+  path.join(home, '.var', 'app', 'com.google.Chrome', 'config', 'google-chrome', 'NativeMessagingHosts'),
+  path.join(home, '.var', 'app', 'org.chromium.Chromium', 'config', 'chromium', 'NativeMessagingHosts'),
 ];
 
 console.log('📦 Enregistrement de l\'hôte Native Messaging pour VGuard...');

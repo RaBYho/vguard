@@ -5,6 +5,15 @@ import crypto from 'node:crypto';
 import { deriveKey, computeVerifier } from '../crypto/key-derivation';
 import { encryptData, decryptData } from '../crypto/vault-crypto';
 import { generateCode } from '../totp/totp-engine';
+import {
+  LIMITS,
+  validateMasterPassword,
+  sanitizeSingleLine,
+  sanitizePassword,
+  sanitizeMultiline,
+  validateAndSanitizeUrl,
+  validateAndSanitizeTotpSecret,
+} from '../../shared/validation';
 import type {
   VaultData,
   VaultFile,
@@ -73,8 +82,9 @@ export class VaultManager {
       throw new Error('Un coffre-fort existe déjà sur cet appareil.');
     }
 
-    if (!masterPassword || masterPassword.length < 8) {
-      throw new Error('Le mot de passe maître doit comporter au moins 8 caractères.');
+    const { valid, error } = validateMasterPassword(masterPassword, true);
+    if (!valid) {
+      throw new Error(error || 'Le mot de passe maître doit comporter au moins 8 caractères.');
     }
 
     const { key, salt } = await deriveKey(masterPassword);
@@ -126,6 +136,11 @@ export class VaultManager {
    * Déverrouille le coffre-fort existant
    */
   async unlock(masterPassword: string): Promise<VaultData> {
+    const { valid, error } = validateMasterPassword(masterPassword, false);
+    if (!valid) {
+      throw new Error(error || 'Mot de passe maître invalide.');
+    }
+
     if (!this.isLocked() && this.vaultData) {
       this.restartAutoLockTimer();
       return this.vaultData;
@@ -145,6 +160,18 @@ export class VaultManager {
     try {
       const decryptedJson = decryptData(vaultFile.payload, key);
       const data: VaultData = JSON.parse(decryptedJson);
+
+      // Auto-réparation des entrées TOTP dont l'émetteur aurait été tronqué à 1 lettre
+      if (Array.isArray(data.entries)) {
+        for (const entry of data.entries) {
+          if (entry.type === 'totp') {
+            const t = entry as TOTPEntry;
+            if (t.title && t.issuer && t.issuer.length === 1 && t.title.length > 1) {
+              t.issuer = t.title;
+            }
+          }
+        }
+      }
 
       this.masterKey = key;
       this.vaultData = data;
@@ -176,12 +203,18 @@ export class VaultManager {
    * Modifie le mot de passe maître
    */
   async changeMasterPassword(oldPw: string, newPw: string): Promise<boolean> {
-    if (this.isLocked() || !this.vaultData) {
-      await this.unlock(oldPw);
+    const validOld = validateMasterPassword(oldPw, false);
+    if (!validOld.valid) {
+      throw new Error(validOld.error || 'Ancien mot de passe maître invalide.');
     }
 
-    if (newPw.length < 8) {
-      throw new Error('Le nouveau mot de passe maître doit comporter au moins 8 caractères.');
+    const validNew = validateMasterPassword(newPw, true);
+    if (!validNew.valid) {
+      throw new Error(validNew.error || 'Le nouveau mot de passe maître doit comporter au moins 8 caractères.');
+    }
+
+    if (this.isLocked() || !this.vaultData) {
+      await this.unlock(oldPw);
     }
 
     const { key: newKey, salt: newSalt } = await deriveKey(newPw);
@@ -299,9 +332,10 @@ export class VaultManager {
   async addEntry(entryData: Omit<VaultEntry, 'id' | 'createdAt' | 'updatedAt'>): Promise<VaultEntry> {
     this.ensureUnlocked();
 
+    const sanitizedData = this.sanitizeAndValidateEntryData(entryData);
     const now = new Date().toISOString();
     const newEntry = {
-      ...entryData,
+      ...sanitizedData,
       id: crypto.randomUUID(),
       createdAt: now,
       updatedAt: now,
@@ -321,9 +355,11 @@ export class VaultManager {
     }
 
     const existing = this.vaultData!.entries[index];
+    const sanitizedData = this.sanitizeAndValidateEntryData(updates, existing);
+
     const updated = {
       ...existing,
-      ...updates,
+      ...sanitizedData,
       id: existing.id,
       updatedAt: new Date().toISOString(),
     } as VaultEntry;
@@ -351,9 +387,16 @@ export class VaultManager {
   async addCategory(cat: Omit<Category, 'id'>): Promise<Category> {
     this.ensureUnlocked();
 
+    const cleanName = sanitizeSingleLine(cat.name, LIMITS.CATEGORY_NAME_MAX);
+    if (!cleanName) {
+      throw new Error('Le nom de la catégorie est requis.');
+    }
+
     const newCat: Category = {
-      ...cat,
       id: crypto.randomUUID(),
+      name: cleanName,
+      icon: sanitizeSingleLine(cat.icon, 30) || 'Folder',
+      color: sanitizeSingleLine(cat.color, 20) || '#06B6D4',
     };
 
     this.vaultData!.categories.push(newCat);
@@ -367,7 +410,18 @@ export class VaultManager {
     const cat = this.vaultData!.categories.find((c) => c.id === id);
     if (!cat) throw new Error('Catégorie introuvable');
 
-    Object.assign(cat, updates);
+    if (updates.name !== undefined) {
+      const cleanName = sanitizeSingleLine(updates.name, LIMITS.CATEGORY_NAME_MAX);
+      if (!cleanName) throw new Error('Le nom de la catégorie ne peut pas être vide.');
+      cat.name = cleanName;
+    }
+    if (updates.icon !== undefined) {
+      cat.icon = sanitizeSingleLine(updates.icon, 30) || cat.icon;
+    }
+    if (updates.color !== undefined) {
+      cat.color = sanitizeSingleLine(updates.color, 20) || cat.color;
+    }
+
     await this.persist();
     return cat;
   }
@@ -421,7 +475,25 @@ export class VaultManager {
 
   async updateSettings(settings: Partial<VaultData['settings']>): Promise<VaultData['settings']> {
     this.ensureUnlocked();
-    Object.assign(this.vaultData!.settings, settings);
+
+    if (settings.autoLockMinutes !== undefined) {
+      const minutes = Number(settings.autoLockMinutes);
+      this.vaultData!.settings.autoLockMinutes = (minutes >= 1 && minutes <= 1440) ? minutes : 5;
+    }
+    if (settings.clipboardClearSeconds !== undefined) {
+      const seconds = Number(settings.clipboardClearSeconds);
+      this.vaultData!.settings.clipboardClearSeconds = (seconds >= 5 && seconds <= 600) ? seconds : 30;
+    }
+    if (settings.theme !== undefined) {
+      this.vaultData!.settings.theme = settings.theme === 'light' ? 'light' : 'dark';
+    }
+    if (settings.userName !== undefined) {
+      this.vaultData!.settings.userName = sanitizeSingleLine(settings.userName, LIMITS.USER_NAME_MAX) || undefined;
+    }
+    if (settings.recoveryEmail !== undefined) {
+      this.vaultData!.settings.recoveryEmail = sanitizeSingleLine(settings.recoveryEmail, LIMITS.RECOVERY_EMAIL_MAX) || undefined;
+    }
+
     await this.persist();
     this.restartAutoLockTimer();
     return this.vaultData!.settings;
@@ -468,22 +540,29 @@ export class VaultManager {
   async importVault(content: string, format: 'json' | 'csv' | 'bitwarden'): Promise<{ importedCount: number }> {
     this.ensureUnlocked();
 
+    if (typeof content !== 'string' || Buffer.byteLength(content, 'utf8') > LIMITS.MAX_IMPORT_SIZE_BYTES) {
+      throw new Error('Le fichier importé dépasse la taille maximale autorisée (25 Mo).');
+    }
+
     let count = 0;
     const now = new Date().toISOString();
-    const defaultCatId = this.vaultData!.categories[0]?.id || '';
 
     if (format === 'json') {
       const parsed = JSON.parse(content);
       if (Array.isArray(parsed.entries)) {
         for (const item of parsed.entries) {
-          this.vaultData!.entries.push({
-            ...item,
-            id: crypto.randomUUID(),
-            categoryId: item.categoryId || defaultCatId,
-            createdAt: now,
-            updatedAt: now,
-          });
-          count++;
+          try {
+            const sanitized = this.sanitizeAndValidateEntryData(item);
+            this.vaultData!.entries.push({
+              ...sanitized,
+              id: crypto.randomUUID(),
+              createdAt: now,
+              updatedAt: now,
+            } as VaultEntry);
+            count++;
+          } catch {
+            // Ignorer les entrées malformées dans le fichier
+          }
         }
       }
     }
@@ -493,6 +572,120 @@ export class VaultManager {
   }
 
   // ================= PRIVÉ =================
+
+  private sanitizeAndValidateEntryData(
+    entryData: Partial<VaultEntry>,
+    existing?: VaultEntry
+  ): Omit<VaultEntry, 'id' | 'createdAt' | 'updatedAt'> {
+    const type = entryData.type || existing?.type;
+    if (type !== 'password' && type !== 'totp') {
+      throw new Error('Type d’entrée invalide (doit être "password" ou "totp").');
+    }
+
+    const title = sanitizeSingleLine(
+      entryData.title !== undefined ? entryData.title : existing?.title,
+      LIMITS.TITLE_MAX
+    );
+
+    const categoryId =
+      sanitizeSingleLine(
+        entryData.categoryId !== undefined ? entryData.categoryId : existing?.categoryId,
+        64
+      ) || (this.vaultData?.categories[0]?.id ?? '');
+
+    const rawNotes = entryData.notes !== undefined ? entryData.notes : existing?.notes;
+    const notes = rawNotes ? sanitizeMultiline(rawNotes, LIMITS.NOTES_MAX) : undefined;
+
+    const favorite =
+      entryData.favorite !== undefined
+        ? Boolean(entryData.favorite)
+        : (existing?.favorite ?? false);
+
+    if (type === 'password') {
+      const p = entryData as Partial<PasswordEntry>;
+      const existingP = existing as PasswordEntry | undefined;
+
+      if (!title) {
+        throw new Error('Le titre est requis pour une entrée mot de passe.');
+      }
+
+      const rawPw = p.password !== undefined ? p.password : existingP?.password;
+      const password = sanitizePassword(rawPw, LIMITS.PASSWORD_MAX);
+      if (!password) {
+        throw new Error('Le mot de passe est requis.');
+      }
+
+      const rawUser = p.username !== undefined ? p.username : existingP?.username;
+      const username = sanitizeSingleLine(rawUser, LIMITS.USERNAME_MAX);
+
+      const rawEmail = p.email !== undefined ? p.email : existingP?.email;
+      const email = rawEmail ? sanitizeSingleLine(rawEmail, LIMITS.EMAIL_MAX) : undefined;
+
+      const rawUrl = p.url !== undefined ? p.url : existingP?.url;
+      const { valid, url, error } = validateAndSanitizeUrl(rawUrl);
+      if (!valid) {
+        throw new Error(error || 'URL invalide.');
+      }
+
+      return {
+        type: 'password',
+        title,
+        categoryId,
+        favorite,
+        notes: notes || undefined,
+        username,
+        password,
+        email: email || undefined,
+        url: url || undefined,
+      } as PasswordEntry;
+    } else {
+      const t = entryData as Partial<TOTPEntry>;
+      const existingT = existing as TOTPEntry | undefined;
+
+      const rawSecret = t.secret !== undefined ? t.secret : existingT?.secret;
+      const { valid, secret, error } = validateAndSanitizeTotpSecret(rawSecret);
+      if (!valid) {
+        throw new Error(error || 'Clé secrète TOTP invalide.');
+      }
+
+      const rawIssuer = t.issuer !== undefined ? t.issuer : existingT?.issuer;
+      const cleanedIssuer = sanitizeSingleLine(rawIssuer, LIMITS.ISSUER_MAX);
+      const finalTitle = title || cleanedIssuer || 'Compte 2FA';
+      const issuer =
+        cleanedIssuer && cleanedIssuer.length === 1 && finalTitle.length > 1 && finalTitle.toLowerCase().startsWith(cleanedIssuer.toLowerCase())
+          ? finalTitle
+          : (cleanedIssuer || finalTitle);
+
+      const rawAccount = t.account !== undefined ? t.account : existingT?.account;
+      const account = sanitizeSingleLine(rawAccount, LIMITS.ACCOUNT_MAX);
+
+      const validAlgos = ['SHA1', 'SHA256', 'SHA512'] as const;
+      const rawAlgo = t.algorithm !== undefined ? t.algorithm : existingT?.algorithm;
+      const algorithm = validAlgos.includes(rawAlgo as any)
+        ? (rawAlgo as 'SHA1' | 'SHA256' | 'SHA512')
+        : 'SHA1';
+
+      const rawDigits = t.digits !== undefined ? t.digits : existingT?.digits;
+      const digits = rawDigits === 8 ? 8 : 6;
+
+      const rawPeriod = t.period !== undefined ? Number(t.period) : (existingT?.period ?? 30);
+      const period = rawPeriod >= 5 && rawPeriod <= 300 ? rawPeriod : 30;
+
+      return {
+        type: 'totp',
+        title: finalTitle,
+        categoryId,
+        favorite,
+        notes: notes || undefined,
+        secret: secret!,
+        issuer,
+        account,
+        algorithm,
+        digits,
+        period,
+      } as TOTPEntry;
+    }
+  }
 
   private ensureUnlocked() {
     if (this.isLocked() || !this.masterKey || !this.vaultData) {
